@@ -3822,6 +3822,8 @@ IDE_Morph.prototype.settingsMenu = function () {
         'microphoneMenu'
     );
     menu.addLine();
+
+    Process.prototype.enableJS = true;
     addPreference(
         'JavaScript extensions',
         () => {
