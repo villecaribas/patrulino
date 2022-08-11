@@ -710,7 +710,7 @@ SnapTranslator.dict.pt_BR = {
     // Menus
     // Snap menu
     'About...':
-        'Sobre Snap!…',
+        'Sobre o PatruLINO!!…',
     'Reference manual':
         'Manual de Referência',
     'Snap! website':
@@ -1172,7 +1172,7 @@ SnapTranslator.dict.pt_BR = {
 
     // Acerca do Snap
     'About Snap':
-        'Sobre o Snap!',
+        'Sobre o PatruLINO!!',
     'Back...':
         'Para trás…',
     'License...':

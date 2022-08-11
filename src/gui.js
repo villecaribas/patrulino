@@ -233,7 +233,7 @@ IDE_Morph.prototype.init = function (isAutoFill) {
     MorphicPreferences.globalFontFamily = 'Helvetica, Arial';
 
     // restore saved user preferences
-    this.userLanguage = null; // user language preference for startup
+    this.userLanguage = 'pt_BR'; // user language preference for startup
     this.applySavedSettings();
 
     // additional properties:
@@ -2945,7 +2945,7 @@ IDE_Morph.prototype.applySavedSettings = function () {
     if (language && language !== 'en') {
         this.userLanguage = language;
     } else {
-        this.userLanguage = null;
+        this.userLanguage = 'pt_BR';
     }
 
     //  click
@@ -4756,7 +4756,7 @@ IDE_Morph.prototype.aboutSnap = function () {
         module, btn1, btn2, btn3, btn4, licenseBtn, translatorsBtn,
         world = this.world();
 
-    aboutTxt = 'Snap! ' + SnapVersion + '\nBuild Your Own Blocks\n\n'
+    aboutTxt = 'O PatruLINO v1.0 é baseado no \n'+'Snap! ' + SnapVersion + '\nBuild Your Own Blocks\n\n'
         + 'Copyright \u24B8 2008-2022 Jens M\u00F6nig and '
         + 'Brian Harvey\n'
         + 'jens@moenig.org, bh@cs.berkeley.edu\n\n'
