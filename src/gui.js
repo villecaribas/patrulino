@@ -90,7 +90,7 @@ modules.gui = '2022-August-04';
 
 // Declarations
 
-var SnapVersion = '8.0.0';
+var SnapVersion = 'v1.0';
 
 var IDE_Morph;
 var ProjectDialogMorph;
@@ -1206,7 +1206,7 @@ IDE_Morph.prototype.createControlBar = function () {
         scene = myself.scenes.at(1) !== myself.scene ?
                 ' (' + myself.scene.name + ')' : '';
         name = (myself.getProjectName() || localize('untitled'));
-        document.title = "Snap! " +
+        document.title = "PatruLINO!! " +
             (myself.getProjectName() ? name : SnapVersion);
         txt = new StringMorph(
             prefix + name +  scene + suffix,
@@ -4758,18 +4758,12 @@ IDE_Morph.prototype.aboutSnap = function () {
         module, btn1, btn2, btn3, btn4, licenseBtn, translatorsBtn,
         world = this.world();
 
-    aboutTxt = 'O PatruLINO v1.0 é baseado no \n'+'Snap! ' + SnapVersion + '\nBuild Your Own Blocks\n\n'
-        + 'Copyright \u24B8 2008-2022 Jens M\u00F6nig and '
-        + 'Brian Harvey\n'
-        + 'jens@moenig.org, bh@cs.berkeley.edu\n\n'
-        + '        Snap! is developed by the University of California, '
-        + 'Berkeley and SAP        \n'
-        + 'with support from the National Science Foundation (NSF),\n'
-        + 'MIOsoft and YC Research.\n'
-        + 'The design of Snap! is influenced and inspired by Scratch,\n'
-        + 'from the Lifelong Kindergarten group at the MIT Media Lab\n\n'
-
-        + 'for more information see https://snap.berkeley.edu';
+    aboutTxt = 'O PatruLINO ' + SnapVersion + ' é baseado no \n'+'Snap! 8.0.0\nBuild Your Own Blocks\n\n'
+        + 'Copyright \u24B8 2022 - Ville Medeiros\n'
+        + 'ville.medeiros@patrulhaeureka.org\n\n'
+        + 'Para mais informações sobre o PatruLINO acesse o site do PatrulhaEUREKA.org:\n'
+        + 'http://www.patrulhaeureka.org/patrulino\n\n\n'
+        + 'Para mais iformações sobre o Snap acesse o site do Snap!!: https://snap.berkeley.edu';
 
     noticeTxt = localize('License')
         + '\n\n'
@@ -4791,40 +4785,7 @@ IDE_Morph.prototype.aboutSnap = function () {
         + 'Get in touch with us, we\'ll make it work.';
 
     creditsTxt = localize('Contributors')
-        + '\n\nNathan Dinsmore: Saving/Loading, Snap-Logo Design, '
-        + '\ncountless bugfixes and optimizations'
-        + '\nMichael Ball: Time/Date UI, Library Import Dialog,'
-        + '\ncountless bugfixes and optimizations'
-        + '\nBernat Romagosa: Countless contributions'
-        + '\nBartosz Leper: Retina Display Support'
-        + '\nDariusz Dorożalski: Web Serial Support'
-        + '\nZhenlei Jia and Dariusz Dorożalski: IME text editing'
-        + '\nKen Kahn: IME support and countless other contributions'
-        + '\nJosep Ferràndiz: Video Motion Detection'
-        + '\nJoan Guillén: Countless contributions'
-        + '\nKartik Chandra: Paint Editor'
-        + '\nCarles Paredes: Initial Vector Paint Editor'
-        + '\n"Ava" Yuan Yuan, Dylan Servilla: Graphic Effects'
-        + '\nKyle Hotchkiss: Block search design'
-        + '\nBrian Broll: Many bugfixes and optimizations'
-        + '\nEckart Modrow: SciSnap! Extension'
-        + '\nBambi Brewer: Birdbrain Robotics Extension Support'
-        + '\nGlen Bull & team: TuneScope Music Extension'
-        + '\nIan Reynolds: UI Design, Event Bindings, '
-        + 'Sound primitives'
-        + '\nJadga Hügle: Icons and countless other contributions'
-        + '\nSimon Walters & Xavier Pi: MQTT extension'
-        + '\nIvan Motyashov: Initial Squeak Porting'
-        + '\nLucas Karahadian: Piano Keyboard Design'
-        + '\nDavide Della Casa: Morphic Optimizations'
-        + '\nAchal Dave: Web Audio'
-        + '\nJoe Otto: Morphic Testing and Debugging'
-        + '\n\n'
-        + 'Jahrd, Derec, and Jamet costumes are watercolor paintings'
-        + '\nby Meghan Taylor and represent characters from her'
-        + '\nwebcomic Prophecy of the Circle, licensed to us only'
-        + '\nfor use in Snap! projects. Meghan also painted the Tad'
-        + '\ncostumes, but that character is in the public domain.';
+        + '\n\nVille Caribas Lima de Medeiros - ville.medeiros@patrulhaeureka.org';
 
     for (module in modules) {
         if (Object.prototype.hasOwnProperty.call(modules, module)) {
