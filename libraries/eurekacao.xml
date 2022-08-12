@@ -5442,8 +5442,7 @@
         <code></code>
         <translations></translations>
         <inputs>
-            <input type="%s">amarelo<options>azul&#xD;amarelo&#xD;vermelho&#xD;verde&#xD;preto&#xD;laranja&#xD;branco</options>
-            </input>
+            <input type="%s">amarelo<options>azul&#xD;amarelo&#xD;vermelho&#xD;verde&#xD;preto&#xD;laranja&#xD;branco</options></input>
         </inputs>
         <script>
             <block s="doReport">
@@ -5466,8 +5465,7 @@
         <code></code>
         <translations></translations>
         <inputs>
-            <input type="%s">amarelo<options>azul&#xD;amarelo&#xD;vermelho&#xD;verde&#xD;preto&#xD;laranja&#xD;branco</options>
-            </input>
+            <input type="%s">amarelo<options>azul&#xD;amarelo&#xD;vermelho&#xD;verde&#xD;preto&#xD;laranja&#xD;branco</options></input>
         </inputs>
         <script>
             <block s="doReport">
@@ -5484,8 +5482,7 @@
         <code></code>
         <translations></translations>
         <inputs>
-            <input type="%s">amarelo<options>azul&#xD;amarelo&#xD;vermelho&#xD;verde&#xD;preto&#xD;laranja&#xD;branco</options>
-            </input>
+            <input type="%s">amarelo<options>azul&#xD;amarelo&#xD;vermelho&#xD;verde&#xD;preto&#xD;laranja&#xD;branco</options></input>
         </inputs>
         <script>
             <block s="doDeclareVariables">
@@ -6100,8 +6097,7 @@
         <code></code>
         <translations></translations>
         <inputs>
-            <input type="%s">amarelo<options>azul&#xD;amarelo&#xD;vermelho&#xD;verde&#xD;preto&#xD;laranja&#xD;branco</options>
-            </input>
+            <input type="%s">amarelo<options>azul&#xD;amarelo&#xD;vermelho&#xD;verde&#xD;preto&#xD;laranja&#xD;branco</options></input>
         </inputs>
         <script>
             <custom-block s="$brush set pen %s to %s %mult%s">
