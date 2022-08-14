@@ -3,6 +3,50 @@
         <category name="WebSockets" color="78,190,69,1"/>
         <category name="PatruLINO" color="204,31,0,1"/>
     </palette>
+    <block-definition s="PatruLINO" type="reporter" category="PatruLINO">
+        <header></header>
+        <code></code>
+        <translations></translations>
+        <inputs></inputs>
+        <script>
+            <block s="doIfElse">
+                <block s="reportOr">
+                    <block s="reportNot">
+                        <custom-block s="does var %s exist?">
+                            <l>WebSockets</l>
+                        </custom-block>
+                    </block>
+                    <block s="reportListIsEmpty">
+                        <custom-block s="var %s">
+                            <l>WebSockets</l>
+                        </custom-block>
+                    </block>
+                </block>
+                <script>
+                    <block s="doRun">
+                        <block s="reportJSFunction">
+                            <list></list>
+                            <l>alert("ERRO: Você tem que criar a conexão primeiro!");</l>
+                        </block>
+                        <list></list>
+                    </block>
+                    <block s="doReport">
+                        <l>0</l>
+                    </block>
+                </script>
+                <script>
+                    <block s="doReport">
+                        <block s="reportListItem">
+                            <l>
+                                <option>last</option>
+                            </l>
+                            <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br Conexoes WebSockets"></custom-block>
+                        </block>
+                    </block>
+                </script>
+            </block>
+        </script>
+    </block-definition>
     <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $nl Conectar no ip: %&apos;IP&apos;" type="command" category="WebSockets">
         <comment x="0" y="0" w="256" collapsed="false">Desconectar todas as conexões</comment>
         <header></header>
@@ -310,7 +354,7 @@
     </block-definition>
     <block-definition s="%&apos;PatruLINO&apos; força: %&apos;forca&apos; % ângulo: %&apos;angulo&apos; º" type="command" category="PatruLINO">
         <variables>
-            <list struct="atomic" id="191">a_EUREKA</list>
+            <list struct="atomic" id="185">a_EUREKA</list>
         </variables>
         <header></header>
         <code></code>
@@ -428,9 +472,7 @@
                     </custom-block>
                 </script>
                 <script>
-                    <block s="bubble">
-                        <l>PatruLINO DESCONECTADO!</l>
-                    </block>
+                    <custom-block s="Desconectado"></custom-block>
                 </script>
             </block>
         </script>
@@ -604,8 +646,7 @@
         <code></code>
         <translations>ca:assigna a _ el valor _&#xD;es:asignar a _ el valor _&#xD;pt:altera _ para _&#xD;de:setze var _ auf _&#xD;</translations>
         <inputs>
-            <input type="%s">
-&#xD;<options>§_getVarNamesDict</options></input>
+            <input type="%s">&#xD;&#xD;<options>§_getVarNamesDict</options></input>
             <input type="%s"></input>
         </inputs>
         <script>
@@ -624,8 +665,7 @@
         <code></code>
         <translations>pt:o valor de _&#xD;</translations>
         <inputs>
-            <input type="%s">
-&#xD;<options>§_getVarNamesDict</options></input>
+            <input type="%s">&#xD;&#xD;<options>§_getVarNamesDict</options></input>
         </inputs>
         <script>
             <block s="doReport">
@@ -700,8 +740,7 @@
         <code></code>
         <translations>ca:mostra la variable _&#xD;es:mostrar variable _&#xD;pt:mostra a variável _&#xD;de:zeige var _&#xD;</translations>
         <inputs>
-            <input type="%s">
-&#xD;<options>§_getVarNamesDict</options></input>
+            <input type="%s">&#xD;&#xD;<options>§_getVarNamesDict</options></input>
         </inputs>
         <script>
             <block s="doApplyExtension">
@@ -729,4 +768,5 @@
             </block>
         </script>
     </block-definition>
+    
 </blocks>
