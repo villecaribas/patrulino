@@ -3823,11 +3823,6 @@ IDE_Morph.prototype.settingsMenu = function () {
     );
     menu.addLine();
 
-    Process.prototype.enableJS = true;
-    this.flushBlocksCache('operators');
-    this.refreshPalette();
-    this.categories.refreshEmpty();
-
     addPreference(
         'JavaScript extensions',
         () => {
