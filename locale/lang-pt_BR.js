@@ -601,7 +601,7 @@ SnapTranslator.dict.pt_BR = {
     '%fun of %n':
         '%fun de %n',
     'pick random %n to %n':
-        'escolha um valor aleatório entre %n e %n',
+        'aleatório entre %n e %n',
     '%b and %b':
         '%b e %b',
     '%b or %b':
