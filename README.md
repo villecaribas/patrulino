@@ -7,4 +7,4 @@
 
 ** Atalho para iniciar 
 
-// "C:\Program Files\Google\Chrome\Application\chrome.exe" --disable-web-security --user-data-dir=c:\tmp --start-fullscreen http://patrulino.patrulhaeureka.org
+[[[ "C:\Program Files\Google\Chrome\Application\chrome.exe" --disable-web-security --user-data-dir=c:\tmp --start-fullscreen http://patrulino.patrulhaeureka.org]]]
