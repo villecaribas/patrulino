@@ -3823,7 +3823,6 @@ IDE_Morph.prototype.settingsMenu = function () {
     );
     menu.addLine();
 
-    Process.prototype.enableJS = true;
     addPreference(
         'JavaScript extensions',
         () => {
@@ -3844,6 +3843,8 @@ IDE_Morph.prototype.settingsMenu = function () {
             'NOTE: You will have to manually\n' +
             'sign in again to access your account.' */
     );
+
+
     addPreference(
         'Extension blocks',
         () => {

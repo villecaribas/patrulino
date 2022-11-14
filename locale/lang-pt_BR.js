@@ -222,7 +222,7 @@ SnapTranslator.dict.pt_BR = {
 
     // separadores:
     'Scripts':
-        'Roteiros',
+        'Código',
     'Costumes':
         'Fantasias',
     'Sounds':
@@ -601,7 +601,7 @@ SnapTranslator.dict.pt_BR = {
     '%fun of %n':
         '%fun de %n',
     'pick random %n to %n':
-        'escolha um valor aleatório entre %n e %n',
+        'aleatório entre %n e %n',
     '%b and %b':
         '%b e %b',
     '%b or %b':
@@ -642,7 +642,7 @@ SnapTranslator.dict.pt_BR = {
     'Variable name':
         'Nome da variável',
     'Script variable name':
-        'Nome da variável de Roteiro',
+        'Nome da variável de Código',
     'Delete a variable':
         'Remova uma variável',
 
@@ -864,7 +864,7 @@ SnapTranslator.dict.pt_BR = {
     'check to enable\nIDE animations':
         'Marque para ativar\nas animações da interface de usuário.',
     'Thread safe scripts':
-        'Roteiros seguros relativos a threads',
+        'Códigos seguros relativos a threads',
     'uncheck to allow\nscript reentrance':
         'Desmarque para permitir\nreentrância nos roteiros.',
     'check to disallow\nscript reentrance':
