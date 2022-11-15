@@ -30,6 +30,7 @@ window.patrulinows = (function () {
         },
 
         opened: function () {
+            console.log("Conexao esta: "+statusCon);
             return statusCon;
         },
 
@@ -45,4 +46,4 @@ window.patrulinows = (function () {
     };
 })();
 
-return window.patrulinows.opened();
+// return window.patrulinows.opened();
