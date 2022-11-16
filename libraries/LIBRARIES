@@ -1,5 +1,4 @@
 blankLib.xml	--- PatruLINO ---	As biblioteca abaixo são especificas para Patrulheiros.
-<!-- patrulino_blocos.xml	    PatruLINO Global	    Bibliotecas de preparação do ambiente de desenvolvimento do PatruLINO. -->
 eurekacao.xml	    EUREKAÇÃO	    Blocos utilizados na aventura EUREKAÇÃO.
 patrulino.xml	PatruLINO	Blocos utilizados comunicação do o PatruLINO.
 eureka_websocket.xml	WebSocket	Blocos para conexao via WebSockets do PatrulhaEUREKA.org.
