@@ -2,7 +2,7 @@ blankLib.xml	--- PatruLINO ---	As biblioteca abaixo são especificas para Patrul
 eurekacao.xml	    EUREKAÇÃO	    Blocos utilizados na aventura EUREKAÇÃO.
 eureka_utils	    UTILS	    Blocos uteis para a programação.
 patrulino.xml	PatruLINO	Blocos utilizados comunicação do o PatruLINO.
-tello.xml	Tello Server	Blocos para conexão com o TelloEUREKAserver (Conectar do WiFi do Tello, depois iniciar com > $ node TelloEUREKAserver.js).
+tello.xml	Tello Server	Blocos para conexão com o TelloEUREKAserver (1) Download do https://github.com/villecaribas/Tello-EUREKA (2) Conectar do WiFi do Tello (3) Iniciar com > $ node TelloEUREKAserver.js (4) conectar com o PatruLINO.
 eureka_websocket.xml	WebSocket	Blocos para conexao via WebSockets do PatrulhaEUREKA.org.
 ~	~
 ~	~
