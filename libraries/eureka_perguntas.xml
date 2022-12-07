@@ -2,7 +2,7 @@
     <palette>
         <category name="Perguntas" color="0,116,143,1"/>
     </palette>
-    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.618-255-255-255 $Perguntas-0.618-255-255-255 $nl Pergunte por janela de dialogo: Titulo %&apos;title&apos; $nl Fantasia %&apos;cst&apos; Texto do corpo %&apos;body&apos; $nl Legenda dos botões %&apos;variadic&apos; $nl Executar %&apos;cvariadic&apos;" type="command" category="Perguntas">
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.618-255-255-255 $Perguntas-0.618-255-255-255 $nl Pergunte por janela de dialogo: Titulo %'title' $nl Fantasia %'cst' Texto do corpo %'body' $nl Legenda dos botões %'variadic' $nl Executar %'cvariadic'" type="command" category="Perguntas">
         <header></header>
         <code></code>
         <translations></translations>
