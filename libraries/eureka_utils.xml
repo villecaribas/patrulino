@@ -2,14 +2,14 @@
     <palette>
         <category name="EUREKA UTILS" color="250,138,20,1"/>
     </palette>
-    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $Utils-0.681 $nl Digitar início: %&apos;inicio&apos; digitar: %&apos;frase&apos; intervalos entre digitos: %&apos;tempo&apos;" type="command" category="EUREKA UTILS">
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $Utils-0.681 $nl Soletrar início: %&apos;inicio&apos; soletrar: %&apos;frase&apos; intervalos entre digitos: %&apos;tempo&apos;" type="command" category="EUREKA UTILS">
         <header></header>
         <code></code>
         <translations></translations>
         <inputs>
-            <input type="%txt"></input>
-            <input type="%txt"></input>
-            <input type="%n"></input>
+            <input type="%txt">Sempre</input>
+            <input type="%txt">rumo ao tesouro de Bresa!!</input>
+            <input type="%n">0.02</input>
         </inputs>
         <script>
             <block s="doDeclareVariables">
@@ -171,9 +171,7 @@
         <code></code>
         <translations></translations>
         <inputs>
-            <input type="%s" readonly="true">
-                <options>§_costumesMenu</options>
-            </input>
+            <input type="%s" readonly="true"><options>§_costumesMenu</options></input>
         </inputs>
         <script>
             <block s="doRun">
