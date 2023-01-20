@@ -51,7 +51,7 @@
             </block>
         </script>
     </block-definition>
-    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ArduLINO-0.681 $nl enviar ascii: %&apos;comando&apos;" type="command" category="ArduLINO">
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ArduLINO-0.681 $nl enviar : %&apos;comando&apos;" type="command" category="ArduLINO">
         <header></header>
         <code></code>
         <translations></translations>
@@ -62,6 +62,11 @@
             <block s="doIf">
                 <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ArduLINO-0.681 %br conectado?"></custom-block>
                 <script>
+                    <block s="doDeclareVariables">
+                        <list>
+                            <l>a</l>
+                        </list>
+                    </block>
                     <block s="doIfElse">
                         <block s="reportIsA">
                             <block s="reportUnicode">
@@ -72,28 +77,50 @@
                             </l>
                         </block>
                         <script>
+                            <block s="doSetVar">
+                                <l>a</l>
+                                <block s="reportUnicode">
+                                    <block var="comando"/>
+                                </block>
+                            </block>
+                            <block s="doAddToList">
+                                <block s="reportUnicode">
+                                    <l>|</l>
+                                </block>
+                                <block var="a"/>
+                            </block>
                             <block s="doApplyExtension">
                                 <l>srl_write(port, bytes)</l>
                                 <list>
                                     <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ArduLINO-0.681 %br arduLINO porta"></custom-block>
-                                    <block s="reportUnicode">
-                                        <block var="comando"/>
-                                    </block>
+                                    <block var="a"/>
                                 </list>
                             </block>
                         </script>
                         <script>
+                            <block s="doSetVar">
+                                <l>a</l>
+                                <block s="reportNewList">
+                                    <list></list>
+                                </block>
+                            </block>
+                            <block s="doAddToList">
+                                <block s="reportUnicode">
+                                    <block var="comando"/>
+                                </block>
+                                <block var="a"/>
+                            </block>
+                            <block s="doAddToList">
+                                <block s="reportUnicode">
+                                    <l>|</l>
+                                </block>
+                                <block var="a"/>
+                            </block>
                             <block s="doApplyExtension">
                                 <l>srl_write(port, bytes)</l>
                                 <list>
                                     <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ArduLINO-0.681 %br arduLINO porta"></custom-block>
-                                    <block s="reportNewList">
-                                        <list>
-                                            <block s="reportUnicode">
-                                                <block var="comando"/>
-                                            </block>
-                                        </list>
-                                    </block>
+                                    <block var="a"/>
                                 </list>
                             </block>
                         </script>
@@ -153,7 +180,7 @@
     </block-definition>
     <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ArduLINO-0.681 $nl recebido" type="reporter" category="ArduLINO">
         <variables>
-            <list struct="atomic" id="120">buffer,result,fim,resultado</list>
+            <list struct="atomic" id="142">buffer,result,fim,resultado</list>
         </variables>
         <header></header>
         <code></code>
@@ -282,51 +309,6 @@
                     </block>
                     <list></list>
                 </block>
-            </block>
-        </script>
-    </block-definition>
-    <block-definition s="toPalavra %&apos;recebido&apos;" type="reporter" category="ArduLINO">
-        <header></header>
-        <code></code>
-        <translations></translations>
-        <inputs>
-            <input type="%l"></input>
-        </inputs>
-        <script>
-            <block s="doDeclareVariables">
-                <list>
-                    <l>resultado</l>
-                </list>
-            </block>
-            <block s="doSetVar">
-                <l>resultado</l>
-                <l></l>
-            </block>
-            <block s="doDeleteFromList">
-                <l>
-                    <option>last</option>
-                </l>
-                <block var="recebido"/>
-            </block>
-            <block s="doForEach">
-                <l>item</l>
-                <block var="recebido"/>
-                <script>
-                    <block s="doSetVar">
-                        <l>resultado</l>
-                        <block s="reportJoinWords">
-                            <list>
-                                <block var="resultado"/>
-                                <block s="reportUnicodeAsLetter">
-                                    <block var="item"/>
-                                </block>
-                            </list>
-                        </block>
-                    </block>
-                </script>
-            </block>
-            <block s="doReport">
-                <block var="resultado"/>
             </block>
         </script>
     </block-definition>
