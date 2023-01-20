@@ -6,7 +6,7 @@
         <header></header>
         <code></code>
         <translations></translations>
-        <inputs></inputs>
+        <inputs></inputs>           
         <script>
             <block s="doIf">
                 <block s="reportNot">
