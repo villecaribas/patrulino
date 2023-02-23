@@ -1,8 +1,8 @@
 blankLib.xml	--- PatrulhaEUREKA.org ---	As biblioteca abaixo são especificas para Patrulheiros.
-eureka_cores.xml	    EUREKA Cores	    Blocos de cores do PatrulhaEUREKA.org.
-eureka_utils.xml	    Utils	            Blocos de funçãoes úteis para a programação.
-eureka_perguntas.xml	Perguntas	        Perguntas de um jeito diferente.
+eureka_utils.xml	    EUREKA Utils	            Blocos de funçãoes úteis para a programação.
+eureka_perguntas.xml	EUREKA Perguntas	        Perguntas de um jeito diferente.
 eureka_voz.xml	        EUREKA Voz	        Sintetizador de voz.
+eureka_cores.xml	    EUREKA Cores	    Blocos de cores do PatrulhaEUREKA.org.
 ~	~
 ~	~
 ~	~
