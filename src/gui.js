@@ -266,7 +266,7 @@ IDE_Morph.prototype.init = function (config) {
 
     // restore saved user preferences
     this.userLanguage = 'pt_BR'; // user language preference for startup
-    this.applySavedSettings();
+    
     // additional properties:
     this.cloud = new Cloud();
     this.cloudMsg = null;
