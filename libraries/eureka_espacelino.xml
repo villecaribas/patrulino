@@ -744,7 +744,7 @@
         <code></code>
         <translations>pt:o valor de _&#xD;</translations>
         <inputs>
-            <input type="%s">&#xD;                <options>§_getVarNamesDict</options></input>
+            <input type="%s">&#xD;<options>§_getVarNamesDict</options></input>
         </inputs>
         <script>
             <block s="doReport">
@@ -1173,7 +1173,7 @@
         <code></code>
         <translations>ca:assigna a _ el valor _&#xD;es:asignar a _ el valor _&#xD;pt:altera _ para _&#xD;de:setze var _ auf _&#xD;</translations>
         <inputs>
-            <input type="%s">&#xD;                <options>§_getVarNamesDict</options></input>
+            <input type="%s">&#xD;<options>§_getVarNamesDict</options></input>
             <input type="%s"></input>
         </inputs>
         <script>
@@ -1192,7 +1192,7 @@
         <code></code>
         <translations>ca:mostra la variable _&#xD;es:mostrar variable _&#xD;pt:mostra a variável _&#xD;de:zeige var _&#xD;</translations>
         <inputs>
-            <input type="%s">&#xD;                <options>§_getVarNamesDict</options></input>
+            <input type="%s">&#xD;<options>§_getVarNamesDict</options></input>
         </inputs>
         <script>
             <block s="doApplyExtension">
@@ -1209,7 +1209,7 @@
         <code></code>
         <translations>ca:amaga la variable _&#xD;es:esconder variable _&#xD;pt:esconde a variável _&#xD;de:verstecke var _&#xD;</translations>
         <inputs>
-            <input type="%s">&#xD;                <options>§_getVarNamesDict</options></input>
+            <input type="%s">&#xD;<options>§_getVarNamesDict</options></input>
         </inputs>
         <script>
             <block s="doApplyExtension">
