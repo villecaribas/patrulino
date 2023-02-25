@@ -454,67 +454,73 @@
         <translations></translations>
         <inputs></inputs>
         <script>
-            <block s="doDeclareVariables">
+            <custom-block s="do in parallel %mult%cs">
                 <list>
-                    <l>a</l>
-                </list>
-            </block>
-            <block s="doForever">
-                <script>
-                    <block s="doSetVar">
-                        <l>a</l>
-                        <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br recebido de: %obj">
-                            <block var="ESPaceLINO"/>
-                        </custom-block>
-                    </block>
-                    <block s="doIf">
-                        <block s="reportEquals">
-                            <l>BTN</l>
-                            <custom-block s="substring of %txt from position %n to position %n inclusive">
-                                <block var="a"/>
-                                <l>1</l>
-                                <l>3</l>
-                            </custom-block>
+                    <script>
+                        <block s="doDeclareVariables">
+                            <list>
+                                <l>a</l>
+                            </list>
                         </block>
-                        <script>
-                            <block s="doDeclareVariables">
-                                <list>
-                                    <l>botao</l>
-                                    <l>evento</l>
-                                </list>
-                            </block>
-                            <block s="doSetVar">
-                                <l>botao</l>
-                                <custom-block s="substring of %txt from position %n to position %n inclusive">
-                                    <block var="a"/>
-                                    <l>1</l>
-                                    <l>4</l>
-                                </custom-block>
-                            </block>
-                            <block s="doSetVar">
-                                <l>evento</l>
-                                <custom-block s="substring of %txt after %txt">
-                                    <block var="a"/>
-                                    <block var="botao"/>
-                                </custom-block>
-                            </block>
-                            <block s="doBroadcast">
-                                <block var="botao"/>
-                                <list>
-                                    <l>
-                                        <option>all</option>
-                                    </l>
-                                    <block var="evento"/>
-                                </list>
-                                <comment w="167" collapsed="false">Capturar o evento &#xD;BTN1(click/duploclick/clicklongo)&#xD;</comment>
-                            </block>
-                            <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br esvaziarBuffer %obj">
-                                <block var="ESPaceLINO"/>
-                            </custom-block>
-                        </script>
-                    </block>
-                </script>
-            </block>
+                        <block s="doForever">
+                            <script>
+                                <block s="doSetVar">
+                                    <l>a</l>
+                                    <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br recebido de: %obj">
+                                        <block var="ESPaceLINO"/>
+                                    </custom-block>
+                                </block>
+                                <block s="doIf">
+                                    <block s="reportEquals">
+                                        <l>BTN</l>
+                                        <custom-block s="substring of %txt from position %n to position %n inclusive">
+                                            <block var="a"/>
+                                            <l>1</l>
+                                            <l>3</l>
+                                        </custom-block>
+                                    </block>
+                                    <script>
+                                        <block s="doDeclareVariables">
+                                            <list>
+                                                <l>botao</l>
+                                                <l>evento</l>
+                                            </list>
+                                        </block>
+                                        <block s="doSetVar">
+                                            <l>botao</l>
+                                            <custom-block s="substring of %txt from position %n to position %n inclusive">
+                                                <block var="a"/>
+                                                <l>1</l>
+                                                <l>4</l>
+                                            </custom-block>
+                                        </block>
+                                        <block s="doSetVar">
+                                            <l>evento</l>
+                                            <custom-block s="substring of %txt after %txt">
+                                                <block var="a"/>
+                                                <block var="botao"/>
+                                            </custom-block>
+                                        </block>
+                                        <block s="doBroadcast">
+                                            <block var="botao"/>
+                                            <list>
+                                                <l>
+                                                    <option>all</option>
+                                                </l>
+                                                <block var="evento"/>
+                                            </list>
+                                            <comment w="167" collapsed="false">Capturar o evento &#xD;BTN1(click/duploclick/clicklongo)&#xD;</comment>
+                                        </block>
+                                        <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br esvaziarBuffer %obj">
+                                            <block var="ESPaceLINO"/>
+                                        </custom-block>
+                                    </script>
+                                </block>
+                            </script>
+                        </block>
+                    </script>
+                </list>
+            </custom-block>
         </script>
     </block-definition>
     <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl potenciometro %&apos;pot&apos;" type="reporter" category="PatruLINO ESPaceLINO">
@@ -738,8 +744,7 @@
         <code></code>
         <translations>pt:o valor de _&#xD;</translations>
         <inputs>
-            <input type="%s">
-                <options>§_getVarNamesDict</options></input>
+            <input type="%s">&#xD;                <options>§_getVarNamesDict</options></input>
         </inputs>
         <script>
             <block s="doReport">
@@ -1168,8 +1173,7 @@
         <code></code>
         <translations>ca:assigna a _ el valor _&#xD;es:asignar a _ el valor _&#xD;pt:altera _ para _&#xD;de:setze var _ auf _&#xD;</translations>
         <inputs>
-            <input type="%s">
-                <options>§_getVarNamesDict</options></input>
+            <input type="%s">&#xD;                <options>§_getVarNamesDict</options></input>
             <input type="%s"></input>
         </inputs>
         <script>
@@ -1188,8 +1192,7 @@
         <code></code>
         <translations>ca:mostra la variable _&#xD;es:mostrar variable _&#xD;pt:mostra a variável _&#xD;de:zeige var _&#xD;</translations>
         <inputs>
-            <input type="%s">
-                <options>§_getVarNamesDict</options></input>
+            <input type="%s">&#xD;                <options>§_getVarNamesDict</options></input>
         </inputs>
         <script>
             <block s="doApplyExtension">
@@ -1206,8 +1209,7 @@
         <code></code>
         <translations>ca:amaga la variable _&#xD;es:esconder variable _&#xD;pt:esconde a variável _&#xD;de:verstecke var _&#xD;</translations>
         <inputs>
-            <input type="%s">
-                <options>§_getVarNamesDict</options></input>
+            <input type="%s">&#xD;                <options>§_getVarNamesDict</options></input>
         </inputs>
         <script>
             <block s="doApplyExtension">
@@ -1220,7 +1222,7 @@
     </block-definition>
     <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $nl criar conexao %&apos;ip&apos;" type="reporter" category="EUREKA WebSocket">
         <variables>
-            <list struct="atomic" id="849">a</list>
+            <list struct="atomic" id="854">a</list>
         </variables>
         <header></header>
         <code></code>
@@ -1513,64 +1515,204 @@
         <translations></translations>
         <inputs></inputs>
         <script>
+            <custom-block s="do in parallel %mult%cs">
+                <list>
+                    <script>
+                        <block s="doDeclareVariables">
+                            <list>
+                                <l>a</l>
+                            </list>
+                        </block>
+                        <block s="doForever">
+                            <script>
+                                <block s="doSetVar">
+                                    <l>a</l>
+                                    <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br recebido de: %obj">
+                                        <block var="ESPaceLINO"/>
+                                    </custom-block>
+                                </block>
+                                <block s="doIf">
+                                    <block s="reportEquals">
+                                        <l>IR_1</l>
+                                        <custom-block s="substring of %txt from position %n to position %n inclusive">
+                                            <block var="a"/>
+                                            <l>1</l>
+                                            <l>4</l>
+                                        </custom-block>
+                                    </block>
+                                    <script>
+                                        <block s="doDeclareVariables">
+                                            <list>
+                                                <l>IR_ID</l>
+                                                <l>comando</l>
+                                            </list>
+                                        </block>
+                                        <block s="doSetVar">
+                                            <l>IR_ID</l>
+                                            <custom-block s="substring of %txt from position %n to position %n inclusive">
+                                                <block var="a"/>
+                                                <l>1</l>
+                                                <l>4</l>
+                                            </custom-block>
+                                        </block>
+                                        <block s="doSetVar">
+                                            <l>comando</l>
+                                            <custom-block s="substring of %txt after %txt">
+                                                <block var="a"/>
+                                                <block var="IR_ID"/>
+                                            </custom-block>
+                                        </block>
+                                        <block s="doBroadcast">
+                                            <block var="IR_ID"/>
+                                            <list>
+                                                <l>
+                                                    <option>all</option>
+                                                </l>
+                                                <block var="comando"/>
+                                            </list>
+                                        </block>
+                                        <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br esvaziarBuffer %obj">
+                                            <block var="ESPaceLINO"/>
+                                        </custom-block>
+                                    </script>
+                                </block>
+                            </script>
+                        </block>
+                    </script>
+                </list>
+            </custom-block>
+        </script>
+    </block-definition>
+    <block-definition s="do in parallel %&apos;actions&apos; and wait" type="command" category="control">
+        <comment x="0" y="0" w="238.66666666666666" collapsed="false">Accepts any number of scripts as inputs.  Launches a separate thread for each of them, so they are done in parallel, then waits for them all to complete.&#xD;&#xD;This doesn&apos;t change how the Snap! scheduler works; the threads are not truly asynchronous. And there is no increase in speed.  Rather, the point of this block is to allow starting synchronized but independent scripts.</comment>
+        <header></header>
+        <code></code>
+        <translations>pt:executa _ em paralelo e espera&#xD;ca:executa en paral·lel _ i espera&#xD;</translations>
+        <inputs>
+            <input type="%mult%cs"></input>
+        </inputs>
+        <script>
             <block s="doDeclareVariables">
                 <list>
-                    <l>a</l>
+                    <l>threads</l>
                 </list>
             </block>
-            <block s="doForever">
-                <script>
-                    <block s="doSetVar">
-                        <l>a</l>
-                        <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br recebido de: %obj">
-                            <block var="ESPaceLINO"/>
-                        </custom-block>
+            <block s="doSetVar">
+                <l>threads</l>
+                <block s="reportMap">
+                    <block s="reifyReporter">
+                        <autolambda>
+                            <block s="evaluate">
+                                <block s="reifyScript">
+                                    <script>
+                                        <block s="doDeclareVariables">
+                                            <list>
+                                                <l>is running?</l>
+                                            </list>
+                                        </block>
+                                        <block s="doSetVar">
+                                            <l>is running?</l>
+                                            <block s="reportBoolean">
+                                                <l>
+                                                    <bool>true</bool>
+                                                </l>
+                                            </block>
+                                        </block>
+                                        <block s="fork">
+                                            <block s="reifyScript">
+                                                <script>
+                                                    <block s="doRun">
+                                                        <block var="each script"/>
+                                                        <list></list>
+                                                    </block>
+                                                    <block s="doSetVar">
+                                                        <l>is running?</l>
+                                                        <block s="reportBoolean">
+                                                            <l>
+                                                                <bool>false</bool>
+                                                            </l>
+                                                        </block>
+                                                    </block>
+                                                </script>
+                                                <list></list>
+                                            </block>
+                                            <list></list>
+                                        </block>
+                                        <block s="doReport">
+                                            <block s="reifyScript">
+                                                <script>
+                                                    <block s="doReport">
+                                                        <block var="is running?"/>
+                                                    </block>
+                                                </script>
+                                                <list></list>
+                                            </block>
+                                        </block>
+                                    </script>
+                                    <list></list>
+                                </block>
+                                <list></list>
+                            </block>
+                        </autolambda>
+                        <list>
+                            <l>each script</l>
+                        </list>
                     </block>
-                    <block s="doIf">
-                        <block s="reportEquals">
-                            <l>IR_1</l>
-                            <custom-block s="substring of %txt from position %n to position %n inclusive">
-                                <block var="a"/>
-                                <l>1</l>
-                                <l>4</l>
-                            </custom-block>
+                    <block var="actions"/>
+                </block>
+            </block>
+            <block s="doWaitUntil">
+                <block s="reportListIsEmpty">
+                    <block s="reportKeep">
+                        <block s="reifyPredicate">
+                            <autolambda>
+                                <block s="evaluate">
+                                    <block var="test"/>
+                                    <list></list>
+                                </block>
+                            </autolambda>
+                            <list>
+                                <l>test</l>
+                            </list>
                         </block>
-                        <script>
-                            <block s="doDeclareVariables">
-                                <list>
-                                    <l>IR_ID</l>
-                                    <l>comando</l>
-                                </list>
-                            </block>
-                            <block s="doSetVar">
-                                <l>IR_ID</l>
-                                <custom-block s="substring of %txt from position %n to position %n inclusive">
-                                    <block var="a"/>
-                                    <l>1</l>
-                                    <l>4</l>
-                                </custom-block>
-                            </block>
-                            <block s="doSetVar">
-                                <l>comando</l>
-                                <custom-block s="substring of %txt after %txt">
-                                    <block var="a"/>
-                                    <block var="IR_ID"/>
-                                </custom-block>
-                            </block>
-                            <block s="doBroadcast">
-                                <block var="IR_ID"/>
-                                <list>
-                                    <l>
-                                        <option>all</option>
-                                    </l>
-                                    <block var="comando"/>
-                                </list>
-                            </block>
-                            <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br esvaziarBuffer %obj">
-                                <block var="ESPaceLINO"/>
-                            </custom-block>
-                        </script>
+                        <block var="threads"/>
                     </block>
+                </block>
+            </block>
+        </script>
+    </block-definition>
+    <block-definition s="do in parallel %&apos;actions&apos;" type="command" category="control">
+        <comment x="0" y="0" w="238.66666666666666" collapsed="false">Accepts any number of scripts as inputs.  Launches a separate thread for each of them, so they are done in parallel, then continues with the current script while they all run.&#xD;&#xD;This doesn&apos;t change how the Snap! scheduler works; the threads are not truly asynchronous. And there is no increase in speed.  Rather, the point of this block is to allow starting synchronized but independent scripts.</comment>
+        <header></header>
+        <code></code>
+        <translations>pt:executa _ em paralelo&#xD;ca:executa en paral·lel _&#xD;</translations>
+        <inputs>
+            <input type="%mult%cs"></input>
+        </inputs>
+        <script>
+            <block s="doIf">
+                <block s="reportGreaterThan">
+                    <block s="reportListAttribute">
+                        <l>
+                            <option>length</option>
+                        </l>
+                        <block var="actions"/>
+                    </block>
+                    <l>0</l>
+                </block>
+                <script>
+                    <block s="fork">
+                        <block s="reportListItem">
+                            <l>1</l>
+                            <block var="actions"/>
+                        </block>
+                        <list></list>
+                    </block>
+                    <custom-block s="do in parallel %mult%cs">
+                        <block s="reportCDR">
+                            <block var="actions"/>
+                        </block>
+                    </custom-block>
                 </script>
             </block>
         </script>
