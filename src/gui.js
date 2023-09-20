@@ -91,7 +91,7 @@ modules.gui = '2023-September-14';
 
 // Declarations
 
-var SnapVersion = '9.0.6';
+var SnapVersion = '1.0';
 
 var IDE_Morph;
 var ProjectDialogMorph;
@@ -1449,7 +1449,7 @@ IDE_Morph.prototype.createControlBar = function () {
         scene = myself.scenes.at(1) !== myself.scene ?
                 ' (' + myself.scene.name + ')' : '';
         name = (myself.getProjectName() || localize('untitled'));
-        document.title = "Snap! " +
+        document.title = "PatruLINO IDE " +
             (myself.getProjectName() ? name : SnapVersion);
         txt = new StringMorph(
             prefix + name +  scene + suffix,
