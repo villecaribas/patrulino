@@ -366,7 +366,7 @@ SnapTranslator.dict.pt_BR = {
     "Some standard functions on lists (reverse, sort, etc.)": "",
     "Sound": "Som",
     "Sound Recorder": "",
-    "Sounds": "",
+    "Sounds": "Sons",
     "Sprite": "ator",
     "Sprite Nesting": "Atores aninhados",
     "Stage": "palco",
