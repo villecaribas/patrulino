@@ -1209,7 +1209,7 @@ SnapTranslator.dict.pt_BR = {
     "stage image": "",
     "stamp": "carimbe",
     "standard settings": "",
-    "stay signed in on this computer until logging out": "manter-me autenticado neste computador até que saia",
+    "stay signed in on this computer until logging out": "manter-me autenticado neste computador\naté que saia",
     "stepForward": "",
     "stick this morph to another one": "",
     "stick to": "",
