@@ -631,7 +631,7 @@ SnapTranslator.dict.pt_BR = {
     "clones": "",
     "closedBrush": "",
     "cloud": "",
-    "cloud unavailable without a web server.": "",
+    "cloud unavailable without a web server.": "nuvem indisponível sem web server",
     "cloudGradient": "",
     "cloudOutline": "",
     "code": "",

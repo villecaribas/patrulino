@@ -7655,7 +7655,7 @@ IDE_Morph.prototype.initializeCloud = function () {
         null,
         null,
         null,
-        'stay signed in on this computer\nuntil logging out',
+        'stay signed in on this computer until logging out',
         world,
         this.cloudIcon(),
         this.cloudMsg
