@@ -1192,7 +1192,7 @@ SnapTranslator.dict.pt_BR = {
     "snap": "captura instantânea",
     "sorted": "",
     "sound": "som",
-    "sounds": "",
+    "sounds": "sons",
     "space": "espaço",
     "specify the distance the hand has to move before it picks up an object": "",
     "spectrum": "espectro",
