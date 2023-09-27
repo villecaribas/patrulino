@@ -2419,33 +2419,33 @@ DialogBoxMorph.prototype.promptCredentials = function (
             inp => !inp.getValue()
         );
         if (empty) {
-            indicate(empty, 'please fill out\nthis field');
+            indicate(empty, 'please fill out this field');
             return false;
         }
         if (purpose === 'signup') {
             if (usr.getValue().length < 4) {
-                indicate(usr, 'User name must be four\ncharacters or longer');
+                indicate(usr, 'User name must be four characters or longer');
                 return false;
             }
             if (em.indexOf(' ') > -1 || em.indexOf('@') === -1
                     || em.indexOf('.') === -1 || em.length < 5) {
-                indicate(eml, 'please provide a valid\nemail address');
+                indicate(eml, 'please provide a valid email address');
                 return false;
             }
         }
         if (purpose === 'changePassword' || purpose === 'signup') {
             if (pw1.getValue().length < 6) {
-                indicate(pw1, 'password must be six\ncharacters or longer');
+                indicate(pw1, 'password must be six characters or longer');
                 return false;
             }
             if (pw1.getValue() !== pw2.getValue()) {
-                indicate(pw2, 'passwords do\nnot match');
+                indicate(pw2, 'passwords do not match');
                 return false;
             }
         }
         if (purpose === 'signup') {
             if (!agree) {
-                indicate(chk, 'please agree to\nthe TOS');
+                indicate(chk, 'please agree to the TOS');
                 return false;
             }
         }
