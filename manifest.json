@@ -1,6 +1,6 @@
 {
-  "name": "PatruLINO!",
-  "short_name": "PatruLINO!",
+  "name": "PatruLINO IDE!!",
+  "short_name": "PatruLINO IDE!!",
   "icons": [{
       "src": "img/snap-icon-72.png",
       "sizes": "72x72",
@@ -44,7 +44,7 @@
       "type": "image/png"
     }],
   "lang": "pt-BR",
-  // "start_url": "./snap.html",
+  "start_url": "./snap.html",
   "display": "standalone",
   "background_color": "white",
   "theme_color": "white"
