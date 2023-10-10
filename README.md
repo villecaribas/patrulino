@@ -1,3 +1,6 @@
+![PatruLINO Logo](img/PatruLINO_ICON.png)
+`"C:\Program Files\Google\Chrome\Application\chrome_proxy.exe" --disable-web-security --allow-running-insecure-content --user-data-dir=c:\tmp --start-fullscreen https://patrulino.patrulhaeureka.org`
+
 ![Snap! Logo](src/snap_logo_sm.png)
 # Snap<em>!</em> Build Your Own Blocks
 
