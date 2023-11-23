@@ -20,6 +20,11 @@ eureka_websocket.xml	EUREKA WebSocket	Blocos para conexao via WebSockets do Patr
 ~	~
 ~	~
 ~	~
+eureka_ia.xml	EUREKA IA	Inteligência Artificial do PatrulhaEUREKA.org
+~	~
+~	~
+~	~
+
 blankLib.xml	--- Snap Berkeley Padrão ---	As bibliotecas abaixo são as padrão do Snap
 iteration-composition.xml	Iteration, composition	Traditional loop constructs (while, until, etc.) plus the Lisp "named let" (a generalization of FOR) plus functional iteration (repeated invocation of a function) and function composition.
 list-utilities.xml	List utilities	Some standard functions on lists (reverse, sort, etc.)
