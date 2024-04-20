@@ -17,6 +17,7 @@ eureka_tello.xml	            EUREKA TELLO	        Blocos para conexão com o Tel
 ~	~
 ~	~
 eureka_websocket.xml	EUREKA WebSocket	Blocos para conexao via WebSockets do PatrulhaEUREKA.org.
+eureka_websocket_ii.xml	EUREKA WebSocket II	Conexao WebSocket simplificado do PatrulhaEUREKA.org.
 ~	~
 ~	~
 ~	~
