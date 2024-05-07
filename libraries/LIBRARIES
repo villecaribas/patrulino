@@ -13,6 +13,11 @@ eureka_espacelino_ii.xml	PatruLINO ESPaceLINO II	Bloco para programar o ESPaceLI
 ~	~
 ~	~
 ~	~
+eureka_lino.xml	LINO	Blocos para comandar o LINO
+~	~
+~	~
+~	~
+
 eureka_tello.xml	            EUREKA TELLO	        Blocos para conexão com o TelloEUREKAserver 1) Download do https://github.com/villecaribas/Tello-EUREKA 2) Conectar do WiFi do Tello 3) Iniciar com > $ node TelloEUREKAserver.js 4) conectar com o PatruLINO.
 ~	~
 ~	~
