@@ -9,6 +9,7 @@ eureka_cores.xml	    EUREKA Cores	    Blocos de cores do PatrulhaEUREKA.org.
 eureka_ardulino.xml	    PatruLINO ArduLINO	    Blocos para conexao do o ArduLINO.
 patrulino_t-display.xml	PatruLINO T-Display	    Blocos utilizados comunicação do o PatruLINO.
 eureka_espacelino.xml	PatruLINO ESPaceLINO	Bloco para programar o ESPaceLINO.
+eureka_espacelino_ii.xml	PatruLINO ESPaceLINO II	Bloco para programar o ESPaceLINO usando a biblioteca WebSockt II.
 ~	~
 ~	~
 ~	~
