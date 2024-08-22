@@ -52,7 +52,7 @@ SnapTranslator.dict.pt_BR = {
     "Audio Comp": "",
     "August": "Agosto",
     "Back...": "Para trás…",
-    "Backgrounds": "Paisagems",
+    "Backgrounds": "Paisagens",
     "Backup failed. This cannot be undone, proceed anyway?": "",
     "Bar charts": "",
     "Bignums, rationals, complex #s": "",
