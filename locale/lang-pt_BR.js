@@ -1140,7 +1140,7 @@ SnapTranslator.dict.pt_BR = {
     "sensor demo": "",
     "set _ effect to _": "mude o efeito _ para _",
     "set _ of block _ to _": "define o/a _ do bloco _ para _",
-    "set _ to _": "mude _ para _",
+    "set _ to _": "variável _ recebe _",
     "set background _ to _": "",
     "set background color to _": "",
     "set balance to _": "mude o balanço para _",
