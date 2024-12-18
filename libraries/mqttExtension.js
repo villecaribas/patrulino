@@ -1,7 +1,7 @@
 /* MQTTExtension.js - add MQTT protocol to Snap!
  * ===========================================
  * MQTT library developed by Xavier Pi
- * Modified by Simon Walters
+ * Modified by Simon Walters and Xavier Pi
  * and converted into an extension
  * November 2021
  * V1.1 - change back to using standard naming e.g payload not message
@@ -12,6 +12,10 @@
  * V1.5.2 20Jan23 change subscribe default to be text and accept boolean to change to binary (corrected 18:23)
  * V1.5.3 22Jan23 make old subscribe block be compatible with new extension code
  * V1.5.4 15Feb22 When returning text to Snap!, restore explicitly making payload into a string.  Also restore cymplecy.uk instead of simplesi.cloud
+ * V1.6.0 13Oct2023 If binary options selected then pub expects payload to be a flat List (values 0-255) and sub will return a List
+ * V1.6.1 05Jan2024 "binary" replaced by "buffer mode"
+ * V1.6.2 17Jan2023 bugfix -remove automatic convert JSON to Snap! list
+ * V1.7.0 12Jul2024 Add in maximum QoS for subscribe
  */
 
 
@@ -131,8 +135,17 @@ SnapExtensions.primitives.set(
 	function (broker,topic,callback,options) {
 		/* github.com/pixavier/mqtt4snap  */
 		/* adapted into extension by cymplecy 26Nov21 */
+        /* modified 13OCt2023 by cymplecy to return binary data as a list */
+		/* modified 11Jul2024 by pixavier to add paramete	 for qos */
 		function log(txt) {
 			console.log('mqt_sub: ', new Date().toString(), txt);
+		}
+
+		function arrayToList(data) {
+			if (!Array.isArray(data)) {
+				return data;
+			}
+			return new List(data.map((x) => arrayToList(x)));
 		}
 
 		broker = broker ? broker.trim() : '';
@@ -141,17 +154,12 @@ SnapExtensions.primitives.set(
 			broker = broker.substr(broker.indexOf('|') + 1);
 		}
 		
-		//console.log(options);
-		if (options == '') {
-			options = "{\"mode\":true}" 
-		}
+		topic = topic ? topic.trim() : topic;
 		options = JSON.parse(options);
 		const opts = {};
-		if (options['mode']) {
-			opts.mode = options['mode'];
+		if (options['qos']) {
+			opts.qos = Number(options['qos']);
 		}
-
-		topic = topic ? topic.trim() : topic;
 
 		let stage =  this.parentThatIsA(StageMorph);
 
@@ -167,14 +175,13 @@ SnapExtensions.primitives.set(
 			throw new Error('No connection to broker '+broker);
 		}
 
-		stage.mqtt[brokerKey].subscribe(topic);
-
+		stage.mqtt[brokerKey].subscribe(topic, opts);
+		
 		let mqttListener = function (aTopic, payload) {
 			if (!mqttWildcard(aTopic, topic)) {return;}
 			let p = new Process();
-			//console.log(opts.mode);
-			if (opts.mode && (opts.mode == true || opts.mode == 'binary')) {
-				newPayload = payload.reduce( (res, val) => res+String.fromCharCode( val), "");
+			if (options['mode'] && options['mode'] == true) {
+				newPayload = new List(payload);
 			} else {
 				newPayload = payload.toString();
 			}
@@ -214,12 +221,14 @@ SnapExtensions.primitives.set(
 	}
 );
 
+
 SnapExtensions.primitives.set(
 	'mqt_pub(broker,topic,payload,options)',
 	function (broker,topic,payload,options) {
 		/* original code from github.com/pixavier/mqtt4snap  */
 		/* adapted into extension by cymplecy 26Nov21 */
-		/* modified 5 Sep2021 by cymplecy to add parameters for qos and retain flag */
+		/* modified 05Sep2021 by cymplecy to add parameters for qos and retain flag */
+        /* modified 13Oct2023 by cymplecy to handle binary data in a list */
 		function log(txt) {
 			console.log('mqt_pub: ', new Date().toString(), txt);
 		}
@@ -242,6 +251,9 @@ SnapExtensions.primitives.set(
 			opts.retain = options["retain"];
 		}
 
+		//console.log(payload.contents);
+		//console.log(new Uint8Array(payload.contents));
+
 		let stage =  this.parentThatIsA(StageMorph);
 
 		if (!('mqtt' in stage)){
@@ -256,11 +268,13 @@ SnapExtensions.primitives.set(
 
 		//let prefix = window.location.protocol == 'https:'?'wss':'ws';
 		//let wsbroker = prefix+'://'+broker;
-
-
 		try{
 			let client = stage.mqtt[brokerKey];
-			client.publish(topic, '' + payload, opts);
+			if (options['mode'] && options['mode'] == true) {
+				client.publish(topic, new Uint8Array(payload.asArray()), opts);
+			} else {
+				client.publish(topic, '' + payload, opts);
+			}
 			//console.log(opts)
 		} catch(e) {
 			log('Failed to publish payload ' + payload);
@@ -347,4 +361,3 @@ SnapExtensions.primitives.set(
 		}
 	}
 );
-

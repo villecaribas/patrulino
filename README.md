@@ -1,7 +1,3 @@
-![PatruLINO Logo](img/snap_logo_sm_400px.png)
-
-`"C:\Program Files\Google\Chrome\Application\chrome_proxy.exe" --disable-web-security --allow-running-insecure-content --user-data-dir=c:\tmp --start-fullscreen https://patrulino.patrulhaeureka.org`
-
 ![Snap! Logo](src/snap_logo_sm.png)
 # Snap<em>!</em> Build Your Own Blocks
 
@@ -45,7 +41,7 @@ The definitive source of how to use Snap! is the [Snap! Manual](help/SnapManual.
 _Please read the [Contribution Guidelines](docs/CONTRIBUTING.md) before making an issue or pull request. Thanks!_
 
 ## License
-Copyright (C) 2008-2023 by Jens Mönig and Brian Harvey
+Copyright (C) 2008-2024 by Jens Mönig and Brian Harvey
 
 Snap! is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as

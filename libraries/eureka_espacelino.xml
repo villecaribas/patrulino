@@ -1,1 +1,1204 @@
-<blocks app="Snap! 9.0, https://snap.berkeley.edu" version="2"><palette><category name="PatruLINO ESPaceLINO II" color="81,157,214,1"/><category name="EUREKA WebSocket" color="16,179,0,1"/></palette><block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl conectar ip:porta %&apos;ipporta&apos;" type="reporter" category="PatruLINO ESPaceLINO II"><variables><list struct="atomic" id="3">conexao_</list></variables><header></header><code></code><translations></translations><inputs><input type="%txt">127.0.0.1:2023</input></inputs><script><block s="doSetVar"><l>conexao_</l><custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 %br abrir conexão com ws:// %s"><block var="ipporta"/></custom-block></block><block s="doDeclareVariables"><list><l>aux</l></list></block><block s="doWarp"><script><custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 %br quando receber de %obj %upvar faça %cs"><block var="conexao_"/><l>dados</l><script><block s="doSetVar"><l>aux</l><block s="reportListItem"><l>2</l><block s="reportTextSplit"><block var="dados"/><l>|</l></block></block></block><block s="doIf"><block s="reportVariadicEquals"><list><l>SRV_1</l><custom-block s="substring of %txt from position %n to position %n inclusive"><block var="aux"/><l>1</l><l>5</l></custom-block></list></block><script><block s="doBroadcast"><l>SERVO_1</l><list><l><option>all</option></l><custom-block s="substring of %txt after %txt"><block var="aux"/><l>SRV_1</l></custom-block></list></block></script><list><block s="reportVariadicEquals"><list><l>SRV_2</l><custom-block s="substring of %txt from position %n to position %n inclusive"><block var="aux"/><l>1</l><l>5</l></custom-block></list></block><script><block s="doBroadcast"><l>SERVO_2</l><list><l><option>all</option></l><custom-block s="substring of %txt after %txt"><block var="aux"/><l>SRV_2</l></custom-block></list></block></script><block s="reportVariadicEquals"><list><l>SRV_3</l><custom-block s="substring of %txt from position %n to position %n inclusive"><block var="aux"/><l>1</l><l>5</l></custom-block></list></block><script><block s="doBroadcast"><l>SERVO_3</l><list><l><option>all</option></l><custom-block s="substring of %txt after %txt"><block var="aux"/><l>SRV_3</l></custom-block></list></block></script><block s="reportVariadicEquals"><list><l>SRV_4</l><custom-block s="substring of %txt from position %n to position %n inclusive"><block var="aux"/><l>1</l><l>5</l></custom-block></list></block><script><block s="doBroadcast"><l>SERVO_4</l><list><l><option>all</option></l><custom-block s="substring of %txt after %txt"><block var="aux"/><l>SRV_4</l></custom-block></list></block></script><block s="reportVariadicEquals"><list><l>UTS_</l><custom-block s="substring of %txt from position %n to position %n inclusive"><block var="aux"/><l>1</l><l>4</l></custom-block></list></block><script><block s="doBroadcast"><l>ULTRASONICO</l><list><l><option>all</option></l><custom-block s="substring of %txt after %txt"><block var="aux"/><l>UTS_</l></custom-block></list></block></script><block s="reportVariadicEquals"><list><l>PO1_</l><custom-block s="substring of %txt from position %n to position %n inclusive"><block var="aux"/><l>1</l><l>4</l></custom-block></list></block><script><block s="doBroadcast"><l>POTENCIOMETRO_1</l><list><l><option>all</option></l><custom-block s="substring of %txt after %txt"><block var="aux"/><l>PO1_</l></custom-block></list></block></script><block s="reportVariadicEquals"><list><l>PO2_</l><custom-block s="substring of %txt from position %n to position %n inclusive"><block var="aux"/><l>1</l><l>4</l></custom-block></list></block><script><block s="doBroadcast"><l>POTENCIOMETRO_2</l><list><l><option>all</option></l><custom-block s="substring of %txt after %txt"><block var="aux"/><l>PO2_</l></custom-block></list></block></script><block s="reportVariadicEquals"><list><l>BT0_</l><custom-block s="substring of %txt from position %n to position %n inclusive"><block var="aux"/><l>1</l><l>4</l></custom-block></list></block><script><block s="doBroadcast"><l>BOTAO_0</l><list><l><option>all</option></l><custom-block s="substring of %txt after %txt"><block var="aux"/><l>BT0_</l></custom-block></list></block></script><block s="reportVariadicEquals"><list><l>LED1</l><custom-block s="substring of %txt from position %n to position %n inclusive"><block var="aux"/><l>1</l><l>4</l></custom-block></list></block><script><block s="doBroadcast"><l>LED_1</l><list><l><option>all</option></l><block s="reportVariadicEquals"><list><custom-block s="substring of %txt after %txt"><block var="aux"/><l>LED1</l></custom-block><l>1</l></list></block></list></block></script><block s="reportVariadicEquals"><list><l>LED2</l><custom-block s="substring of %txt from position %n to position %n inclusive"><block var="aux"/><l>1</l><l>4</l></custom-block></list></block><script><block s="doBroadcast"><l>LED_2</l><list><l><option>all</option></l><block s="reportVariadicEquals"><list><custom-block s="substring of %txt after %txt"><block var="aux"/><l>LED2</l></custom-block><l>1</l></list></block></list></block></script><block s="reportVariadicEquals"><list><l>LED3</l><custom-block s="substring of %txt from position %n to position %n inclusive"><block var="aux"/><l>1</l><l>4</l></custom-block></list></block><script><block s="doBroadcast"><l>LED_3</l><list><l><option>all</option></l><block s="reportVariadicEquals"><list><custom-block s="substring of %txt after %txt"><block var="aux"/><l>LED3</l></custom-block><l>1</l></list></block></list></block></script><l><bool>true</bool></l><script><block s="doBroadcast"><l>ECHO</l><list><l><option>all</option></l><block var="dados"/></list></block></script></list></block></script></custom-block></script></block><block s="doReport"><block var="conexao_"/></block></script></block-definition><block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; desconectar" type="command" category="PatruLINO ESPaceLINO II"><header></header><code></code><translations></translations><inputs><input type="%obj"></input></inputs><script><custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 %br fechar conexao %obj"><block var="conexao"/></custom-block></script></block-definition><block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; motores mA: %&apos;mA&apos; % mB: %&apos;mB&apos; %" type="command" category="PatruLINO ESPaceLINO II"><header></header><code></code><translations></translations><inputs><input type="%obj"></input><input type="%n">100</input><input type="%n">100</input></inputs><script><custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 %br enviar %s para conexão %obj"><block s="reportJoinWords"><list><l>m1g</l><block var="mA"/><l>:</l><block var="mB"/></list></block><block var="conexao"/></custom-block></script></block-definition><block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; motores ângulo: %&apos;angulo&apos; º força: %&apos;forca&apos; %" type="command" category="PatruLINO ESPaceLINO II"><header></header><code></code><translations></translations><inputs><input type="%obj"></input><input type="%n">90<options>§_directionDialMenu</options></input><input type="%n">100</input></inputs><script><custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 %br enviar %s para conexão %obj"><block s="reportJoinWords"><list><l>m1f</l><block var="angulo"/><l>:</l><block var="forca"/></list></block><block var="conexao"/></custom-block></script></block-definition><block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; Servo %&apos;servo&apos; para ângulo %&apos;angulo&apos; º" type="command" category="PatruLINO ESPaceLINO II"><header></header><code></code><translations></translations><inputs><input type="%obj"></input><input type="%n">1<options>1&#xD;2</options></input><input type="%n">90</input></inputs><script><block s="doSetVar"><l>angulo</l><block s="reportModulus"><block var="angulo"/><l>181</l></block></block><custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 %br enviar %s para conexão %obj"><block s="reportJoinWords"><list><l>s</l><block var="servo"/><l>v</l><block var="angulo"/></list></block><block var="conexao"/></custom-block></script></block-definition><block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; Ângulo do servo %&apos;servo&apos; ? $nl $Aguarde-0.618-0-0-0 $mensagem.:-0.618-0-0-0 $SERVO_&lt;servo&gt;-0.618-0-0-0" type="command" category="PatruLINO ESPaceLINO II"><header></header><code></code><translations></translations><inputs><input type="%obj"></input><input type="%n">1<options>1&#xD;2&#xD;3&#xD;4</options></input></inputs><script><custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 %br enviar %s para conexão %obj"><block s="reportJoinWords"><list><l>s</l><block var="servo"/><l>a</l></list></block><block var="conexao"/></custom-block></script></block-definition><block-definition s="multiline %&apos;text&apos;" type="reporter" category="operators"><header></header><code></code><translations>pt:o texto multilinha _&#xD;ca:multilínia _&#xD;</translations><inputs><input type="%mlt"></input></inputs><script><block s="doReport"><block var="text"/></block></script></block-definition><block-definition s="substring of %&apos;string&apos; before %&apos;marker&apos;" type="reporter" category="operators"><comment x="0" y="0" w="175.33333333333334" collapsed="false">Reports the part of the first string up to the first instance of the second string inside it.  If the second string isn&apos;t found, reports the entire first string.</comment><header></header><code></code><translations>pt:o texto de _ antes de _&#xD;ca:part del text _ anterior a _&#xD;</translations><inputs><input type="%txt"></input><input type="%txt"></input></inputs><script><block s="doDeclareVariables"><list><l>index</l></list></block><block s="doSetVar"><l>index</l><custom-block s="position of %s in %txt"><block var="marker"/><block var="string"/></custom-block></block><block s="doReport"><block s="reportIfElse"><block s="reportVariadicEquals"><list><block var="index"/><l>0</l></list></block><block var="string"/><block s="reportIfElse"><block s="reportVariadicEquals"><list><block var="index"/><l>1</l></list></block><l></l><custom-block s="substring of %txt from position %n to position %n inclusive"><block var="string"/><l>1</l><block s="reportDifference"><block var="index"/><l>1</l></block></custom-block></block></block></block></script></block-definition><block-definition s="substring of %&apos;string&apos; after %&apos;marker&apos;" type="reporter" category="operators"><comment x="0" y="0" w="203.33333333333337" collapsed="false">Reports the portion of the first input string starting after the first occurrence of the second string.  If the second string isn&apos;t found in the first string, reports an empty string.</comment><header></header><code></code><translations>pt:o texto de _ depois de _&#xD;ca:part del text _ posterior a _&#xD;</translations><inputs><input type="%txt"></input><input type="%txt"></input></inputs><script><block s="doDeclareVariables"><list><l>index</l><l>end</l></list></block><block s="doSetVar"><l>index</l><custom-block s="position of %s in %txt"><block var="marker"/><block var="string"/></custom-block></block><block s="doSetVar"><l>end</l><block s="reportVariadicSum"><list><block var="index"/><block s="reportTextAttribute"><l><option>length</option></l><block var="marker"/></block></list></block></block><block s="doReport"><block s="reportIfElse"><block s="reportVariadicEquals"><list><block var="index"/><l>0</l></list></block><l></l><block s="reportIfElse"><block s="reportVariadicGreaterThan"><list><block var="end"/><block s="reportTextAttribute"><l><option>length</option></l><block var="string"/></block></list></block><l></l><custom-block s="substring of %txt from position %n to position %n inclusive"><block var="string"/><block var="end"/><l></l></custom-block></block></block></block></script></block-definition><block-definition s="position of %&apos;small&apos; in %&apos;large&apos;" type="reporter" category="operators"><comment x="0" y="0" w="294" collapsed="false">Reports the character position (starting from 1) of the beginning of the first input string inside the second input string.&#xD;If it&apos;s not found, reports 0.</comment><header></header><code></code><translations>pt:a posição de _ em _&#xD;ca:posició de _ en _&#xD;</translations><inputs><input type="%s"></input><input type="%txt"></input></inputs><script><block s="doReport"><block s="reportIfElse"><block s="reportGlobalFlag"><l><option>case sensitivity</option></l></block><block s="reportApplyExtension"><l>txt_indexof(sub, txt)</l><list><block var="small"/><block var="large"/></list></block><block s="reportApplyExtension"><l>txt_indexof(sub, txt)</l><list><block s="reportTextAttribute"><l><option>lower case</option></l><block var="small"/></block><block s="reportTextAttribute"><l><option>lower case</option></l><block var="large"/></block></list></block></block></block></script></block-definition><block-definition s="substring of %&apos;str&apos; from position %&apos;start&apos; to position %&apos;end&apos; inclusive" type="reporter" category="operators"><comment x="0" y="0" w="297.3333333333333" collapsed="false">Reports the portion of the first input (string) starting at the position given by the second input (counting from 1, like LETTER n OF) and ending at the position given by the third input (also counting from 1).  If the third input is empty, reports the portion from the first position to the end of the string.&#xD;If a position number is negative, counts from the end backward, so -1 is the last character, -2 is the next to last, etc.</comment><header></header><code></code><translations>pt:o texto de _ entre as posições _ e _ , inclusive&#xD;ca:part del text _ des de la posició _ fins _&#xD;</translations><inputs><input type="%txt"></input><input type="%n"></input><input type="%n"></input></inputs><script><block s="doReport"><block s="reportJoinWords"><block s="reportLetter"><block s="reportNumbers"><block s="reportIfElse"><block s="reportVariadicLessThan"><list><block var="start"/><l>0</l></list></block><block s="reportVariadicSum"><list><block s="reportVariadicSum"><list><block var="start"/><l>1</l></list></block><block s="reportTextAttribute"><l><option>length</option></l><block var="str"/></block></list></block><block var="start"/></block><block s="reportIfElse"><block s="reportVariadicEquals"><list><block var="end"/><l>0</l></list></block><block s="reportTextAttribute"><l><option>length</option></l><block var="str"/></block><block s="reportIfElse"><block s="reportVariadicLessThan"><list><block var="end"/><l>0</l></list></block><block s="reportVariadicSum"><list><block s="reportVariadicSum"><list><block var="end"/><l>1</l></list></block><block s="reportTextAttribute"><l><option>length</option></l><block var="str"/></block></list></block><block var="end"/></block></block></block><block var="str"/></block></block></block></script></block-definition><block-definition s="text %&apos;string&apos; contains %&apos;marker&apos;" type="predicate" category="operators"><comment x="0" y="0" w="218" collapsed="false">Reports True if the first input string contains the second input string, otherwise false.&#xD;&#xD;Comparison is case-independent by default; use USE CASE-INDEPENDENT COMPARISONS to change that.</comment><header></header><code></code><translations>pt:o texto de _ antes de _&#xD;ca:text _ conté _ ?&#xD;</translations><inputs><input type="%txt"></input><input type="%txt"></input></inputs><script><block s="doReport"><block s="reportVariadicGreaterThan"><list><custom-block s="position of %s in %txt"><block var="marker"/><block var="string"/></custom-block><l>0</l></list></block></block></script></block-definition><block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; Distântica ultrasônico ? $nl $Aguarde-0.618-0-0-0 $mensagem.:-0.618-0-0-0 $ULTRASONICO-0.618-0-0-0" type="command" category="PatruLINO ESPaceLINO II"><header></header><code></code><translations></translations><inputs><input type="%obj"></input></inputs><script><custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 %br enviar %s para conexão %obj"><block s="reportJoinWords"><list><l>u</l><l>1</l><l>r</l></list></block><block var="conexao"/></custom-block></script></block-definition><block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; Potenciometro %&apos;pot&apos; ? $nl $Aguarde-0.618-0-0-0 $mensagem.:-0.618-0-0-0 $ULTRASONICO-0.618-0-0-0" type="command" category="PatruLINO ESPaceLINO II"><header></header><code></code><translations></translations><inputs><input type="%obj"></input><input type="%n">1<options>1&#xD;2</options></input></inputs><script><custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 %br enviar %s para conexão %obj"><block s="reportJoinWords"><list><l>p</l><block var="pot"/><l>r</l></list></block><block var="conexao"/></custom-block></script></block-definition><block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 $nl abrir conexão com ws:// %&apos;url&apos;" type="reporter" category="EUREKA WebSocket"><header></header><code></code><translations></translations><inputs><input type="%s">localhost:2023</input></inputs><script><block s="doDeclareVariables"><list><l>a</l></list></block><block s="doSetVar"><l>a</l><block s="evaluate"><block s="reportJSFunction"><list><l>url</l></list><l>var ws = new WebSocket(&apos;ws://&apos; + url);&#xD;&#xD;return message =&gt; {&#xD;  if(message == &apos;enviar&apos;)&#xD;    return data =&gt; ws.send(data);&#xD;  if(message == &apos;fechar&apos;)&#xD;    return () =&gt; ws.close();&#xD;  if (message == &apos;estaconectado&apos;){  &#xD;    if (ws.readyState === WebSocket.OPEN) {&#xD;       return true;&#xD;    } else {&#xD;       return false;&#xD;    }&#xD;  }&#xD;  if(message == &apos;onmessage&apos;) {&#xD;    return proc =&gt; {&#xD;      ws.onmessage = (e) =&gt; {&#xD;        var stage = this.parentThatIsA(StageMorph) || this;&#xD;        var process = new Process();&#xD;        process.initializeFor(proc, new List([e.data]));&#xD;        stage.threads.processes.push(process);&#xD;      }&#xD;    }&#xD;  }&#xD;};</l></block><list><block var="url"/></list></block></block><block s="doWaitUntil"><block s="evaluate"><block var="a"/><list><l>estaconectado</l></list></block></block><block s="doReport"><block var="a"/></block></script></block-definition><block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 $nl enviar %&apos;data&apos; para conexão %&apos;ws&apos;" type="command" category="EUREKA WebSocket"><header></header><code></code><translations></translations><inputs><input type="%s"></input><input type="%obj"></input></inputs><script><block s="doIf"><custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 %br conectado? %obj"><block var="ws"/></custom-block><script><block s="doRun"><block s="evaluate"><block var="ws"/><list><l>enviar</l></list></block><list><block var="data"/></list></block></script><list><l><bool>true</bool></l><script><block s="doRun"><block s="reportJSFunction"><list></list><l>alert("ERROR - DESCONECTADO");</l></block><list></list></block></script></list></block></script></block-definition><block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 $nl quando receber de %&apos;ws&apos; execute %&apos;procedure&apos;" type="command" category="EUREKA WebSocket"><header></header><code></code><translations></translations><inputs><input type="%obj"></input><input type="%cmdRing"></input></inputs><script><block s="doIf"><custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 %br conectado? %obj"><block var="ws"/></custom-block><script><block s="doRun"><block s="evaluate"><block var="ws"/><list><l>onmessage</l></list></block><list><block var="procedure"/></list></block></script><list><l><bool>true</bool></l><script><block s="doRun"><block s="reportJSFunction"><list></list><l>alert("ERROR - DESCONECTADO");</l></block><list></list></block></script></list></block></script></block-definition><block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 $nl quando receber de %&apos;ws&apos; %&apos;dados&apos; faça %&apos;procedure&apos;" type="command" category="EUREKA WebSocket"><header></header><code></code><translations></translations><inputs><input type="%obj"></input><input type="%upvar"></input><input type="%cs"></input></inputs><script><custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 %br quando receber de %obj execute %cmdRing"><block var="ws"/><block s="reifyScript"><script><block s="doSetVar"><l>dados</l><l></l></block><block s="doRun"><block var="procedure"/><list><l></l></list></block></script><list></list></block></custom-block></script></block-definition><block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 $nl fechar conexao %&apos;ws&apos;" type="command" category="EUREKA WebSocket"><header></header><code></code><translations></translations><inputs><input type="%obj"></input></inputs><script><block s="doIf"><custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 %br conectado? %obj"><block var="ws"/></custom-block><script><block s="doRun"><block s="evaluate"><block var="ws"/><list><l>fechar</l></list></block><list></list></block></script><list><l><bool>true</bool></l><script><block s="doRun"><block s="reportJSFunction"><list></list><l>alert("ERROR - DESCONECTADO");</l></block><list></list></block></script></list></block></script></block-definition><block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 $nl conectado? %&apos;con&apos;" type="predicate" category="EUREKA WebSocket"><header></header><code></code><translations></translations><inputs><input type="%obj"></input></inputs><script><block s="doIf"><block s="reportNot"><block s="reportIsA"><block var="con"/><l><option>number</option></l></block></block><script><block s="doIf"><block s="evaluate"><block var="con"/><list><l>estaconectado</l></list></block><script><block s="doReport"><block s="reportBoolean"><l><bool>true</bool></l></block></block></script><list><block s="evaluate"><block s="reportJSFunction"><list></list><l>return confirm("Falha na conexão, Parar tudo?")</l></block><list></list></block><script><block s="doStopThis"><l><option>all</option></l></block></script><l><bool>true</bool></l><script><block s="doReport"><block s="reportBoolean"><l><bool>false</bool></l></block></block></script></list></block></script><list></list></block><block s="doReport"><block s="reportBoolean"><l><bool>false</bool></l></block></block></script></block-definition><block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; Led %&apos;led&apos; %&apos;status&apos;" type="command" category="PatruLINO ESPaceLINO II"><header></header><code></code><translations></translations><inputs><input type="%obj"></input><input type="%n">1<options>1&#xD;2&#xD;3</options></input><input type="%b">false</input></inputs><script><custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 %br enviar %s para conexão %obj"><block s="reportJoinWords"><list><l>l</l><block var="led"/><block s="reportIfElse"><block var="status"/><l>1</l><l>0</l></block></list></block><block var="conexao"/></custom-block></script></block-definition><block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; Led %&apos;led&apos; Alterna" type="command" category="PatruLINO ESPaceLINO II"><header></header><code></code><translations></translations><inputs><input type="%obj"></input><input type="%n">1<options>1&#xD;2&#xD;3</options></input></inputs><script><custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 %br enviar %s para conexão %obj"><block s="reportJoinWords"><list><l>l</l><block var="led"/><l>a</l></list></block><block var="conexao"/></custom-block></script></block-definition><block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; Led %&apos;led&apos; intensidade %&apos;int&apos; %" type="command" category="PatruLINO ESPaceLINO II"><header></header><code></code><translations></translations><inputs><input type="%obj"></input><input type="%n">1<options>1&#xD;2&#xD;3</options></input><input type="%n">100</input></inputs><script><custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 %br enviar %s para conexão %obj"><block s="reportJoinWords"><list><l>l</l><block var="led"/><l>i</l><block var="int"/></list></block><block var="conexao"/></custom-block></script></block-definition><block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; Led %&apos;led&apos; status ? $nl $nl $Aguarde-0.618-0-0-0 $mensagem.:-0.618-0-0-0 $LED_-0.618-0-0-0 $&lt;led&gt;-0.618-0-0-0" type="command" category="PatruLINO ESPaceLINO II"><header></header><code></code><translations></translations><inputs><input type="%obj"></input><input type="%n">1<options>1&#xD;2&#xD;3</options></input></inputs><script><custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 %br enviar %s para conexão %obj"><block s="reportJoinWords"><list><l>l</l><block var="led"/><l>t</l></list></block><block var="conexao"/></custom-block></script></block-definition><block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; Led %&apos;led&apos; pisca no intervalo %&apos;intervalo&apos; ms" type="command" category="PatruLINO ESPaceLINO II"><header></header><code></code><translations></translations><inputs><input type="%obj"></input><input type="%n">1<options>1&#xD;2&#xD;3</options></input><input type="%n">1000</input></inputs><script><custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 %br enviar %s para conexão %obj"><block s="reportJoinWords"><list><l>l</l><block var="led"/><l>p</l><block var="intervalo"/></list></block><block var="conexao"/></custom-block></script></block-definition><block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; Led %&apos;led&apos; para de piscar" type="command" category="PatruLINO ESPaceLINO II"><header></header><code></code><translations></translations><inputs><input type="%obj"></input><input type="%n">1<options>1&#xD;2&#xD;3</options></input></inputs><script><custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $II-0.618 %br enviar %s para conexão %obj"><block s="reportJoinWords"><list><l>l</l><block var="led"/><l>s</l></list></block><block var="conexao"/></custom-block></script></block-definition></blocks>
+<blocks app="Snap! 10.1-dev, https://snap.berkeley.edu" version="2">
+    <palette>
+        <category name="PatruLINO ESPaceLINO" color="81,157,214,1"/>
+        <category name="EUREKA WebSocket" color="16,179,0,1"/>
+    </palette>
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl conectar ip:porta %&apos;ipporta&apos;" type="reporter" category="PatruLINO ESPaceLINO">
+        <variables>
+            <list struct="atomic" id="3">conexao_</list>
+        </variables>
+        <header></header>
+        <code></code>
+        <translations></translations>
+        <inputs>
+            <input type="%txt">127.0.0.1:2023</input>
+        </inputs>
+        <script>
+            <block s="doSetVar">
+                <l>conexao_</l>
+                <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br abrir conexão com ws:// %s">
+                    <block var="ipporta"/>
+                </custom-block>
+            </block>
+            <block s="doDeclareVariables">
+                <list>
+                    <l>aux</l>
+                </list>
+            </block>
+            <block s="doWarp">
+                <script>
+                    <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br quando receber de %obj %upvar faça %cs">
+                        <block var="conexao_"/>
+                        <l>dados</l>
+                        <script>
+                            <block s="doSetVar">
+                                <l>aux</l>
+                                <block s="reportListItem">
+                                    <l>2</l>
+                                    <block s="reportTextSplit">
+                                        <block var="dados"/>
+                                        <l>|</l>
+                                    </block>
+                                </block>
+                            </block>
+                            <block s="doIf">
+                                <block s="reportVariadicEquals">
+                                    <list>
+                                        <l>SRV_1</l>
+                                        <custom-block s="substring of %txt from position %n to position %n inclusive">
+                                            <block var="aux"/>
+                                            <l>1</l>
+                                            <l>5</l>
+                                        </custom-block>
+                                    </list>
+                                </block>
+                                <script>
+                                    <block s="doBroadcast">
+                                        <l>SERVO_1</l>
+                                        <list>
+                                            <l>
+                                                <option>all</option>
+                                            </l>
+                                            <custom-block s="substring of %txt after %txt">
+                                                <block var="aux"/>
+                                                <l>SRV_1</l>
+                                            </custom-block>
+                                        </list>
+                                    </block>
+                                </script>
+                                <list>
+                                    <block s="reportVariadicEquals">
+                                        <list>
+                                            <l>SRV_2</l>
+                                            <custom-block s="substring of %txt from position %n to position %n inclusive">
+                                                <block var="aux"/>
+                                                <l>1</l>
+                                                <l>5</l>
+                                            </custom-block>
+                                        </list>
+                                    </block>
+                                    <script>
+                                        <block s="doBroadcast">
+                                            <l>SERVO_2</l>
+                                            <list>
+                                                <l>
+                                                    <option>all</option>
+                                                </l>
+                                                <custom-block s="substring of %txt after %txt">
+                                                    <block var="aux"/>
+                                                    <l>SRV_2</l>
+                                                </custom-block>
+                                            </list>
+                                        </block>
+                                    </script>
+                                    <block s="reportVariadicEquals">
+                                        <list>
+                                            <l>SRV_3</l>
+                                            <custom-block s="substring of %txt from position %n to position %n inclusive">
+                                                <block var="aux"/>
+                                                <l>1</l>
+                                                <l>5</l>
+                                            </custom-block>
+                                        </list>
+                                    </block>
+                                    <script>
+                                        <block s="doBroadcast">
+                                            <l>SERVO_3</l>
+                                            <list>
+                                                <l>
+                                                    <option>all</option>
+                                                </l>
+                                                <custom-block s="substring of %txt after %txt">
+                                                    <block var="aux"/>
+                                                    <l>SRV_3</l>
+                                                </custom-block>
+                                            </list>
+                                        </block>
+                                    </script>
+                                    <block s="reportVariadicEquals">
+                                        <list>
+                                            <l>SRV_4</l>
+                                            <custom-block s="substring of %txt from position %n to position %n inclusive">
+                                                <block var="aux"/>
+                                                <l>1</l>
+                                                <l>5</l>
+                                            </custom-block>
+                                        </list>
+                                    </block>
+                                    <script>
+                                        <block s="doBroadcast">
+                                            <l>SERVO_4</l>
+                                            <list>
+                                                <l>
+                                                    <option>all</option>
+                                                </l>
+                                                <custom-block s="substring of %txt after %txt">
+                                                    <block var="aux"/>
+                                                    <l>SRV_4</l>
+                                                </custom-block>
+                                            </list>
+                                        </block>
+                                    </script>
+                                    <block s="reportVariadicEquals">
+                                        <list>
+                                            <l>UTS_</l>
+                                            <custom-block s="substring of %txt from position %n to position %n inclusive">
+                                                <block var="aux"/>
+                                                <l>1</l>
+                                                <l>4</l>
+                                            </custom-block>
+                                        </list>
+                                    </block>
+                                    <script>
+                                        <block s="doBroadcast">
+                                            <l>ULTRASONICO</l>
+                                            <list>
+                                                <l>
+                                                    <option>all</option>
+                                                </l>
+                                                <custom-block s="substring of %txt after %txt">
+                                                    <block var="aux"/>
+                                                    <l>UTS_</l>
+                                                </custom-block>
+                                            </list>
+                                        </block>
+                                    </script>
+                                    <block s="reportVariadicEquals">
+                                        <list>
+                                            <l>PO1_</l>
+                                            <custom-block s="substring of %txt from position %n to position %n inclusive">
+                                                <block var="aux"/>
+                                                <l>1</l>
+                                                <l>4</l>
+                                            </custom-block>
+                                        </list>
+                                    </block>
+                                    <script>
+                                        <block s="doBroadcast">
+                                            <l>POTENCIOMETRO_1</l>
+                                            <list>
+                                                <l>
+                                                    <option>all</option>
+                                                </l>
+                                                <custom-block s="substring of %txt after %txt">
+                                                    <block var="aux"/>
+                                                    <l>PO1_</l>
+                                                </custom-block>
+                                            </list>
+                                        </block>
+                                    </script>
+                                    <block s="reportVariadicEquals">
+                                        <list>
+                                            <l>PO2_</l>
+                                            <custom-block s="substring of %txt from position %n to position %n inclusive">
+                                                <block var="aux"/>
+                                                <l>1</l>
+                                                <l>4</l>
+                                            </custom-block>
+                                        </list>
+                                    </block>
+                                    <script>
+                                        <block s="doBroadcast">
+                                            <l>POTENCIOMETRO_2</l>
+                                            <list>
+                                                <l>
+                                                    <option>all</option>
+                                                </l>
+                                                <custom-block s="substring of %txt after %txt">
+                                                    <block var="aux"/>
+                                                    <l>PO2_</l>
+                                                </custom-block>
+                                            </list>
+                                        </block>
+                                    </script>
+                                    <block s="reportVariadicEquals">
+                                        <list>
+                                            <l>BT0_</l>
+                                            <custom-block s="substring of %txt from position %n to position %n inclusive">
+                                                <block var="aux"/>
+                                                <l>1</l>
+                                                <l>4</l>
+                                            </custom-block>
+                                        </list>
+                                    </block>
+                                    <script>
+                                        <block s="doBroadcast">
+                                            <l>BOTAO_0</l>
+                                            <list>
+                                                <l>
+                                                    <option>all</option>
+                                                </l>
+                                                <custom-block s="substring of %txt after %txt">
+                                                    <block var="aux"/>
+                                                    <l>BT0_</l>
+                                                </custom-block>
+                                            </list>
+                                        </block>
+                                    </script>
+                                    <block s="reportVariadicEquals">
+                                        <list>
+                                            <l>LED1</l>
+                                            <custom-block s="substring of %txt from position %n to position %n inclusive">
+                                                <block var="aux"/>
+                                                <l>1</l>
+                                                <l>4</l>
+                                            </custom-block>
+                                        </list>
+                                    </block>
+                                    <script>
+                                        <block s="doBroadcast">
+                                            <l>LED_1</l>
+                                            <list>
+                                                <l>
+                                                    <option>all</option>
+                                                </l>
+                                                <block s="reportVariadicEquals">
+                                                    <list>
+                                                        <custom-block s="substring of %txt after %txt">
+                                                            <block var="aux"/>
+                                                            <l>LED1</l>
+                                                        </custom-block>
+                                                        <l>1</l>
+                                                    </list>
+                                                </block>
+                                            </list>
+                                        </block>
+                                    </script>
+                                    <block s="reportVariadicEquals">
+                                        <list>
+                                            <l>LED2</l>
+                                            <custom-block s="substring of %txt from position %n to position %n inclusive">
+                                                <block var="aux"/>
+                                                <l>1</l>
+                                                <l>4</l>
+                                            </custom-block>
+                                        </list>
+                                    </block>
+                                    <script>
+                                        <block s="doBroadcast">
+                                            <l>LED_2</l>
+                                            <list>
+                                                <l>
+                                                    <option>all</option>
+                                                </l>
+                                                <block s="reportVariadicEquals">
+                                                    <list>
+                                                        <custom-block s="substring of %txt after %txt">
+                                                            <block var="aux"/>
+                                                            <l>LED2</l>
+                                                        </custom-block>
+                                                        <l>1</l>
+                                                    </list>
+                                                </block>
+                                            </list>
+                                        </block>
+                                    </script>
+                                    <block s="reportVariadicEquals">
+                                        <list>
+                                            <l>LED3</l>
+                                            <custom-block s="substring of %txt from position %n to position %n inclusive">
+                                                <block var="aux"/>
+                                                <l>1</l>
+                                                <l>4</l>
+                                            </custom-block>
+                                        </list>
+                                    </block>
+                                    <script>
+                                        <block s="doBroadcast">
+                                            <l>LED_3</l>
+                                            <list>
+                                                <l>
+                                                    <option>all</option>
+                                                </l>
+                                                <block s="reportVariadicEquals">
+                                                    <list>
+                                                        <custom-block s="substring of %txt after %txt">
+                                                            <block var="aux"/>
+                                                            <l>LED3</l>
+                                                        </custom-block>
+                                                        <l>1</l>
+                                                    </list>
+                                                </block>
+                                            </list>
+                                        </block>
+                                    </script>
+                                    <l>
+                                        <bool>true</bool>
+                                    </l>
+                                    <script>
+                                        <block s="doBroadcast">
+                                            <l>ECHO</l>
+                                            <list>
+                                                <l>
+                                                    <option>all</option>
+                                                </l>
+                                                <block var="dados"/>
+                                            </list>
+                                        </block>
+                                    </script>
+                                </list>
+                            </block>
+                        </script>
+                    </custom-block>
+                </script>
+            </block>
+            <block s="doReport">
+                <block var="conexao_"/>
+            </block>
+        </script>
+    </block-definition>
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; desconectar" type="command" category="PatruLINO ESPaceLINO">
+        <header></header>
+        <code></code>
+        <translations></translations>
+        <inputs>
+            <input type="%obj"></input>
+        </inputs>
+        <script>
+            <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br fechar conexao %obj">
+                <block var="conexao"/>
+            </custom-block>
+        </script>
+    </block-definition>
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; motores mA: %&apos;mA&apos; % mB: %&apos;mB&apos; %" type="command" category="PatruLINO ESPaceLINO" space="true">
+        <header></header>
+        <code></code>
+        <translations></translations>
+        <inputs>
+            <input type="%obj"></input>
+            <input type="%n">100</input>
+            <input type="%n">100</input>
+        </inputs>
+        <script>
+            <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br enviar %s para conexão %obj">
+                <block s="reportJoinWords">
+                    <list>
+                        <l>m1g</l>
+                        <block var="mA"/>
+                        <l>:</l>
+                        <block var="mB"/>
+                    </list>
+                </block>
+                <block var="conexao"/>
+            </custom-block>
+        </script>
+    </block-definition>
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; motores ângulo: %&apos;angulo&apos; º força: %&apos;forca&apos; %" type="command" category="PatruLINO ESPaceLINO">
+        <header></header>
+        <code></code>
+        <translations></translations>
+        <inputs>
+            <input type="%obj"></input>
+            <input type="%n">90<options>§_directionDialMenu</options></input>
+            <input type="%n">100</input>
+        </inputs>
+        <script>
+            <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br enviar %s para conexão %obj">
+                <block s="reportJoinWords">
+                    <list>
+                        <l>m1f</l>
+                        <block var="angulo"/>
+                        <l>:</l>
+                        <block var="forca"/>
+                    </list>
+                </block>
+                <block var="conexao"/>
+            </custom-block>
+        </script>
+    </block-definition>
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; Servo %&apos;servo&apos; para ângulo %&apos;angulo&apos; º" type="command" category="PatruLINO ESPaceLINO" space="true">
+        <header></header>
+        <code></code>
+        <translations></translations>
+        <inputs>
+            <input type="%obj"></input>
+            <input type="%n">1
+<options>1&#xD;2</options></input>
+            <input type="%n">90</input>
+        </inputs>
+        <script>
+            <block s="doSetVar">
+                <l>angulo</l>
+                <block s="reportModulus">
+                    <block var="angulo"/>
+                    <l>181</l>
+                </block>
+            </block>
+            <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br enviar %s para conexão %obj">
+                <block s="reportJoinWords">
+                    <list>
+                        <l>s</l>
+                        <block var="servo"/>
+                        <l>v</l>
+                        <block var="angulo"/>
+                    </list>
+                </block>
+                <block var="conexao"/>
+            </custom-block>
+        </script>
+    </block-definition>
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; Ângulo do servo %&apos;servo&apos; ? $nl $Aguarde-0.618-0-0-0 $mensagem.:-0.618-0-0-0 $SERVO_&lt;servo&gt;-0.618-0-0-0" type="command" category="PatruLINO ESPaceLINO">
+        <header></header>
+        <code></code>
+        <translations></translations>
+        <inputs>
+            <input type="%obj"></input>
+            <input type="%n">1
+<options>1&#xD;2&#xD;3&#xD;4</options></input>
+        </inputs>
+        <script>
+            <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br enviar %s para conexão %obj">
+                <block s="reportJoinWords">
+                    <list>
+                        <l>s</l>
+                        <block var="servo"/>
+                        <l>a</l>
+                    </list>
+                </block>
+                <block var="conexao"/>
+            </custom-block>
+        </script>
+    </block-definition>
+    <block-definition s="multiline %&apos;text&apos;" type="reporter" category="operators">
+        <header></header>
+        <code></code>
+        <translations>pt:o texto multilinha _&#xD;ca:multilínia _&#xD;</translations>
+        <inputs>
+            <input type="%mlt"></input>
+        </inputs>
+        <script>
+            <block s="doReport">
+                <block var="text"/>
+            </block>
+        </script>
+    </block-definition>
+    <block-definition s="substring of %&apos;string&apos; before %&apos;marker&apos;" type="reporter" category="operators">
+        <comment x="0" y="0" w="175.33333333333334" collapsed="false">Reports the part of the first string up to the first instance of the second string inside it.  If the second string isn&apos;t found, reports the entire first string.</comment>
+        <header></header>
+        <code></code>
+        <translations>pt:o texto de _ antes de _&#xD;ca:part del text _ anterior a _&#xD;</translations>
+        <inputs>
+            <input type="%txt"></input>
+            <input type="%txt"></input>
+        </inputs>
+        <script>
+            <block s="doDeclareVariables">
+                <list>
+                    <l>index</l>
+                </list>
+            </block>
+            <block s="doSetVar">
+                <l>index</l>
+                <custom-block s="position of %s in %txt">
+                    <block var="marker"/>
+                    <block var="string"/>
+                </custom-block>
+            </block>
+            <block s="doReport">
+                <block s="reportIfElse">
+                    <block s="reportVariadicEquals">
+                        <list>
+                            <block var="index"/>
+                            <l>0</l>
+                        </list>
+                    </block>
+                    <block var="string"/>
+                    <block s="reportIfElse">
+                        <block s="reportVariadicEquals">
+                            <list>
+                                <block var="index"/>
+                                <l>1</l>
+                            </list>
+                        </block>
+                        <l></l>
+                        <custom-block s="substring of %txt from position %n to position %n inclusive">
+                            <block var="string"/>
+                            <l>1</l>
+                            <block s="reportDifference">
+                                <block var="index"/>
+                                <l>1</l>
+                            </block>
+                        </custom-block>
+                    </block>
+                </block>
+            </block>
+        </script>
+    </block-definition>
+    <block-definition s="substring of %&apos;string&apos; after %&apos;marker&apos;" type="reporter" category="operators">
+        <comment x="0" y="0" w="203.33333333333337" collapsed="false">Reports the portion of the first input string starting after the first occurrence of the second string.  If the second string isn&apos;t found in the first string, reports an empty string.</comment>
+        <header></header>
+        <code></code>
+        <translations>pt:o texto de _ depois de _&#xD;ca:part del text _ posterior a _&#xD;</translations>
+        <inputs>
+            <input type="%txt"></input>
+            <input type="%txt"></input>
+        </inputs>
+        <script>
+            <block s="doDeclareVariables">
+                <list>
+                    <l>index</l>
+                    <l>end</l>
+                </list>
+            </block>
+            <block s="doSetVar">
+                <l>index</l>
+                <custom-block s="position of %s in %txt">
+                    <block var="marker"/>
+                    <block var="string"/>
+                </custom-block>
+            </block>
+            <block s="doSetVar">
+                <l>end</l>
+                <block s="reportVariadicSum">
+                    <list>
+                        <block var="index"/>
+                        <block s="reportTextAttribute">
+                            <l>
+                                <option>length</option>
+                            </l>
+                            <block var="marker"/>
+                        </block>
+                    </list>
+                </block>
+            </block>
+            <block s="doReport">
+                <block s="reportIfElse">
+                    <block s="reportVariadicEquals">
+                        <list>
+                            <block var="index"/>
+                            <l>0</l>
+                        </list>
+                    </block>
+                    <l></l>
+                    <block s="reportIfElse">
+                        <block s="reportVariadicGreaterThan">
+                            <list>
+                                <block var="end"/>
+                                <block s="reportTextAttribute">
+                                    <l>
+                                        <option>length</option>
+                                    </l>
+                                    <block var="string"/>
+                                </block>
+                            </list>
+                        </block>
+                        <l></l>
+                        <custom-block s="substring of %txt from position %n to position %n inclusive">
+                            <block var="string"/>
+                            <block var="end"/>
+                            <l></l>
+                        </custom-block>
+                    </block>
+                </block>
+            </block>
+        </script>
+    </block-definition>
+    <block-definition s="position of %&apos;small&apos; in %&apos;large&apos;" type="reporter" category="operators">
+        <comment x="0" y="0" w="294" collapsed="false">Reports the character position (starting from 1) of the beginning of the first input string inside the second input string.&#xD;If it&apos;s not found, reports 0.</comment>
+        <header></header>
+        <code></code>
+        <translations>pt:a posição de _ em _&#xD;ca:posició de _ en _&#xD;</translations>
+        <inputs>
+            <input type="%s"></input>
+            <input type="%txt"></input>
+        </inputs>
+        <script>
+            <block s="doReport">
+                <block s="reportIfElse">
+                    <block s="reportGlobalFlag">
+                        <l>
+                            <option>case sensitivity</option>
+                        </l>
+                    </block>
+                    <block s="reportApplyExtension">
+                        <l>txt_indexof(sub, txt)</l>
+                        <list>
+                            <block var="small"/>
+                            <block var="large"/>
+                        </list>
+                    </block>
+                    <block s="reportApplyExtension">
+                        <l>txt_indexof(sub, txt)</l>
+                        <list>
+                            <block s="reportTextAttribute">
+                                <l>
+                                    <option>lower case</option>
+                                </l>
+                                <block var="small"/>
+                            </block>
+                            <block s="reportTextAttribute">
+                                <l>
+                                    <option>lower case</option>
+                                </l>
+                                <block var="large"/>
+                            </block>
+                        </list>
+                    </block>
+                </block>
+            </block>
+        </script>
+    </block-definition>
+    <block-definition s="substring of %&apos;str&apos; from position %&apos;start&apos; to position %&apos;end&apos; inclusive" type="reporter" category="operators">
+        <comment x="0" y="0" w="297.3333333333333" collapsed="false">Reports the portion of the first input (string) starting at the position given by the second input (counting from 1, like LETTER n OF) and ending at the position given by the third input (also counting from 1).  If the third input is empty, reports the portion from the first position to the end of the string.&#xD;If a position number is negative, counts from the end backward, so -1 is the last character, -2 is the next to last, etc.</comment>
+        <header></header>
+        <code></code>
+        <translations>pt:o texto de _ entre as posições _ e _ , inclusive&#xD;ca:part del text _ des de la posició _ fins _&#xD;</translations>
+        <inputs>
+            <input type="%txt"></input>
+            <input type="%n"></input>
+            <input type="%n"></input>
+        </inputs>
+        <script>
+            <block s="doReport">
+                <block s="reportJoinWords">
+                    <block s="reportLetter">
+                        <block s="reportNumbers">
+                            <block s="reportIfElse">
+                                <block s="reportVariadicLessThan">
+                                    <list>
+                                        <block var="start"/>
+                                        <l>0</l>
+                                    </list>
+                                </block>
+                                <block s="reportVariadicSum">
+                                    <list>
+                                        <block s="reportVariadicSum">
+                                            <list>
+                                                <block var="start"/>
+                                                <l>1</l>
+                                            </list>
+                                        </block>
+                                        <block s="reportTextAttribute">
+                                            <l>
+                                                <option>length</option>
+                                            </l>
+                                            <block var="str"/>
+                                        </block>
+                                    </list>
+                                </block>
+                                <block var="start"/>
+                            </block>
+                            <block s="reportIfElse">
+                                <block s="reportVariadicEquals">
+                                    <list>
+                                        <block var="end"/>
+                                        <l>0</l>
+                                    </list>
+                                </block>
+                                <block s="reportTextAttribute">
+                                    <l>
+                                        <option>length</option>
+                                    </l>
+                                    <block var="str"/>
+                                </block>
+                                <block s="reportIfElse">
+                                    <block s="reportVariadicLessThan">
+                                        <list>
+                                            <block var="end"/>
+                                            <l>0</l>
+                                        </list>
+                                    </block>
+                                    <block s="reportVariadicSum">
+                                        <list>
+                                            <block s="reportVariadicSum">
+                                                <list>
+                                                    <block var="end"/>
+                                                    <l>1</l>
+                                                </list>
+                                            </block>
+                                            <block s="reportTextAttribute">
+                                                <l>
+                                                    <option>length</option>
+                                                </l>
+                                                <block var="str"/>
+                                            </block>
+                                        </list>
+                                    </block>
+                                    <block var="end"/>
+                                </block>
+                            </block>
+                        </block>
+                        <block var="str"/>
+                    </block>
+                </block>
+            </block>
+        </script>
+    </block-definition>
+    <block-definition s="text %&apos;string&apos; contains %&apos;marker&apos;" type="predicate" category="operators">
+        <comment x="0" y="0" w="218" collapsed="false">Reports True if the first input string contains the second input string, otherwise false.&#xD;&#xD;Comparison is case-independent by default; use USE CASE-INDEPENDENT COMPARISONS to change that.</comment>
+        <header></header>
+        <code></code>
+        <translations>pt:o texto de _ antes de _&#xD;ca:text _ conté _ ?&#xD;</translations>
+        <inputs>
+            <input type="%txt"></input>
+            <input type="%txt"></input>
+        </inputs>
+        <script>
+            <block s="doReport">
+                <block s="reportVariadicGreaterThan">
+                    <list>
+                        <custom-block s="position of %s in %txt">
+                            <block var="marker"/>
+                            <block var="string"/>
+                        </custom-block>
+                        <l>0</l>
+                    </list>
+                </block>
+            </block>
+        </script>
+    </block-definition>
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; Distântica ultrasônico ? $nl $Aguarde-0.618-0-0-0 $mensagem.:-0.618-0-0-0 $ULTRASONICO-0.618-0-0-0" type="command" category="PatruLINO ESPaceLINO" space="true">
+        <header></header>
+        <code></code>
+        <translations></translations>
+        <inputs>
+            <input type="%obj"></input>
+        </inputs>
+        <script>
+            <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br enviar %s para conexão %obj">
+                <block s="reportJoinWords">
+                    <list>
+                        <l>u</l>
+                        <l>1</l>
+                        <l>r</l>
+                    </list>
+                </block>
+                <block var="conexao"/>
+            </custom-block>
+        </script>
+    </block-definition>
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; Potenciometro %&apos;pot&apos; ? $nl $Aguarde-0.618-0-0-0 $mensagem.:-0.618-0-0-0 $ULTRASONICO-0.618-0-0-0" type="command" category="PatruLINO ESPaceLINO" space="true">
+        <header></header>
+        <code></code>
+        <translations></translations>
+        <inputs>
+            <input type="%obj"></input>
+            <input type="%n">1
+<options>1&#xD;2</options></input>
+        </inputs>
+        <script>
+            <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br enviar %s para conexão %obj">
+                <block s="reportJoinWords">
+                    <list>
+                        <l>p</l>
+                        <block var="pot"/>
+                        <l>r</l>
+                    </list>
+                </block>
+                <block var="conexao"/>
+            </custom-block>
+        </script>
+    </block-definition>
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $nl abrir conexão com ws:// %&apos;url&apos;" type="reporter" category="EUREKA WebSocket">
+        <header></header>
+        <code></code>
+        <translations></translations>
+        <inputs>
+            <input type="%s">localhost:2023</input>
+        </inputs>
+        <script>
+            <block s="doDeclareVariables">
+                <list>
+                    <l>a</l>
+                </list>
+            </block>
+            <block s="doSetVar">
+                <l>a</l>
+                <block s="evaluate">
+                    <block s="reportJSFunction">
+                        <list>
+                            <l>url</l>
+                        </list>
+                        <l>var ws = new WebSocket(&apos;ws://&apos; + url);&#xD;&#xD;return message =&gt; {&#xD;  if(message == &apos;enviar&apos;)&#xD;    return data =&gt; ws.send(data);&#xD;  if(message == &apos;fechar&apos;)&#xD;    return () =&gt; ws.close();&#xD;  if (message == &apos;estaconectado&apos;){  &#xD;    if (ws.readyState === WebSocket.OPEN) {&#xD;       return true;&#xD;    } else {&#xD;       return false;&#xD;    }&#xD;  }&#xD;  if(message == &apos;onmessage&apos;) {&#xD;    return proc =&gt; {&#xD;      ws.onmessage = (e) =&gt; {&#xD;        var stage = this.parentThatIsA(StageMorph) || this;&#xD;        var process = new Process();&#xD;        process.initializeFor(proc, new List([e.data]));&#xD;        stage.threads.processes.push(process);&#xD;      }&#xD;    }&#xD;  }&#xD;};</l>
+                    </block>
+                    <list>
+                        <block var="url"/>
+                    </list>
+                </block>
+            </block>
+            <block s="doWaitUntil">
+                <block s="evaluate">
+                    <block var="a"/>
+                    <list>
+                        <l>estaconectado</l>
+                    </list>
+                </block>
+            </block>
+            <block s="doReport">
+                <block var="a"/>
+            </block>
+        </script>
+    </block-definition>
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $nl enviar %&apos;data&apos; para conexão %&apos;ws&apos;" type="command" category="EUREKA WebSocket">
+        <header></header>
+        <code></code>
+        <translations></translations>
+        <inputs>
+            <input type="%s"></input>
+            <input type="%obj"></input>
+        </inputs>
+        <script>
+            <block s="doIf">
+                <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br conectado? %obj">
+                    <block var="ws"/>
+                </custom-block>
+                <script>
+                    <block s="doRun">
+                        <block s="evaluate">
+                            <block var="ws"/>
+                            <list>
+                                <l>enviar</l>
+                            </list>
+                        </block>
+                        <list>
+                            <block var="data"/>
+                        </list>
+                    </block>
+                </script>
+                <list>
+                    <l>
+                        <bool>true</bool>
+                    </l>
+                    <script>
+                        <block s="doRun">
+                            <block s="reportJSFunction">
+                                <list></list>
+                                <l>alert("ERROR - DESCONECTADO");</l>
+                            </block>
+                            <list></list>
+                        </block>
+                    </script>
+                </list>
+            </block>
+        </script>
+    </block-definition>
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $nl quando receber de %&apos;ws&apos; execute %&apos;procedure&apos;" type="command" category="EUREKA WebSocket">
+        <header></header>
+        <code></code>
+        <translations></translations>
+        <inputs>
+            <input type="%obj"></input>
+            <input type="%cmdRing"></input>
+        </inputs>
+        <script>
+            <block s="doIf">
+                <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br conectado? %obj">
+                    <block var="ws"/>
+                </custom-block>
+                <script>
+                    <block s="doRun">
+                        <block s="evaluate">
+                            <block var="ws"/>
+                            <list>
+                                <l>onmessage</l>
+                            </list>
+                        </block>
+                        <list>
+                            <block var="procedure"/>
+                        </list>
+                    </block>
+                </script>
+                <list>
+                    <l>
+                        <bool>true</bool>
+                    </l>
+                    <script>
+                        <block s="doRun">
+                            <block s="reportJSFunction">
+                                <list></list>
+                                <l>alert("ERROR - DESCONECTADO");</l>
+                            </block>
+                            <list></list>
+                        </block>
+                    </script>
+                </list>
+            </block>
+        </script>
+    </block-definition>
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $nl quando receber de %&apos;ws&apos; %&apos;dados&apos; faça %&apos;procedure&apos;" type="command" category="EUREKA WebSocket">
+        <header></header>
+        <code></code>
+        <translations></translations>
+        <inputs>
+            <input type="%obj"></input>
+            <input type="%upvar"></input>
+            <input type="%cs"></input>
+        </inputs>
+        <script>
+            <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br quando receber de %obj execute %cmdRing">
+                <block var="ws"/>
+                <block s="reifyScript">
+                    <script>
+                        <block s="doSetVar">
+                            <l>dados</l>
+                            <l></l>
+                        </block>
+                        <block s="doRun">
+                            <block var="procedure"/>
+                            <list>
+                                <l></l>
+                            </list>
+                        </block>
+                    </script>
+                    <list></list>
+                </block>
+            </custom-block>
+        </script>
+    </block-definition>
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $nl fechar conexao %&apos;ws&apos;" type="command" category="EUREKA WebSocket">
+        <header></header>
+        <code></code>
+        <translations></translations>
+        <inputs>
+            <input type="%obj"></input>
+        </inputs>
+        <script>
+            <block s="doIf">
+                <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br conectado? %obj">
+                    <block var="ws"/>
+                </custom-block>
+                <script>
+                    <block s="doRun">
+                        <block s="evaluate">
+                            <block var="ws"/>
+                            <list>
+                                <l>fechar</l>
+                            </list>
+                        </block>
+                        <list></list>
+                    </block>
+                </script>
+                <list>
+                    <l>
+                        <bool>true</bool>
+                    </l>
+                    <script>
+                        <block s="doRun">
+                            <block s="reportJSFunction">
+                                <list></list>
+                                <l>alert("ERROR - DESCONECTADO");</l>
+                            </block>
+                            <list></list>
+                        </block>
+                    </script>
+                </list>
+            </block>
+        </script>
+    </block-definition>
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 $nl conectado? %&apos;con&apos;" type="predicate" category="EUREKA WebSocket">
+        <header></header>
+        <code></code>
+        <translations></translations>
+        <inputs>
+            <input type="%obj"></input>
+        </inputs>
+        <script>
+            <block s="doIf">
+                <block s="reportNot">
+                    <block s="reportIsA">
+                        <block var="con"/>
+                        <l>
+                            <option>number</option>
+                        </l>
+                    </block>
+                </block>
+                <script>
+                    <block s="doIf">
+                        <block s="evaluate">
+                            <block var="con"/>
+                            <list>
+                                <l>estaconectado</l>
+                            </list>
+                        </block>
+                        <script>
+                            <block s="doReport">
+                                <block s="reportBoolean">
+                                    <l>
+                                        <bool>true</bool>
+                                    </l>
+                                </block>
+                            </block>
+                        </script>
+                        <list>
+                            <block s="evaluate">
+                                <block s="reportJSFunction">
+                                    <list></list>
+                                    <l>return confirm("Falha na conexão, Parar tudo?")</l>
+                                </block>
+                                <list></list>
+                            </block>
+                            <script>
+                                <block s="doStopThis">
+                                    <l>
+                                        <option>all</option>
+                                    </l>
+                                </block>
+                            </script>
+                            <l>
+                                <bool>true</bool>
+                            </l>
+                            <script>
+                                <block s="doReport">
+                                    <block s="reportBoolean">
+                                        <l>
+                                            <bool>false</bool>
+                                        </l>
+                                    </block>
+                                </block>
+                            </script>
+                        </list>
+                    </block>
+                </script>
+                <list></list>
+            </block>
+            <block s="doReport">
+                <block s="reportBoolean">
+                    <l>
+                        <bool>false</bool>
+                    </l>
+                </block>
+            </block>
+        </script>
+    </block-definition>
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; Led %&apos;led&apos; %&apos;status&apos;" type="command" category="PatruLINO ESPaceLINO" space="true">
+        <header></header>
+        <code></code>
+        <translations></translations>
+        <inputs>
+            <input type="%obj"></input>
+            <input type="%n">1
+<options>1&#xD;2&#xD;3</options></input>
+            <input type="%b">false</input>
+        </inputs>
+        <script>
+            <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br enviar %s para conexão %obj">
+                <block s="reportJoinWords">
+                    <list>
+                        <l>l</l>
+                        <block var="led"/>
+                        <block s="reportIfElse">
+                            <block var="status"/>
+                            <l>1</l>
+                            <l>0</l>
+                        </block>
+                    </list>
+                </block>
+                <block var="conexao"/>
+            </custom-block>
+        </script>
+    </block-definition>
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; Led %&apos;led&apos; Alterna" type="command" category="PatruLINO ESPaceLINO">
+        <header></header>
+        <code></code>
+        <translations></translations>
+        <inputs>
+            <input type="%obj"></input>
+            <input type="%n">1
+<options>1&#xD;2&#xD;3</options></input>
+        </inputs>
+        <script>
+            <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br enviar %s para conexão %obj">
+                <block s="reportJoinWords">
+                    <list>
+                        <l>l</l>
+                        <block var="led"/>
+                        <l>a</l>
+                    </list>
+                </block>
+                <block var="conexao"/>
+            </custom-block>
+        </script>
+    </block-definition>
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; Led %&apos;led&apos; intensidade %&apos;int&apos; %" type="command" category="PatruLINO ESPaceLINO">
+        <header></header>
+        <code></code>
+        <translations></translations>
+        <inputs>
+            <input type="%obj"></input>
+            <input type="%n">1
+<options>1&#xD;2&#xD;3</options></input>
+            <input type="%n">100</input>
+        </inputs>
+        <script>
+            <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br enviar %s para conexão %obj">
+                <block s="reportJoinWords">
+                    <list>
+                        <l>l</l>
+                        <block var="led"/>
+                        <l>i</l>
+                        <block var="int"/>
+                    </list>
+                </block>
+                <block var="conexao"/>
+            </custom-block>
+        </script>
+    </block-definition>
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; Led %&apos;led&apos; status ? $nl $nl $Aguarde-0.618-0-0-0 $mensagem.:-0.618-0-0-0 $LED_-0.618-0-0-0 $&lt;led&gt;-0.618-0-0-0" type="command" category="PatruLINO ESPaceLINO">
+        <header></header>
+        <code></code>
+        <translations></translations>
+        <inputs>
+            <input type="%obj"></input>
+            <input type="%n">1
+<options>1&#xD;2&#xD;3</options></input>
+        </inputs>
+        <script>
+            <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br enviar %s para conexão %obj">
+                <block s="reportJoinWords">
+                    <list>
+                        <l>l</l>
+                        <block var="led"/>
+                        <l>t</l>
+                    </list>
+                </block>
+                <block var="conexao"/>
+            </custom-block>
+        </script>
+    </block-definition>
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; Led %&apos;led&apos; pisca no intervalo %&apos;intervalo&apos; ms" type="command" category="PatruLINO ESPaceLINO">
+        <header></header>
+        <code></code>
+        <translations></translations>
+        <inputs>
+            <input type="%obj"></input>
+            <input type="%n">1
+<options>1&#xD;2&#xD;3</options></input>
+            <input type="%n">1000</input>
+        </inputs>
+        <script>
+            <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br enviar %s para conexão %obj">
+                <block s="reportJoinWords">
+                    <list>
+                        <l>l</l>
+                        <block var="led"/>
+                        <l>p</l>
+                        <block var="intervalo"/>
+                    </list>
+                </block>
+                <block var="conexao"/>
+            </custom-block>
+        </script>
+    </block-definition>
+    <block-definition s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $ESPaceLINO-0.681 $nl %&apos;conexao&apos; Led %&apos;led&apos; para de piscar" type="command" category="PatruLINO ESPaceLINO">
+        <header></header>
+        <code></code>
+        <translations></translations>
+        <inputs>
+            <input type="%obj"></input>
+            <input type="%n">1
+<options>1&#xD;2&#xD;3</options></input>
+        </inputs>
+        <script>
+            <custom-block s="$Patrulha-0.618-81-157-214 $EU-0.618-255-214-0 $RE-0.618-214-36-8 $KA-0.618-78-190-69 $.org-0.618-0-0-0 $:-0.681 $WebSocket-0.681 %br enviar %s para conexão %obj">
+                <block s="reportJoinWords">
+                    <list>
+                        <l>l</l>
+                        <block var="led"/>
+                        <l>s</l>
+                    </list>
+                </block>
+                <block var="conexao"/>
+            </custom-block>
+        </script>
+    </block-definition>
+</blocks>

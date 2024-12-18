@@ -9,7 +9,7 @@
     written by Jens Mönig
     jens@moenig.org
 
-    Copyright (C) 2023 by Jens Mönig
+    Copyright (C) 2024 by Jens Mönig
 
     This file is part of Snap!.
 
@@ -79,20 +79,19 @@ CommandBlockMorph, BooleanSlotMorph, RingReporterSlotMorph, ScriptFocusMorph,
 BlockLabelPlaceHolderMorph, SpeechBubbleMorph, XML_Element, WatcherMorph, WHITE,
 BlockRemovalDialogMorph,TableMorph, isSnapObject, isRetinaEnabled, SliderMorph,
 disableRetinaSupport, enableRetinaSupport, isRetinaSupported, MediaRecorder,
-Animation, BoxMorph, BlockDialogMorph, RingMorph, Project, ZERO, BLACK,
-BlockVisibilityDialogMorph, ThreadManager, isString, SnapExtensions, snapEquals
-*/
+Animation, BoxMorph, BlockDialogMorph, RingMorph, Project, ZERO, BLACK, CLEAR,
+BlockVisibilityDialogMorph, ThreadManager, isString, SnapExtensions, snapEquals,
+HatBlockMorph*/
 
 /*jshint esversion: 8*/
 
 // Global stuff ////////////////////////////////////////////////////////
 
-modules.gui = '2023-September-14';
+modules.gui = '2024-December-18';
 
 // Declarations
 
-var SnapVersion = '9.0.6';
-var PatruLINOVersion = '1.0';
+var SnapVersion = '10.3.4';
 
 var IDE_Morph;
 var ProjectDialogMorph;
@@ -122,8 +121,24 @@ IDE_Morph.uber = Morph.prototype;
 
 // IDE_Morph preferences settings and skins
 
-IDE_Morph.prototype.setDefaultDesign = function () {
+IDE_Morph.prototype.isBright = false;
+
+IDE_Morph.prototype.setDefaultDesign = function () { // skeuomorphic
     MorphicPreferences.isFlat = false;
+    IDE_Morph.prototype.scriptsPaneTexture = this.scriptsTexture();
+};
+
+IDE_Morph.prototype.setFlatDesign = function () {
+    MorphicPreferences.isFlat = true;
+    IDE_Morph.prototype.scriptsPaneTexture = null;
+};
+
+IDE_Morph.prototype.setDefaultTheme = function () { // dark
+    IDE_Morph.prototype.isBright = false;
+
+    PushButtonMorph.prototype.outlineColor = new Color(30, 30, 30);
+    PushButtonMorph.prototype.outlineGradient = false;
+
     SpriteMorph.prototype.paletteColor = new Color(30, 30, 30);
     SpriteMorph.prototype.paletteTextColor = new Color(230, 230, 230);
     StageMorph.prototype.paletteTextColor
@@ -147,7 +162,6 @@ IDE_Morph.prototype.setDefaultDesign = function () {
     ];
     IDE_Morph.prototype.rotationStyleColors = IDE_Morph.prototype.tabColors;
     IDE_Morph.prototype.appModeColor = BLACK;
-    IDE_Morph.prototype.scriptsPaneTexture = this.scriptsTexture();
     IDE_Morph.prototype.padding = 1;
 
     SpriteIconMorph.prototype.labelColor
@@ -165,8 +179,12 @@ IDE_Morph.prototype.setDefaultDesign = function () {
     ScriptsMorph.prototype.feedbackColor = WHITE;
 };
 
-IDE_Morph.prototype.setFlatDesign = function () {
-    MorphicPreferences.isFlat = true;
+IDE_Morph.prototype.setBrightTheme = function () {
+    IDE_Morph.prototype.isBright = true;
+
+    PushButtonMorph.prototype.outlineColor = new Color(255, 255, 255);
+    PushButtonMorph.prototype.outlineGradient = true;
+
     SpriteMorph.prototype.paletteColor = WHITE;
     SpriteMorph.prototype.paletteTextColor = new Color(70, 70, 70);
     StageMorph.prototype.paletteTextColor
@@ -188,7 +206,6 @@ IDE_Morph.prototype.setFlatDesign = function () {
     ];
     IDE_Morph.prototype.rotationStyleColors = IDE_Morph.prototype.tabColors;
     IDE_Morph.prototype.appModeColor = IDE_Morph.prototype.frameColor;
-    IDE_Morph.prototype.scriptsPaneTexture = null;
     IDE_Morph.prototype.padding = 1;
 
     SpriteIconMorph.prototype.labelColor
@@ -202,7 +219,7 @@ IDE_Morph.prototype.setFlatDesign = function () {
     SceneIconMorph.prototype.labelColor
         = IDE_Morph.prototype.buttonLabelColor;
 
-    SyntaxElementMorph.prototype.contrast = 25;
+    SyntaxElementMorph.prototype.contrast = 65;
     ScriptsMorph.prototype.feedbackColor = new Color(153, 255, 213);
 };
 
@@ -222,6 +239,7 @@ IDE_Morph.prototype.scriptsTexture = function () {
     return pic;
 };
 
+IDE_Morph.prototype.setDefaultTheme();
 IDE_Morph.prototype.setDefaultDesign();
 
 // IDE_Morph instance creation:
@@ -246,7 +264,9 @@ function IDE_Morph(config = {}) {
         mode:           str, currently "presentation" or "edit"
         hideControls:   bool, hide/show the tool bar
         hideCategories: bool, hide/show the palette block category buttons
-        hideDefaultCat: bool, hide/show the buit-in bloc category buttons
+        hideProjectName:bool, hide/show the project title in the tool bar
+        noProjectItems: bood, hide/show project specific menu items
+        noDefaultCat:   bool, hide/show the buit-in bloc category buttons
         noSpriteEdits:  bool, hide/show the corral & sprite controls/menus
         noSprites:      bool, hide/show the stage, corral, sprite editor
         noPalette:      bool, hide/show the palette including the categories
@@ -255,6 +275,10 @@ function IDE_Morph(config = {}) {
         noRingify:      bool, disable/enable "ringify"/"unringify" in ctx menu
         noUserSettings: bool, disable/enable persistent user preferences
         noDevWarning:   bool, ignore development version incompatibility warning
+        noExitWarning:  bool, do not show a browser warning when closing the IDE
+                                with unsaved changes
+        preserveTitle:  bool, do not set the tab title dynamically to reflect
+                                the current Snap! version
         blocksZoom:     num, zoom factor for blocks, e.g. 1.5
         blocksFade:     num, fading percentage for blocks, e.g. 85
         zebra:          num, contrast percentage for nesting same-color blocks
@@ -268,9 +292,6 @@ IDE_Morph.prototype.init = function (config) {
     // global font setting
     MorphicPreferences.globalFontFamily = 'Helvetica, Arial';
 
-    // restore saved user preferences
-    this.userLanguage = 'pt_BR'; // user language preference for startup
-    
     // additional properties:
     this.cloud = new Cloud();
     this.cloudMsg = null;
@@ -328,8 +349,9 @@ IDE_Morph.prototype.init = function (config) {
     this.isAnimating = true;
     this.paletteWidth = 200; // initially same as logo width
     this.stageRatio = 1; // for IDE animations, e.g. when zooming
+    this.performerMode = false;
 
-	this.wasSingleStepping = false; // for toggling to and from app mode
+    this.wasSingleStepping = false; // for toggling to and from app mode
 
     this.loadNewProject = false; // flag when starting up translated
     this.shield = null;
@@ -345,10 +367,35 @@ IDE_Morph.prototype.init = function (config) {
 
     // override inherited properites:
     this.color = this.backgroundColor;
+
+    // initialize the primitive blocks dictionary
+    SpriteMorph.prototype.initBlocks();
+
+    // turn all primitives into custom blocks
+    // under construction, commented out for now
+    // SpriteMorph.prototype.customizeBlocks();
+    // this.bootstrapCustomizedPrimitives();
 };
 
 IDE_Morph.prototype.openIn = function (world) {
     var hash, myself = this;
+
+    window.onmessage = function (event) {
+        // make the API accessible from outside an iframe
+        var ide = myself;
+        if (!isNil(event.data.selector)) {
+            window.top.postMessage(
+                {
+                    selector: event.data.selector,
+                    response: ide[event.data.selector].apply(
+                        ide,
+                        event.data.params
+                    )
+                },
+                '*'
+            );
+        }
+    };
 
     function initUser(username) {
         sessionStorage.username = username;
@@ -393,7 +440,7 @@ IDE_Morph.prototype.openIn = function (world) {
     // onto the World in user-mode
     world.reactToDropOf = (morph) => {
         if (!(morph instanceof DialogBoxMorph ||
-        		(morph instanceof MenuMorph))) {
+            (morph instanceof MenuMorph))) {
             if (world.hand.grabOrigin) {
                 morph.slideBackTo(world.hand.grabOrigin);
             } else {
@@ -424,11 +471,11 @@ IDE_Morph.prototype.openIn = function (world) {
             window.onbeforeunload = nop;
         }
         if (dict.noExitWarning) {
-            window.onbeforeunload = nop;
+            window.onbeforeunload = window.cachedOnbeforeunload;
         }
         if (dict.blocksZoom) {
             myself.savingPreferences = false;
-            myself.setBlocksScale(Math.max(1,Math.min(dict.blocksZoom, 12)));
+            myself.setBlocksScale(Math.max(1, Math.min(dict.blocksZoom, 12)));
             myself.savingPreferences = true;
         }
 
@@ -439,7 +486,7 @@ IDE_Morph.prototype.openIn = function (world) {
         }
     }
 
-    function autoRun () {
+    function autoRun() {
         // wait until all costumes and sounds are loaded
         if (isLoadingAssets()) {
             myself.world().animations.push(
@@ -474,15 +521,15 @@ IDE_Morph.prototype.openIn = function (world) {
         if (location.hash.substr(0, 6) === '#open:') {
             hash = location.hash.substr(6);
             if (hash.charAt(0) === '%'
-                    || hash.search(/\%(?:[0-9a-f]{2})/i) > -1) {
+                || hash.search(/\%(?:[0-9a-f]{2})/i) > -1) {
                 hash = decodeURIComponent(hash);
             }
             if (contains(
-                    ['project', 'blocks', 'sprites', 'snapdata'].map(each =>
-                        hash.substr(0, 8).indexOf(each)
-                    ),
-                    1
-                )) {
+                ['project', 'blocks', 'sprites', 'snapdata'].map(each =>
+                    hash.substr(0, 8).indexOf(each)
+                ),
+                1
+            )) {
                 this.droppedText(hash);
             } else if (hash.match(/\.(png|gif|svg|jpe?g|tiff)$/i)) {
                 // Import an image, which could contain embedded scripts
@@ -502,7 +549,7 @@ IDE_Morph.prototype.openIn = function (world) {
                                 ),
                             embeddedData, canvas;
 
-                            if (strBuff.includes(dataMarker)) {
+                        if (strBuff.includes(dataMarker)) {
                             embeddedData = decodeURIComponent(
                                 strBuff.split(dataMarker)[1]
                             );
@@ -549,6 +596,14 @@ IDE_Morph.prototype.openIn = function (world) {
                                     projectData.indexOf('<project') === 0
                                 ) {
                                     this.rawOpenProjectString(projectData);
+                                } else if (
+                                    projectData.indexOf('<blocks') === 0
+                                ) {
+                                    this.rawOpenBlocksString(
+                                        projectData,
+                                        null, // name, optional
+                                        true  // silently
+                                    );
                                 }
                                 this.hasChangedMedia = true;
                             },
@@ -562,13 +617,13 @@ IDE_Morph.prototype.openIn = function (world) {
                     }
                 );
             }
-       } else if (location.hash.substr(0, 5) === '#run:') {
+        } else if (location.hash.substr(0, 5) === '#run:') {
             dict = '';
             hash = location.hash.substr(5);
 
             //decoding if hash is an encoded URI
             if (hash.charAt(0) === '%'
-                    || hash.search(/\%(?:[0-9a-f]{2})/i) > -1) {
+                || hash.search(/\%(?:[0-9a-f]{2})/i) > -1) {
                 hash = decodeURIComponent(hash);
             }
             idx = hash.indexOf("&");
@@ -578,21 +633,21 @@ IDE_Morph.prototype.openIn = function (world) {
             // xml project
             if (hash.substr(0, 8) === '<project') {
                 this.rawOpenProjectString(
-                    hash.slice(0,hash.indexOf('</project>') + 10)
+                    hash.slice(0, hash.indexOf('</project>') + 10)
                 );
                 applyFlags(
                     myself.cloud.parseDict(
                         hash.substr(hash.indexOf('</project>') + 10)
                     )
                 );
-            // no project, only flags
-            } else if (idx == 0){
+                // no project, only flags
+            } else if (idx == 0) {
                 applyFlags(myself.cloud.parseDict(hash));
-            // xml file path
-            // three path types allowed:
-            //  (1) absolute (http...),
-            //  (2) relative to site ("/path") or
-            //  (3) relative to folder ("path")
+                // xml file path
+                // three path types allowed:
+                //  (1) absolute (http...),
+                //  (2) relative to site ("/path") or
+                //  (3) relative to folder ("path")
             } else {
                 this.shield = new Morph();
                 this.shield.alpha = 0;
@@ -601,7 +656,7 @@ IDE_Morph.prototype.openIn = function (world) {
                 this.showMessage('Fetching project...');
                 if (idx > 0) {
                     dict = myself.cloud.parseDict(hash.substr(idx));
-                    hash = hash.slice(0,idx);
+                    hash = hash.slice(0, idx);
                 }
                 this.getURL(
                     hash,
@@ -716,11 +771,11 @@ IDE_Morph.prototype.openIn = function (world) {
                 dict.ProjectName,
                 dict.Username,
                 projectData => {
-                	myself.saveXMLAs(projectData, dict.ProjectName);
-                 	myself.showMessage(
-                  	   'Saved project\n' + dict.ProjectName,
-                      	2
-                 	);
+                    myself.saveXMLAs(projectData, dict.ProjectName);
+                    myself.showMessage(
+                        'Saved project\n' + dict.ProjectName,
+                        2
+                    );
                 },
                 this.cloudError()
             );
@@ -737,9 +792,9 @@ IDE_Morph.prototype.openIn = function (world) {
         var langSetting = null;
         if (location.hash.substr(0, 6) === '#lang:') {
             if (location.hash.charAt(8) === '_') {
-                langSetting = location.hash.slice(6,11);
+                langSetting = location.hash.slice(6, 11);
             } else {
-                langSetting = location.hash.slice(6,8);
+                langSetting = location.hash.slice(6, 8);
             }
         }
         // lang-flag wins lang-anchor setting
@@ -826,7 +881,15 @@ IDE_Morph.prototype.applyConfigurations = function () {
         } else if (cnf.design === 'classic') {
             this.setDefaultDesign();
         }
-        SpriteMorph.prototype.initBlocks();
+    }
+
+    // theme
+    if (cnf.theme) {
+        if (cnf.theme === 'bright') {
+            this.setBrightTheme();
+        } else if (cnf.theme === 'dark') {
+            this.setDefaultTheme();
+        }
     }
 
     // interaction mode
@@ -842,7 +905,6 @@ IDE_Morph.prototype.applyConfigurations = function () {
             Math.max(1, Math.min(cnf.blocksZoom, 12))
         );
         CommentMorph.prototype.refreshScale();
-        SpriteMorph.prototype.initBlocks();
     }
 
     // blocks fade
@@ -892,6 +954,12 @@ IDE_Morph.prototype.applyConfigurations = function () {
     // disable cloud access
     if (cnf.noCloud) {
         this.cloud.disable();
+        this.fixLayout();
+    }
+
+    // disable onbeforeunload close warning
+    if (cnf.noExitWarning) {
+        window.onbeforeunload = window.cachedOnbeforeunload;
     }
 };
 
@@ -961,20 +1029,19 @@ IDE_Morph.prototype.createLogo = function () {
     // otherwise would be compromised by annoying browser security.
 
     // this.logo.texture = this.logoURL; // original code, commented out
-//        this.logo.texture = "data:image/png;base64,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";
-
-	this.logo.texture = "data:image/png;base64,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KBDYBRo12/4+tu3GCeB/Bq60lr9SB2Y+Sa+1tPAR0LsNXFy3NHkPuNwBBp90yZAcyU9TyOeB9zP6pizQfwt0r7m9Nfdx+gCkqavEDXBwCIwVKHvd491d7b39e6bZ3w+u03K/ULnnVQAADRppVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+Cjx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDQuNC4wLUV4aXYyIj4KIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIKICAgIHhtbG5zOkdJTVA9Imh0dHA6Ly93d3cuZ2ltcC5vcmcveG1wLyIKICAgIHhtbG5zOnRpZmY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vdGlmZi8xLjAvIgogICAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIgogICB4bXBNTTpEb2N1bWVudElEPSJnaW1wOmRvY2lkOmdpbXA6OWUzZmJmODktZDY1ZC00YzlhLTgyYzgtMTIyYWQ5NGNhMjEzIgogICB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOmY1MjRmMjQxLTRlNzAtNDAwNS05ODNhLTU2ZGI0ZjcxYzllMCIKICAgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ4bXAuZGlkOjFkYjdmZTkzLTYzZmMtNGMyNS1iYjVmLWE0ZTdiYjg3NmJjNyIKICAgZGM6Rm9ybWF0PSJpbWFnZS9wbmciCiAgIEdJTVA6QVBJPSIyLjAiCiAgIEdJTVA6UGxhdGZvcm09IkxpbnV4IgogICBHSU1QOlRpbWVTdGFtcD0iMTY3OTQxNzE4MDYxNzMyOSIKICAgR0lNUDpWZXJzaW9uPSIyLjEwLjMwIgogICB0aWZmOk9yaWVudGF0aW9uPSIxIgogICB4bXA6Q3JlYXRvclRvb2w9IkdJTVAgMi4xMCI+CiAgIDx4bXBNTTpIaXN0b3J5PgogICAgPHJkZjpTZXE+CiAgICAgPHJkZjpsaQogICAgICBzdEV2dDphY3Rpb249InNhdmVkIgogICAgICBzdEV2dDpjaGFuZ2VkPSIvIgogICAgICBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOjQ0Zjg0NWQ2LTE5ODItNGNjNC1iOWEyLWFhZTNhYjMzNzdmOCIKICAgICAgc3RFdnQ6c29mdHdhcmVBZ2VudD0iR2ltcCAyLjEwIChMaW51eCkiCiAgICAgIHN0RXZ0OndoZW49IjIwMjMtMDMtMjFUMTI6NDY6MjAtMDQ6MDAiLz4KICAgIDwvcmRmOlNlcT4KICAgPC94bXBNTTpIaXN0b3J5PgogIDwvcmRmOkRlc2NyaXB0aW9uPgogPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgIAo8P3hwYWNrZXQgZW5kPSJ3Ij8+0ysjjQAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAAeJAAAHiQBpunZywAAAAd0SU1FB+cDFRAuFOoJIsYAABAgSURBVGjerZp5cFzVlcZ/973eF3Vr321Jlnds7BjbxDHEJgTPsCchTDYqmUkmMwFSlRSVhJCFIVAkAUIGkgyTTLmYTKDC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";
+    this.logo.texture = "data:image/png;base64,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KBDYBRo12/4+tu3GCeB/Bq60lr9SB2Y+Sa+1tPAR0LsNXFy3NHkPuNwBBp90yZAcyU9TyOeB9zP6pizQfwt0r7m9Nfdx+gCkqavEDXBwCIwVKHvd491d7b39e6bZ3w+u03K/ULnnVQAADRppVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+Cjx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDQuNC4wLUV4aXYyIj4KIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIKICAgIHhtbG5zOkdJTVA9Imh0dHA6Ly93d3cuZ2ltcC5vcmcveG1wLyIKICAgIHhtbG5zOnRpZmY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vdGlmZi8xLjAvIgogICAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIgogICB4bXBNTTpEb2N1bWVudElEPSJnaW1wOmRvY2lkOmdpbXA6OWUzZmJmODktZDY1ZC00YzlhLTgyYzgtMTIyYWQ5NGNhMjEzIgogICB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOmY1MjRmMjQxLTRlNzAtNDAwNS05ODNhLTU2ZGI0ZjcxYzllMCIKICAgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ4bXAuZGlkOjFkYjdmZTkzLTYzZmMtNGMyNS1iYjVmLWE0ZTdiYjg3NmJjNyIKICAgZGM6Rm9ybWF0PSJpbWFnZS9wbmciCiAgIEdJTVA6QVBJPSIyLjAiCiAgIEdJTVA6UGxhdGZvcm09IkxpbnV4IgogICBHSU1QOlRpbWVTdGFtcD0iMTY3OTQxNzE4MDYxNzMyOSIKICAgR0lNUDpWZXJzaW9uPSIyLjEwLjMwIgogICB0aWZmOk9yaWVudGF0aW9uPSIxIgogICB4bXA6Q3JlYXRvclRvb2w9IkdJTVAgMi4xMCI+CiAgIDx4bXBNTTpIaXN0b3J5PgogICAgPHJkZjpTZXE+CiAgICAgPHJkZjpsaQogICAgICBzdEV2dDphY3Rpb249InNhdmVkIgogICAgICBzdEV2dDpjaGFuZ2VkPSIvIgogICAgICBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOjQ0Zjg0NWQ2LTE5ODItNGNjNC1iOWEyLWFhZTNhYjMzNzdmOCIKICAgICAgc3RFdnQ6c29mdHdhcmVBZ2VudD0iR2ltcCAyLjEwIChMaW51eCkiCiAgICAgIHN0RXZ0OndoZW49IjIwMjMtMDMtMjFUMTI6NDY6MjAtMDQ6MDAiLz4KICAgIDwvcmRmOlNlcT4KICAgPC94bXBNTTpIaXN0b3J5PgogIDwvcmRmOkRlc2NyaXB0aW9uPgogPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgIAo8P3hwYWNrZXQgZW5kPSJ3Ij8+0ysjjQAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAAeJAAAHiQBpunZywAAAAd0SU1FB+cDFRAuFOoJIsYAABAgSURBVGjerZp5cFzVlcZ/973eF3Vr321Jlnds7BjbxDHEJgTPsCchTDYqmUkmMwFSlRSVhJCFIVAkAUIGkgyTTLmYTKDC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";
     this.logo.render = function (ctx) {
         var gradient = ctx.createLinearGradient(
-                0,
-                0,
-                this.width(),
-                0
-            );
+            0,
+            0,
+            this.width(),
+            0
+        );
         gradient.addColorStop(0, 'black');
         gradient.addColorStop(0.5, myself.frameColor.toString());
-        ctx.fillStyle = MorphicPreferences.isFlat ?
-                myself.frameColor.toString() : gradient;
+        ctx.fillStyle = MorphicPreferences.isFlat ||
+            IDE_Morph.prototype.isBright ?
+            myself.frameColor.toString() : gradient;
         ctx.fillRect(0, 0, this.width(), this.height());
         if (this.cachedTexture) {
             this.renderCachedTexture(ctx);
@@ -1016,12 +1083,12 @@ IDE_Morph.prototype.createControlBar = function () {
         steppingButton,
         cloudButton,
         x,
-        colors = MorphicPreferences.isFlat ? this.tabColors
-        : [
-            this.groupColor,
-            this.frameColor.darker(50),
-            this.frameColor.darker(50)
-        ],
+        colors = this.isBright ? this.tabColors
+            : [
+                this.groupColor,
+                this.frameColor.darker(50),
+                this.frameColor.darker(50)
+            ],
         activeColor = new Color(153, 255, 213),
         activeColors = [
             activeColor,
@@ -1040,9 +1107,12 @@ IDE_Morph.prototype.createControlBar = function () {
 
     // let users manually enforce re-layout when changing orientation
     // on mobile devices
+    // Leaving it out, because it's most probably unneeded
+    /*
     this.controlBar.mouseClickLeft = function () {
         this.world().fillPage();
     };
+    */
 
     this.add(this.controlBar);
 
@@ -1067,7 +1137,7 @@ IDE_Morph.prototype.createControlBar = function () {
     button.padding = 0;
     button.labelShadowOffset = new Point(-1, -1);
     button.labelShadowColor = colors[1];
-    button.labelColor = MorphicPreferences.isFlat ?
+    button.labelColor = this.isBright ?
         WHITE
         : this.buttonLabelColor;
     button.contrast = this.buttonContrast;
@@ -1137,6 +1207,11 @@ IDE_Morph.prototype.createControlBar = function () {
     this.controlBar.add(steppingButton);
     this.controlBar.steppingButton = steppingButton; // for refreshing
 
+    if (this.performerMode) {
+        appModeButton.hide();
+        stageSizeButton.hide();
+    }
+
     // stopButton
     button = new ToggleButtonMorph(
         null, // colors
@@ -1147,8 +1222,8 @@ IDE_Morph.prototype.createControlBar = function () {
             new SymbolMorph('square', 14)
         ],
         () => this.stage ? // query
-                myself.stage.enableCustomHatBlocks &&
-                    myself.stage.threads.pauseCustomHatBlocks
+            myself.stage.enableCustomHatBlocks &&
+            myself.stage.threads.pauseCustomHatBlocks
             : true
     );
 
@@ -1161,7 +1236,7 @@ IDE_Morph.prototype.createControlBar = function () {
     button.labelShadowOffset = new Point(-1, -1);
     button.labelShadowColor = colors[1];
     button.labelColor = new Color(
-        MorphicPreferences.isFlat ? 128 : 200,
+        this.isBright ? 128 : 200,
         0,
         0
     );
@@ -1194,9 +1269,9 @@ IDE_Morph.prototype.createControlBar = function () {
     button.padding = 0;
     button.labelShadowOffset = new Point(-1, -1);
     button.labelShadowColor = colors[1];
-    button.labelColor = MorphicPreferences.isFlat ?
+    button.labelColor = this.isBright ?
         new Color(220, 185, 0)
-            : new Color(255, 220, 0);
+        : new Color(255, 220, 0);
     button.contrast = this.buttonContrast;
     // button.hint = 'pause/resume\nall scripts';
     button.fixLayout();
@@ -1246,7 +1321,7 @@ IDE_Morph.prototype.createControlBar = function () {
 
     button.labelColor = new Color(
         0,
-        MorphicPreferences.isFlat ? 100 : 200,
+        this.isBright ? 100 : 200,
         0
     );
     button.contrast = this.buttonContrast;
@@ -1354,11 +1429,11 @@ IDE_Morph.prototype.createControlBar = function () {
     this.controlBar.fixLayout = function () {
         x = this.right() - padding;
         [stopButton, pauseButton, startButton].forEach(button => {
-                button.setCenter(myself.controlBar.center());
-                button.setRight(x);
-                x -= button.width();
-                x -= padding;
-            }
+            button.setCenter(myself.controlBar.center());
+            button.setRight(x);
+            x -= button.width();
+            x -= padding;
+        }
         );
 
         x = startButton.left() - (3 * padding + 2 * stageSizeButton.width());
@@ -1366,21 +1441,25 @@ IDE_Morph.prototype.createControlBar = function () {
             x = Math.min(
                 x,
                 myself.right() - myself.stage.dimensions.x *
-                    (myself.isSmallStage ? myself.stageRatio : 1) -
-                    (myself.config.border || 0)
+                (myself.isSmallStage ? myself.stageRatio : 1) -
+                (myself.config.border || 0)
             );
             x = Math.max(x, this.left());
         }
         [stageSizeButton, appModeButton].forEach(button => {
-                x += padding;
-                button.setCenter(myself.controlBar.center());
-                button.setLeft(x);
-                x += button.width();
-            }
+            x += padding;
+            button.setCenter(myself.controlBar.center());
+            button.setLeft(x);
+            x += button.width();
+        }
         );
 
         slider.setCenter(myself.controlBar.center());
-        slider.setRight(stageSizeButton.left() - padding);
+        if (myself.performerMode) {
+            slider.setRight(startButton.left() - padding);
+        } else {
+            slider.setRight(stageSizeButton.left() - padding);
+        }
 
         steppingButton.setCenter(myself.controlBar.center());
         steppingButton.setRight(slider.left() - padding);
@@ -1388,7 +1467,15 @@ IDE_Morph.prototype.createControlBar = function () {
         settingsButton.setCenter(myself.controlBar.center());
         settingsButton.setLeft(this.left());
 
+        if (myself.config.hideSettings) {
+            settingsButton.hide();
+        }
+
         projectButton.setCenter(myself.controlBar.center());
+
+        if (myself.config.noImports || myself.config.hideProjects) {
+            projectButton.hide();
+        }
 
         if (myself.cloud.disabled) {
             cloudButton.hide();
@@ -1417,7 +1504,7 @@ IDE_Morph.prototype.createControlBar = function () {
     this.controlBar.refreshResumeSymbol = function () {
         var pauseSymbols;
         if (Process.prototype.enableSingleStepping &&
-                Process.prototype.flashTime > 0.5) {
+            Process.prototype.flashTime > 0.5) {
             myself.stage.threads.pauseAll(myself.stage);
             pauseSymbols = [
                 new SymbolMorph('pause', 12),
@@ -1444,22 +1531,24 @@ IDE_Morph.prototype.createControlBar = function () {
         if (this.label) {
             this.label.destroy();
         }
-        if (myself.isAppMode) {
+        if (myself.isAppMode || myself.config.hideProjectName) {
             return;
         }
         scene = myself.scenes.at(1) !== myself.scene ?
-                ' (' + myself.scene.name + ')' : '';
+            ' (' + myself.scene.name + ')' : '';
         name = (myself.getProjectName() || localize('untitled'));
-        document.title = "PatruLINO IDE " +
-            (myself.getProjectName() ? name : PatruLINOVersion);
+        if (!myself.config.preserveTitle) {
+            document.title = "Snap! " +
+                (myself.getProjectName() ? name : SnapVersion);
+        }
         txt = new StringMorph(
-            prefix + name +  scene + suffix,
+            prefix + name + scene + suffix,
             14,
             'sans-serif',
             true,
             false,
             false,
-            MorphicPreferences.isFlat ? null : new Point(2, 1),
+            IDE_Morph.prototype.isBright ? null : new Point(2, 1),
             myself.frameColor.darker(myself.buttonContrast)
         );
         txt.color = myself.buttonLabelColor;
@@ -1487,7 +1576,7 @@ IDE_Morph.prototype.createCategories = function () {
             : changePalette,
         categoryQueryAction = this.scene.unifiedPalette ? queryTopCategory
             : queryCurrentCategory,
-        shift = this.config.hideDefaultCat ? 4 : 0,
+        shift = this.config.noDefaultCat ? 4 : 0,
         flag = true;
 
     if (this.categories) {
@@ -1517,7 +1606,7 @@ IDE_Morph.prototype.createCategories = function () {
         var dict = myself.currentSprite.emptyCategories();
         dict.variables = dict.variables || dict.lists || dict.other;
         this.buttons.forEach(cat => {
-            if (dict[cat.category]) {
+            if (Object.hasOwn(dict, cat.category) && (dict[cat.category])) {
                 cat.enable();
             } else {
                 cat.disable();
@@ -1551,7 +1640,7 @@ IDE_Morph.prototype.createCategories = function () {
         var labelWidth = 75,
             colors = [
                 myself.frameColor,
-                myself.frameColor.darker(MorphicPreferences.isFlat ? 5 : 50),
+                myself.frameColor.darker(IDE_Morph.prototype.isBright ? 5 : 50),
                 SpriteMorph.prototype.blockColor[category]
             ],
             button;
@@ -1572,9 +1661,10 @@ IDE_Morph.prototype.createCategories = function () {
         button.corner = 8;
         button.padding = 0;
         button.labelShadowOffset = new Point(-1, -1);
-        button.labelShadowColor = colors[1];
+        button.labelShadowColor = IDE_Morph.prototype.isBright ?
+            CLEAR : colors[1];
         button.labelColor = myself.buttonLabelColor;
-        if (MorphicPreferences.isFlat) {
+        if (IDE_Morph.prototype.isBright) {
             button.labelPressColor = WHITE;
         }
         button.fixLayout();
@@ -1588,7 +1678,7 @@ IDE_Morph.prototype.createCategories = function () {
         var labelWidth = 168,
             colors = [
                 myself.frameColor,
-                myself.frameColor.darker(MorphicPreferences.isFlat ? 5 : 50),
+                myself.frameColor.darker(IDE_Morph.prototype.isBright ? 5 : 50),
                 color
             ],
             button;
@@ -1609,9 +1699,10 @@ IDE_Morph.prototype.createCategories = function () {
         button.corner = 8;
         button.padding = 0;
         button.labelShadowOffset = new Point(-1, -1);
-        button.labelShadowColor = colors[1];
+        button.labelShadowColor = IDE_Morph.prototype.isBright ?
+            CLEAR : colors[1];
         button.labelColor = myself.buttonLabelColor;
-        if (MorphicPreferences.isFlat) {
+        if (IDE_Morph.prototype.isBright) {
             button.labelPressColor = WHITE;
         }
         button.fixLayout();
@@ -1642,8 +1733,9 @@ IDE_Morph.prototype.createCategories = function () {
             col = (i < 4 || i > 7) ? 1 : 2;
             button.setPosition(new Point(
                 l + (col * xPadding + ((col - 1) * buttonWidth)),
-                t + (((row - shift) + 1) * yPadding + ((row - shift) * buttonHeight) + border) +
-                    (i > 7 ? border + 2 : 0)
+                t + (((row - shift) + 1) * yPadding + ((row - shift) *
+                    buttonHeight) + border) +
+                (i > 7 ? border + 2 : 0)
             ));
         });
 
@@ -1671,18 +1763,18 @@ IDE_Morph.prototype.createCategories = function () {
             myself.categories.scroller = scroller;
             myself.categories.setHeight(
                 (4 + 1 - shift) * yPadding
-                    + (4 - shift) * buttonHeight
-                    + 6 * (yPadding + buttonHeight) + border + 2
-                    + 2 * border
+                + (4 - shift) * buttonHeight
+                + 6 * (yPadding + buttonHeight) + border + 2
+                + 2 * border
             );
         } else {
             myself.categories.setHeight(
                 (4 + 1 - shift) * yPadding
-                    + (4 - shift) * buttonHeight
-                    + (more ?
-                        (more * (yPadding + buttonHeight) + border + 2)
-                            : 0)
-                    + 2 * border
+                + (4 - shift) * buttonHeight
+                + (more ?
+                    (more * (yPadding + buttonHeight) + border + 2)
+                    : 0)
+                + 2 * border
             );
         }
     }
@@ -1741,7 +1833,7 @@ IDE_Morph.prototype.createPalette = function (forSearching) {
         this.palette.toolBar.labelShadowColor = new Color(140, 140, 140);
         this.palette.toolBar.fixLayout();
         this.palette.add(this.palette.toolBar);
-	    */
+        */
 
     } else {
         this.palette = this.currentSprite.palette(this.currentCategory);
@@ -1819,7 +1911,7 @@ IDE_Morph.prototype.createPalette = function (forSearching) {
 
 IDE_Morph.prototype.createPaletteHandle = function () {
     // assumes that the palette has already been created
-    if (this.paletteHandle) {this.paletteHandle.destroy(); }
+    if (this.paletteHandle) { this.paletteHandle.destroy(); }
     this.paletteHandle = new PaletteHandleMorph(this.categories);
     this.add(this.paletteHandle);
 };
@@ -1834,9 +1926,11 @@ IDE_Morph.prototype.createStage = function () {
 
 IDE_Morph.prototype.createStageHandle = function () {
     // assumes that the stage has already been created
-    if (this.stageHandle) {this.stageHandle.destroy(); }
-    this.stageHandle = new StageHandleMorph(this.stage);
-    this.add(this.stageHandle);
+    if (this.stageHandle) { this.stageHandle.destroy(); }
+    if (!this.performerMode) {
+        this.stageHandle = new StageHandleMorph(this.stage);
+        this.add(this.stageHandle);
+    }
 };
 
 IDE_Morph.prototype.createSpriteBar = function () {
@@ -1908,7 +2002,7 @@ IDE_Morph.prototype.createSpriteBar = function () {
         button.setPosition(myself.spriteBar.position().add(new Point(2, 4)));
         button.setTop(button.top()
             + ((rotationStyleButtons.length - 1) * (button.height() + 2))
-            );
+        );
         myself.spriteBar.add(button);
         if (myself.currentSprite instanceof StageMorph) {
             button.hide();
@@ -1981,7 +2075,7 @@ IDE_Morph.prototype.createSpriteBar = function () {
     padlock.pressColor = tabColors[1];
 
     padlock.tick.shadowOffset = MorphicPreferences.isFlat ?
-            ZERO : new Point(-1, -1);
+        ZERO : new Point(-1, -1);
     padlock.tick.shadowColor = BLACK;
     padlock.tick.color = this.buttonLabelColor;
     padlock.tick.isBold = false;
@@ -1997,12 +2091,12 @@ IDE_Morph.prototype.createSpriteBar = function () {
     // tab bar
     tabBar.tabTo = function (tabString) {
         var active;
-        if (myself.currentTab === tabString) {return; }
+        if (myself.currentTab === tabString) { return; }
         myself.world().hand.destroyTemporaries();
         myself.currentTab = tabString;
         this.children.forEach(each => {
             each.refresh();
-            if (each.state) {active = each; }
+            if (each.state) { active = each; }
         });
         active.refresh(); // needed when programmatically tabbing
         myself.createSpriteEditor();
@@ -2025,7 +2119,7 @@ IDE_Morph.prototype.createSpriteBar = function () {
 
     tab.getPressRenderColor = function () {
         if (MorphicPreferences.isFlat ||
-                SyntaxElementMorph.prototype.alpha > 0.85) {
+            SyntaxElementMorph.prototype.alpha > 0.85) {
             return this.pressColor;
         }
         return this.pressColor.mixed(
@@ -2094,15 +2188,25 @@ IDE_Morph.prototype.createSpriteEditor = function () {
 
     if (this.currentTab === 'scripts') {
         scripts.isDraggable = false;
-        scripts.color = this.groupColor;
-        scripts.cachedTexture = this.scriptsPaneTexture;
+        if (this.performerMode) {
+            scripts.alpha = 0;
+        } else {
+            scripts.alpha = 1;
+            scripts.color = this.groupColor;
+            scripts.cachedTexture = MorphicPreferences.isFlat ? null
+                : this.scriptsTexture();
+        }
 
         this.spriteEditor = new ScrollFrameMorph(
             scripts,
             null,
             this.sliderColor
         );
-        this.spriteEditor.color = this.groupColor;
+        if (this.performerMode) {
+            this.spriteEditor.alpha = 0;
+        } else {
+            this.spriteEditor.color = this.groupColor;
+        }
         this.spriteEditor.padding = 10;
         this.spriteEditor.growth = 50;
         this.spriteEditor.isDraggable = false;
@@ -2174,12 +2278,12 @@ IDE_Morph.prototype.createCorralBar = function () {
         trashbutton,
         flag = true,
         myself = this,
-        colors = MorphicPreferences.isFlat ? this.tabColors
-        : [
-            this.groupColor,
-            this.frameColor.darker(50),
-            this.frameColor.darker(50)
-        ];
+        colors = IDE_Morph.prototype.isBright ? this.tabColors
+            : [
+                this.groupColor,
+                this.frameColor.darker(50),
+                this.frameColor.darker(50)
+            ];
 
     if (this.corralBar) {
         flag = this.corralBar.isVisible;
@@ -2240,10 +2344,10 @@ IDE_Morph.prototype.createCorralBar = function () {
 
     if (CamSnapshotDialogMorph.prototype.enableCamera) {
         cambutton = new PushButtonMorph(
-                this,
-                "newCamSprite",
-                new SymbolMorph("camera", 15)
-                );
+            this,
+            "newCamSprite",
+            new SymbolMorph("camera", 15)
+        );
         cambutton.corner = 12;
         cambutton.color = colors[0];
         cambutton.highlightColor = colors[1];
@@ -2255,7 +2359,7 @@ IDE_Morph.prototype.createCorralBar = function () {
         cambutton.labelColor = this.buttonLabelColor;
         cambutton.contrast = this.buttonContrast;
         cambutton.hint = "take a camera snapshot and\n" +
-        	"import it as a new sprite";
+            "import it as a new sprite";
         cambutton.fixLayout();
         cambutton.setCenter(this.corralBar.center());
         cambutton.setLeft(
@@ -2329,7 +2433,7 @@ IDE_Morph.prototype.createCorralBar = function () {
 IDE_Morph.prototype.createCorral = function (keepSceneAlbum) {
     // assumes the corral bar has already been created
     var frame, padding = 5, myself = this,
-        album = this.corral? this.corral.album : null;
+        album = this.corral ? this.corral.album : null;
 
     this.createStageHandle();
     this.createPaletteHandle();
@@ -2370,7 +2474,7 @@ IDE_Morph.prototype.createCorral = function (keepSceneAlbum) {
 
     // scenes corral
     this.corral.album = keepSceneAlbum ? album
-            : new SceneAlbumMorph(this, this.sliderColor);
+        : new SceneAlbumMorph(this, this.sliderColor);
     this.corral.album.color = this.frameColor;
     this.corral.add(this.corral.album);
 
@@ -2502,14 +2606,32 @@ IDE_Morph.prototype.fixLayout = function (situation) {
 
     if (situation !== 'refreshPalette') {
         // stage
-        if (this.isEmbedMode) {
+        if (this.performerMode) {
+            this.stage.setLeft(this.palette.right() + padding);
+            this.stage.setTop(this.spriteBar.bottom() + padding);
+            this.stage.setScale(1);
+            this.stageRatio = 1;
+            this.isSmallStage = false;
+            this.stage.dimensions = new Point(
+                this.width() - this.palette.width(),
+                this.palette.height() -
+                this.corralBar.height() -
+                this.corral.childThatIsA(SpriteIconMorph).height()
+            );
+            this.stage.stopVideo();
+            this.stage.setExtent(this.stage.dimensions);
+            this.stage.resizePenTrails();
+            Costume.prototype.maxDimensions = this.stage.dimensions;
+            this.paletteHandle.fixLayout();
+            this.controlBar.stageSizeButton.hide();
+        } else if (this.isEmbedMode) {
             this.stage.setScale(Math.floor(Math.min(
                 this.width() / this.stage.dimensions.x,
                 this.height() / this.stage.dimensions.y
-                ) * 100) / 100);
+            ) * 100) / 100);
             flag = this.embedPlayButton.flag;
             flag.size = Math.floor(Math.min(
-                        this.width(), this.height())) / 5;
+                this.width(), this.height())) / 5;
             flag.fixLayout();
             this.embedPlayButton.size = flag.size * 1.6;
             this.embedPlayButton.fixLayout();
@@ -2524,7 +2646,7 @@ IDE_Morph.prototype.fixLayout = function (situation) {
             this.stage.setScale(Math.floor(Math.min(
                 (this.width() - padding * 2) / this.stage.dimensions.x,
                 (this.height() - this.controlBar.height() * 2 - padding * 2)
-                    / this.stage.dimensions.y
+                / this.stage.dimensions.y
             ) * 10) / 10);
             this.stage.setCenter(this.center());
         } else {
@@ -2532,7 +2654,7 @@ IDE_Morph.prototype.fixLayout = function (situation) {
             this.stage.setTop(
                 cnf.hideControls ?
                     this.top() + border
-                        : this.logo.bottom() + padding
+                    : this.logo.bottom() + padding
             );
             this.stage.setRight(this.right() - border);
             if (cnf.noSprites) {
@@ -2545,10 +2667,10 @@ IDE_Morph.prototype.fixLayout = function (situation) {
                 maxPaletteWidth = Math.max(
                     200,
                     this.width() -
-                        this.stage.width() -
-                        this.spriteBar.tabBar.width() -
-                        padding * 2 -
-                        border * 2
+                    this.stage.width() -
+                    this.spriteBar.tabBar.width() -
+                    padding * 2 -
+                    border * 2
                 );
             }
             if (this.paletteWidth > maxPaletteWidth) {
@@ -2567,7 +2689,7 @@ IDE_Morph.prototype.fixLayout = function (situation) {
         this.spriteBar.setTop(
             cnf.hideControls ?
                 this.top() + border
-                    : this.logo.bottom() + padding
+                : this.logo.bottom() + padding
         );
         this.spriteBar.setWidth(
             Math.max(0, this.stage.left() - padding - this.spriteBar.left())
@@ -2579,21 +2701,28 @@ IDE_Morph.prototype.fixLayout = function (situation) {
 
         // spriteEditor
         if (this.spriteEditor.isVisible) {
-            this.spriteEditor.setLeft(this.spriteBar.left());
-            this.spriteEditor.setTop(
-                cnf.noSprites || cnf.noSpriteEdits ?
-                    (cnf.hideControls ? this.top() + border
-                        : this.controlBar.bottom() + padding)
-                    : this.spriteBar.bottom() + padding
-            );
-            this.spriteEditor.setWidth(
-                cnf.noSprites ?
-                    this.right() - this.spriteEditor.left() - border
-                    : this.spriteBar.width()
-            );
-            this.spriteEditor.setHeight(
-                this.bottom() - this.spriteEditor.top() - border
-            );
+            if (this.performerMode) {
+                this.spriteEditor.setTop(this.stage.top());
+                this.spriteEditor.setLeft(this.stage.left());
+                this.spriteEditor.setWidth(this.stage.width());
+                this.spriteEditor.setHeight(this.stage.height());
+            } else {
+                this.spriteEditor.setLeft(this.spriteBar.left());
+                this.spriteEditor.setTop(
+                    cnf.noSprites || cnf.noSpriteEdits ?
+                        (cnf.hideControls ? this.top() + border
+                            : this.controlBar.bottom() + padding)
+                        : this.spriteBar.bottom() + padding
+                );
+                this.spriteEditor.setWidth(
+                    cnf.noSprites ?
+                        this.right() - this.spriteEditor.left() - border
+                        : this.spriteBar.width()
+                );
+                this.spriteEditor.setHeight(
+                    this.bottom() - this.spriteEditor.top() - border
+                );
+            }
         }
 
         // corralBar
@@ -2677,8 +2806,11 @@ IDE_Morph.prototype.setExtent = function (point) {
             );
         }
     }
-    ext = point.max(minExt);
-
+    if (this.performerMode) {
+        ext = point;
+    } else {
+        ext = point.max(minExt);
+    }
     if (!this.isAppMode) {
         // in edit mode adjust stage ratio if necessary
         // (in presentation mode this is already handled separately)
@@ -2694,7 +2826,7 @@ IDE_Morph.prototype.setExtent = function (point) {
             );
             this.stageRatio = Math.min(
                 maxRatio,
-                Math.max(minRatio,this.stageRatio)
+                Math.max(minRatio, this.stageRatio)
             );
         }
     }
@@ -2715,7 +2847,7 @@ IDE_Morph.prototype.render = function (ctx) {
         frame = this.stage.bounds.translateBy(
             this.position().neg()
         ).expandBy(2);
-        ctx.strokeStyle = (MorphicPreferences.isFlat ? this.backgroundColor
+        ctx.strokeStyle = (this.isBright ? this.backgroundColor
             : this.groupColor).toString();
         ctx.lineWidth = 1;
         ctx.beginPath();
@@ -2754,7 +2886,7 @@ IDE_Morph.prototype.endBulkDrop = function () {
 };
 
 IDE_Morph.prototype.droppedImage = function (aCanvas, name, embeddedData, src) {
-    if (this.config.noImports) {return; }
+    if (this.config.noImports) { return; }
 
     var costume = new Costume(
         aCanvas,
@@ -2767,10 +2899,10 @@ IDE_Morph.prototype.droppedImage = function (aCanvas, name, embeddedData, src) {
         this.inform(
             'Unable to import this image',
             'The picture you wish to import has been\n' +
-                'tainted by a restrictive cross-origin policy\n' +
-                'making it unusable for costumes in Snap!. \n\n' +
-                'Try downloading this picture first to your\n' +
-                'computer, and import it from there.'
+            'tainted by a restrictive cross-origin policy\n' +
+            'making it unusable for costumes in Snap!. \n\n' +
+            'Try downloading this picture first to your\n' +
+            'computer, and import it from there.'
         );
         return;
     }
@@ -2804,7 +2936,7 @@ IDE_Morph.prototype.droppedImage = function (aCanvas, name, embeddedData, src) {
 };
 
 IDE_Morph.prototype.droppedSVG = function (anImage, name) {
-    if (this.config.noImports) {return; }
+    if (this.config.noImports) { return; }
 
     var myself,
         viewBox,
@@ -2812,7 +2944,7 @@ IDE_Morph.prototype.droppedSVG = function (anImage, name) {
         scale = 1,
         svgNormalized,
         headerLenght = anImage.src.search('base64') + 7,
-            // usually 26 from "data:image/svg+xml;base64,"
+        // usually 26 from "data:image/svg+xml;base64,"
         svgStrEncoded = anImage.src.substring(headerLenght),
         svgObj = new DOMParser().parseFromString(
             atob(svgStrEncoded), "image/svg+xml"
@@ -2823,7 +2955,7 @@ IDE_Morph.prototype.droppedSVG = function (anImage, name) {
 
     // checking for svg 'width' and 'height' attributes
     if (svgObj.attributes.getNamedItem("width") &&
-            svgObj.attributes.getNamedItem("height")) {
+        svgObj.attributes.getNamedItem("height")) {
         w = parseFloat(svgObj.attributes.getNamedItem("width").value);
         h = parseFloat(svgObj.attributes.getNamedItem("height").value);
     } else {
@@ -2858,9 +2990,9 @@ IDE_Morph.prototype.droppedSVG = function (anImage, name) {
 
     // loading image, normalized if it needed
     // all the images are:
-        // sized, with 'width' and 'height' attributes
-        // fitted to stage dimensions
-        // and with their 'viewBox' attribute
+    // sized, with 'width' and 'height' attributes
+    // fitted to stage dimensions
+    // and with their 'viewBox' attribute
     if (normalizing) {
         svgNormalized = new Image(w, h);
         svgObj.setAttribute('width', w);
@@ -2885,7 +3017,7 @@ IDE_Morph.prototype.loadSVG = function (anImage, name) {
 };
 
 IDE_Morph.prototype.droppedAudio = function (anAudio, name) {
-    if (this.config.noImports) {return; }
+    if (this.config.noImports) { return; }
 
     if (anAudio.src.indexOf('data:audio') !== 0) {
         // fetch and base 64 encode samples using FileReader
@@ -2895,7 +3027,7 @@ IDE_Morph.prototype.droppedAudio = function (anAudio, name) {
                 var reader = new window.FileReader();
                 reader.readAsDataURL(blob);
                 reader.onloadend = () => {
-                	var base64 = reader.result;
+                    var base64 = reader.result;
                     base64 = 'data:audio/ogg;base64,' +
                         base64.split(',')[1];
                     anAudio.src = base64;
@@ -2905,9 +3037,9 @@ IDE_Morph.prototype.droppedAudio = function (anAudio, name) {
             'blob'
         );
     } else {
-    	this.currentSprite.addSound(anAudio, name.split('.')[0]); // up to '.'
-    	this.spriteBar.tabBar.tabTo('sounds');
-    	this.hasChangedMedia = true;
+        this.currentSprite.addSound(anAudio, name.split('.')[0]); // up to '.'
+        this.spriteBar.tabBar.tabTo('sounds');
+        this.hasChangedMedia = true;
         this.currentSprite.recordUserEdit(
             'sound',
             'imported',
@@ -2917,7 +3049,7 @@ IDE_Morph.prototype.droppedAudio = function (anAudio, name) {
 };
 
 IDE_Morph.prototype.droppedText = function (aString, name, fileType) {
-    if (this.config.noImports) {return; }
+    if (this.config.noImports) { return; }
 
     var lbl = name ? name.split('.')[0] : '',
         ext = name ? name.slice(name.lastIndexOf('.') + 1).toLowerCase() : '',
@@ -2987,14 +3119,14 @@ IDE_Morph.prototype.droppedText = function (aString, name, fileType) {
 };
 
 IDE_Morph.prototype.droppedBinary = function (anArrayBuffer, name) {
-    if (this.config.noImports) {return; }
+    if (this.config.noImports) { return; }
 
     // dynamically load ypr->Snap!
     var ypr = document.getElementById('ypr'),
         myself = this,
         suffix = name.substring(name.length - 3);
 
-    if (suffix.toLowerCase() !== 'ypr') {return; }
+    if (suffix.toLowerCase() !== 'ypr') { return; }
 
     function loadYPR(buffer, lbl) {
         var reader = new sb.Reader(),
@@ -3008,7 +3140,7 @@ IDE_Morph.prototype.droppedBinary = function (anArrayBuffer, name) {
     if (!ypr) {
         ypr = document.createElement('script');
         ypr.id = 'ypr';
-        ypr.onload = function () {loadYPR(anArrayBuffer, name); };
+        ypr.onload = function () { loadYPR(anArrayBuffer, name); };
         document.head.appendChild(ypr);
         ypr.src = this.resourceURL('src', 'ypr.js');
     } else {
@@ -3046,9 +3178,9 @@ IDE_Morph.prototype.scrollPaletteToCategory = function (category) {
     firstInCategory = palette.contents.children.find(
         block => block.category === category
     );
-    if (firstInCategory === undefined) {return; }
+    if (firstInCategory === undefined) { return; }
     delta = palette.top() - firstInCategory.top() + palette.padding;
-    if (delta === 0) {return; }
+    if (delta === 0) { return; }
     this.world().animations.push(new Animation(
         y => { // setter
             palette.contents.setTop(y);
@@ -3068,7 +3200,7 @@ IDE_Morph.prototype.topVisibleCategoryInPalette = function () {
     // block category in the palette, so it can be indicated
     // as "current category" in the category selection buttons
     var top;
-    if (!this.palette) {return; }
+    if (!this.palette) { return; }
     top = this.palette.contents.children.find(morph =>
         morph.category && morph.bounds.intersects(this.palette.bounds)
     );
@@ -3156,7 +3288,7 @@ IDE_Morph.prototype.togglePauseResume = function () {
 };
 
 IDE_Morph.prototype.isPaused = function () {
-    if (!this.stage) {return false; }
+    if (!this.stage) { return false; }
     return this.stage.threads.isPaused();
 };
 
@@ -3196,6 +3328,10 @@ IDE_Morph.prototype.selectSprite = function (sprite, noEmptyRefresh) {
     this.createSpriteEditor();
     this.corral.refresh();
     this.fixLayout('selectSprite');
+    if (this.performerMode) {
+        this.fixLayout();
+        this.currentSprite.scripts.updateToolbar();
+    }
     this.currentSprite.scripts.fixMultiArgs();
 };
 
@@ -3217,6 +3353,22 @@ IDE_Morph.prototype.toggleRetina = function () {
 
 // IDE_Morph skins
 
+IDE_Morph.prototype.defaultLooks = function () {
+    this.setDefaultDesign();
+    this.setDefaultTheme();
+    this.refreshIDE();
+    this.removeSetting('design');
+    this.removeSetting('theme');
+};
+
+IDE_Morph.prototype.flatBrightLooks = function () {
+    this.setFlatDesign();
+    this.setBrightTheme();
+    this.refreshIDE();
+    this.saveSetting('design', 'flat');
+    this.saveSetting('theme', 'bright');
+};
+
 IDE_Morph.prototype.defaultDesign = function () {
     this.setDefaultDesign();
     this.refreshIDE();
@@ -3227,6 +3379,18 @@ IDE_Morph.prototype.flatDesign = function () {
     this.setFlatDesign();
     this.refreshIDE();
     this.saveSetting('design', 'flat');
+};
+
+IDE_Morph.prototype.defaultTheme = function () {
+    this.setDefaultTheme();
+    this.refreshIDE();
+    this.removeSetting('theme');
+};
+
+IDE_Morph.prototype.brightTheme = function () {
+    this.setBrightTheme();
+    this.refreshIDE();
+    this.saveSetting('theme', 'bright');
 };
 
 IDE_Morph.prototype.refreshIDE = function () {
@@ -3259,9 +3423,10 @@ IDE_Morph.prototype.refreshIDE = function () {
 // IDE_Morph settings persistance
 
 IDE_Morph.prototype.applySavedSettings = function () {
-    if (this.config.noUserSettings) {return; }
+    if (this.config.noUserSettings) { return; }
 
     var design = this.getSetting('design'),
+        theme = this.getSetting('theme'),
         zoom = this.getSetting('zoom'),
         fade = this.getSetting('fade'),
         language = this.getSetting('language'),
@@ -3281,11 +3446,17 @@ IDE_Morph.prototype.applySavedSettings = function () {
         this.setDefaultDesign();
     }
 
+    // theme
+    if (theme === 'bright') {
+        this.setBrightTheme();
+    } else {
+        this.setDefaultTheme();
+    }
+
     // blocks zoom
     if (zoom) {
         SyntaxElementMorph.prototype.setScale(Math.min(zoom, 12));
         CommentMorph.prototype.refreshScale();
-        SpriteMorph.prototype.initBlocks();
     }
 
     // blocks fade
@@ -3373,15 +3544,15 @@ IDE_Morph.prototype.removeSetting = function (key) {
 };
 
 IDE_Morph.prototype.hasLocalStorage = function () {
-	// checks whether localStorage is available,
+    // checks whether localStorage is available,
     // this kludgy try/catch mechanism is needed
     // because Safari 11 is paranoid about accessing
     // localstorage from the file:// protocol
-	try {
-		return !isNil(localStorage);
-	} catch (err) {
-    	return false;
-	}
+    try {
+        return !isNil(localStorage);
+    } catch (err) {
+        return false;
+    }
 };
 
 // IDE_Morph recording unsaved changes
@@ -3405,7 +3576,7 @@ IDE_Morph.prototype.updateChanges = function (spriteName, details) {
     // invalidate saved backup, if any - but don't actually delete it yet
     if (this.hasLocalStorage() &&
         (localStorage['-snap-bakuser-'] == this.cloud.username)) {
-            localStorage['-snap-bakflag-'] = 'expired';
+        localStorage['-snap-bakflag-'] = 'expired';
     }
 
     // update the version timestamp so my observer can react
@@ -3496,7 +3667,7 @@ IDE_Morph.prototype.availableBackup = function (anyway) {
 };
 
 IDE_Morph.prototype.restore = function () {
-    // load the backed up project for the currently logged im user
+    // load the backed up project for the currently logged in user
     // and backup the current one, in case they want to switch back to it
     var username = this.cloud.username,
         bak;
@@ -3598,7 +3769,7 @@ IDE_Morph.prototype.recordNewSound = function () {
             var sound;
             if (audio) {
                 sound = this.currentSprite.addSound(
-                	audio,
+                    audio,
                     this.newSoundName('recording')
                 );
                 this.makeSureRecordingIsMono(sound);
@@ -3625,13 +3796,13 @@ IDE_Morph.prototype.makeSureRecordingIsMono = function (sound) {
     function decodeSound(sound, callback) {
         var base64, binaryString, len, bytes, i, arrayBuffer, audioCtx;
         if (sound.audioBuffer) {
-            return callback (sound);
+            return callback(sound);
         }
         base64 = sound.audio.src.split(',')[1];
         binaryString = window.atob(base64);
         len = binaryString.length;
         bytes = new Uint8Array(len);
-        for (i = 0; i < len; i += 1)        {
+        for (i = 0; i < len; i += 1) {
             bytes[i] = binaryString.charCodeAt(i);
         }
         arrayBuffer = bytes.buffer;
@@ -3641,15 +3812,15 @@ IDE_Morph.prototype.makeSureRecordingIsMono = function (sound) {
             arrayBuffer,
             buffer => {
                 sound.audioBuffer = buffer;
-                return callback (sound);
+                return callback(sound);
             },
-            err => {throw err; }
+            err => { throw err; }
         );
     }
 
     function makeMono(sound) {
         var samples, audio, blob, reader;
-        if (sound.audioBuffer.numberOfChannels === 1) {return; }
+        if (sound.audioBuffer.numberOfChannels === 1) { return; }
         samples = sound.audioBuffer.getChannelData(0);
 
         audio = new Audio();
@@ -3659,7 +3830,7 @@ IDE_Morph.prototype.makeSureRecordingIsMono = function (sound) {
                     encodeSound(samples, 44100).audioBuffer
                 )
             ],
-            {type: "audio/wav"}
+            { type: "audio/wav" }
         );
         reader = new FileReader();
         reader.onload = () => {
@@ -3805,7 +3976,7 @@ IDE_Morph.prototype.instantiateSprite = function (sprite) {
 IDE_Morph.prototype.removeSprite = function (sprite, enableUndelete = true) {
     var idx;
     sprite.parts.slice().forEach(part =>
-    	this.removeSprite(part)
+        this.removeSprite(part)
     );
     idx = this.sprites.asArray().indexOf(sprite) + 1;
     this.stage.threads.stopAllForReceiver(sprite);
@@ -3841,8 +4012,8 @@ IDE_Morph.prototype.removeSprite = function (sprite, enableUndelete = true) {
 
 IDE_Morph.prototype.newSoundName = function (name) {
     var lastSound = this.currentSprite.sounds.at(
-            this.currentSprite.sounds.length()
-        );
+        this.currentSprite.sounds.length()
+    );
 
     return this.newName(
         name || lastSound.name,
@@ -3854,8 +4025,8 @@ IDE_Morph.prototype.newSoundName = function (name) {
 
 IDE_Morph.prototype.newSpriteName = function (name, ignoredSprite) {
     var all = this.sprites.asArray().concat(this.stage).filter(each =>
-            each !== ignoredSprite
-        ).map(each => each.name);
+        each !== ignoredSprite
+    ).map(each => each.name);
     return this.newName(name, all);
 };
 
@@ -3939,9 +4110,9 @@ IDE_Morph.prototype.snapMenu = function () {
     menu.addItem(
         'Download source',
         () => window.open(
-                'https://github.com/jmoenig/Snap/releases/latest',
-                'SnapSource'
-            )
+            'https://github.com/jmoenig/Snap/releases/latest',
+            'SnapSource'
+        )
     );
     if (world.isDevMode) {
         menu.addLine();
@@ -3949,7 +4120,7 @@ IDE_Morph.prototype.snapMenu = function () {
             'Switch back to user mode',
             'switchToUserMode',
             'disable deep-Morphic\ncontext menus'
-                + '\nand show user-friendly ones',
+            + '\nand show user-friendly ones',
             new Color(0, 100, 0)
         );
     } else if (world.currentKey === 16) { // shift-click
@@ -3958,7 +4129,7 @@ IDE_Morph.prototype.snapMenu = function () {
             'Switch to dev mode',
             'switchToDevMode',
             'enable Morphic\ncontext menus\nand inspectors,'
-                + '\nnot user-friendly!',
+            + '\nnot user-friendly!',
             new Color(100, 0, 0)
         );
     }
@@ -4109,29 +4280,29 @@ IDE_Morph.prototype.cloudMenu = function () {
                                                 'data:text/xml,' + projectData
                                             );
                                         }
-                                    this.nextSteps([
-                                        () => {
-                                            msg = this.showMessage(
-                                                'Opening project...'
-                                            );
-                                        },
-                                        () => {
-                                            this.rawOpenCloudDataString(
-                                                projectData
-                                            );
-                                            msg.destroy();
-                                        },
-                                    ]);
-                                },
-                                this.cloudError()
-                            );
-                        },
-                        null,
-                        'project'
-                    );
-                },
-                null,
-                'project'
+                                        this.nextSteps([
+                                            () => {
+                                                msg = this.showMessage(
+                                                    'Opening project...'
+                                                );
+                                            },
+                                            () => {
+                                                this.rawOpenCloudDataString(
+                                                    projectData
+                                                );
+                                                msg.destroy();
+                                            },
+                                        ]);
+                                    },
+                                    this.cloudError()
+                                );
+                            },
+                            null,
+                            'project'
+                        );
+                    },
+                    null,
+                    'project'
                 );
             },
             null,
@@ -4160,7 +4331,7 @@ IDE_Morph.prototype.settingsMenu = function () {
         if (!hide || shiftClicked) {
             menu.addItem(
                 [
-                    (test? on : off),
+                    (test ? on : off),
                     localize(label)
                 ],
                 toggle,
@@ -4174,7 +4345,7 @@ IDE_Morph.prototype.settingsMenu = function () {
         if (!hide || shiftClicked) {
             menu.addItem(
                 [
-                    (test? on : off),
+                    (test ? on : off),
                     '  ' + localize(label)
                 ],
                 toggle,
@@ -4196,6 +4367,10 @@ IDE_Morph.prototype.settingsMenu = function () {
         'languageMenu'
     );
     menu.addItem(
+        localize('Looks') + '...',
+        'looksMenu'
+    );
+    menu.addItem(
         'Zoom blocks...',
         'userSetBlocksScale'
     );
@@ -4212,7 +4387,7 @@ IDE_Morph.prototype.settingsMenu = function () {
             'Dragging threshold...',
             'userSetDragThreshold',
             'specify the distance the hand has to move\n' +
-                'before it picks up an object',
+            'before it picks up an object',
             new Color(100, 0, 0)
         );
     }
@@ -4221,6 +4396,64 @@ IDE_Morph.prototype.settingsMenu = function () {
         'microphoneMenu'
     );
     menu.addLine();
+    if (shiftClicked) {
+        menu.addItem(
+            'Primitives palette',
+            () => this.stage.restorePrimitives(),
+            'EXPERIMENTAL - switch (back) to\n' +
+            'primitive blocks in the palette',
+            new Color(100, 0, 0)
+        );
+        menu.addItem(
+            'Customize primitives',
+            () => this.stage.customizeBlocks(),
+            'EXPERIMENTAL - overload primitives\n' +
+            'with custom block definitions',
+            new Color(100, 0, 0)
+        );
+        menu.addLine();
+        addPreference(
+            'Blocks all the way',
+            () => {
+                if (SpriteMorph.prototype.isBlocksAllTheWay()) {
+                    this.stage.restorePrimitives();
+                } else {
+                    this.bootstrapCustomizedPrimitives(
+                        this.stage.customizeBlocks()
+                    );
+                }
+            },
+            SpriteMorph.prototype.isBlocksAllTheWay(),
+            'uncheck to disable editing primitives\n' +
+            'in the palette as custom blocks',
+            'check to edit primitives\nin the palette as custom blocks',
+            new Color(100, 0, 0)
+
+        );
+        if (SpriteMorph.prototype.hasCustomizedPrimitives()) {
+            menu.addItem(
+                'Use custom blocks',
+                () => SpriteMorph.prototype.toggleAllCustomizedPrimitives(
+                    this.stage,
+                    false
+                ),
+                'EXPERIMENTAL - use custom blocks\n' +
+                'in all palette blocks',
+                new Color(100, 0, 0)
+            );
+            menu.addItem(
+                'Use primitives',
+                () => SpriteMorph.prototype.toggleAllCustomizedPrimitives(
+                    this.stage,
+                    true
+                ),
+                'EXPERIMENTAL - use primitives\n' +
+                'in all palette blocks',
+                new Color(100, 0, 0)
+            );
+            menu.addLine();
+        }
+    }
     addPreference(
         'JavaScript extensions',
         () => {
@@ -4353,6 +4586,14 @@ IDE_Morph.prototype.settingsMenu = function () {
         'check to cache\nsprite renderings',
         true
     );
+    addPreference(
+        'Performer mode',
+        () => this.togglePerformerMode(),
+        this.performerMode,
+        'uncheck to go back to regular\nlayout',
+        'check to have the stage use up\nall space and go behind the\n' +
+        'scripting area'
+    );
     menu.addLine(); // everything visible below is persistent
     addPreference(
         'Blurred shadows',
@@ -4443,19 +4684,6 @@ IDE_Morph.prototype.settingsMenu = function () {
         'uncheck for smooth\nscaling of vector costumes',
         'check to rasterize\nSVGs on import',
         true
-    );
-    addPreference(
-        'Flat design',
-        () => {
-            if (MorphicPreferences.isFlat) {
-                return this.defaultDesign();
-            }
-            this.flatDesign();
-        },
-        MorphicPreferences.isFlat,
-        'uncheck for default\nGUI design',
-        'check for alternative\nGUI design',
-        false
     );
     addPreference(
         'Nested auto-wrapping',
@@ -4648,6 +4876,17 @@ IDE_Morph.prototype.settingsMenu = function () {
         );
     }
     addPreference(
+        'Wrap list indices',
+        () => {
+            List.prototype.enableWrapping =
+                !List.prototype.enableWrapping;
+        },
+        List.prototype.enableWrapping,
+        'uncheck to disable\nwrapping list indices',
+        'check for wrapping\nlist indices',
+        true
+    );
+    addPreference(
         'Persist linked sublist IDs',
         () => StageMorph.prototype.enableSublistIDs =
             !StageMorph.prototype.enableSublistIDs,
@@ -4700,127 +4939,197 @@ IDE_Morph.prototype.settingsMenu = function () {
     menu.popup(world, pos);
 };
 
+IDE_Morph.prototype.bootstrapCustomizedPrimitives = function (skipped) {
+    SpriteMorph.prototype.bootstrapCustomizedPrimitives(this.stage, skipped);
+};
+
 IDE_Morph.prototype.projectMenu = function () {
-    var menu,
+    var menu, tm,
         world = this.world(),
         pos = this.controlBar.projectButton.bottomLeft(),
         graphicsName = this.currentSprite instanceof SpriteMorph ?
-                'Costumes' : 'Backgrounds',
+            'Costumes' : 'Backgrounds',
         shiftClicked = (world.currentKey === 16),
         backup = this.availableBackup(shiftClicked);
 
     menu = new MenuMorph(this);
     menu.addItem('Notes...', 'editNotes');
     menu.addLine();
-    menu.addPair('New', 'createNewProject', '^N');
-    menu.addPair('Open...', 'openProjectsBrowser', '^O');
-    menu.addPair('Save', "save", '^S');
-    menu.addItem('Save As...', 'saveProjectsBrowser');
-    if (backup) {
+    if (!this.config.noProjectItems) {
+        menu.addPair('New', 'createNewProject', '^N');
+        menu.addPair('Open...', 'openProjectsBrowser', '^O');
+        menu.addPair('Save', "save", '^S');
+        menu.addItem('Save As...', 'saveProjectsBrowser');
+        if (backup) {
+            menu.addItem(
+                'Restore unsaved project',
+                'restore',
+                backup,
+                shiftClicked ? new Color(100, 0, 0) : null
+            );
+            if (shiftClicked) {
+                menu.addItem(
+                    'Clear backup',
+                    'clearBackup',
+                    backup,
+                    new Color(100, 0, 0)
+                );
+            }
+        }
+        menu.addLine();
         menu.addItem(
-            'Restore unsaved project',
-            'restore',
-            backup,
-            shiftClicked ? new Color(100, 0, 0) : null
+            'Import...',
+            'importLocalFile',
+            'file menu import hint'
+            // looks up the actual text in the translator
+        );
+        menu.addItem(
+            'Export project...',
+            () => {
+                var pn = this.getProjectName();
+                if (pn) {
+                    this.exportProject(pn);
+                } else {
+                    this.prompt(
+                        'Export Project As...',
+                        name => this.exportProject(name),
+                        null,
+                        'exportProject'
+                    );
+                }
+            },
+            'save project data as XML\nto your downloads folder'
+        );
+        menu.addItem(
+            'Export summary...',
+            () => this.exportProjectSummary(),
+            'save a summary\nof this project'
         );
         if (shiftClicked) {
             menu.addItem(
-                'Clear backup',
-                'clearBackup',
-                backup,
-                new Color(100, 0, 0)
-            );
-        }
-    }
-    menu.addLine();
-    menu.addItem(
-        'Import...',
-        'importLocalFile',
-        'file menu import hint' // looks up the actual text in the translator
-    );
-    menu.addItem(
-        'Export project...',
-        () => {
-            var pn = this.getProjectName();
-            if (pn) {
-                this.exportProject(pn);
-            } else {
-                this.prompt(
-                    'Export Project As...',
-                    name => this.exportProject(name),
-                    null,
-                    'exportProject'
-                );
-            }
-        },
-        'save project data as XML\nto your downloads folder'
-    );
-    menu.addItem(
-        'Export summary...',
-        () => this.exportProjectSummary(),
-        'save a summary\nof this project'
-    );
-    if (shiftClicked) {
-        menu.addItem(
-            'Export summary with drop-shadows...',
-            () => this.exportProjectSummary(true),
-            'download and save' +
+                'Export summary with drop-shadows...',
+                () => this.exportProjectSummary(true),
+                'download and save' +
                 '\nwith a summary of this project' +
                 '\nwith drop-shadows on all pictures.' +
                 '\nnot supported by all browsers',
-            new Color(100, 0, 0)
-        );
-        menu.addItem(
-            'Export all scripts as pic...',
-            () => this.exportScriptsPicture(),
-            'show a picture of all scripts\nand block definitions',
-            new Color(100, 0, 0)
-        );
-    }
-    menu.addLine();
-    if (this.stage.globalBlocks.length) {
-        menu.addItem(
-            'Export blocks...',
-            () => this.exportGlobalBlocks(),
-            'save global custom block\ndefinitions as XML'
-        );
-        menu.addItem(
-            'Unused blocks...',
-            () => this.removeUnusedBlocks(),
-            'find unused global custom blocks' +
+                new Color(100, 0, 0)
+            );
+            menu.addItem(
+                'Export all scripts as pic...',
+                () => this.exportScriptsPicture(),
+                'show a picture of all scripts\nand block definitions',
+                new Color(100, 0, 0)
+            );
+        }
+        if (this.stage.trailsLog.length) {
+            tm = new MenuMorph(this);
+            tm.addItem(
+                'png...',
+                () => this.saveCanvasAs(
+                    this.currentSprite.reportPenTrailsAsCostume().contents,
+                    this.getProjectName() || this.stage.name
+                ),
+                'export pen trails\nas PNG image'
+            );
+            tm.addItem(
+                'svg...',
+                () => this.stage.exportTrailsLogAsSVG(),
+                'export pen trails\nline segments as SVG'
+            );
+            tm.addItem(
+                'poly svg...',
+                () => this.stage.exportTrailsLogAsPolySVG(),
+                'export pen trails\nline segments as polyline SVG'
+            );
+            tm.addItem(
+                'dst...',
+                () => this.stage.exportTrailsLogAsDST(),
+                'export pen trails\nas DST embroidery file'
+            );
+            tm.addItem(
+                'exp...',
+                () => this.stage.exportTrailsLogAsEXP(),
+                'export pen trails\nas EXP embroidery file'
+            );
+            menu.addMenu('Export pen trails', tm);
+        } else {
+            menu.addItem(
+                'Export pen trails...',
+                () => this.saveCanvasAs(
+                    this.currentSprite.reportPenTrailsAsCostume().contents,
+                    this.getProjectName() || this.stage.name
+                ),
+                'export pen trails\nas PNG image'
+            );
+        }
+        menu.addLine();
+        if (this.stage.globalBlocks.length ||
+            SpriteMorph.prototype.hasCustomizedPrimitives()
+        ) {
+            menu.addItem(
+                'Export blocks...',
+                () => this.exportGlobalBlocks(),
+                'save global custom block\ndefinitions as XML'
+            );
+        }
+        if (this.stage.globalBlocks.length) {
+            menu.addItem(
+                'Unused blocks...',
+                () => this.removeUnusedBlocks(),
+                'find unused global custom blocks' +
                 '\nand remove their definitions'
-        );
-    }
-    menu.addItem(
-        'Hide blocks...',
-        () => new BlockVisibilityDialogMorph(this.currentSprite).popUp(world)
-    );
-    menu.addItem(
-        'New category...',
-        () => this.createNewCategory()
-    );
-    if (SpriteMorph.prototype.customCategories.size) {
+            );
+        }
+        if (SpriteMorph.prototype.hasCustomizedPrimitives()) {
+            if (shiftClicked) {
+                menu.addItem(
+                    'Export customized primitives...',
+                    () => this.exportCustomizedPrimitives(),
+                    'EXPERIMENTAL!',
+                    new Color(100, 0, 0)
+                );
+            }
+            menu.addItem(
+                'Restore primitives',
+                () => this.stage.restorePrimitives(),
+                'switch (back) to primitive blocks in the palette,\n' +
+                'CAUTION - can break extensions.'
+            );
+        }
         menu.addItem(
-            'Remove a category...',
-            () => this.deleteUserCategory(pos)
+            'Hide blocks...',
+            () => new BlockVisibilityDialogMorph(
+                this.currentSprite
+            ).popUp(world)
         );
-    }
-    if (this.currentSprite instanceof SpriteMorph &&
-        !this.currentSprite.solution) {
         menu.addItem(
-            'Generate puzzle',
-            'generatePuzzle',
-            'generate a Parson\'s Puzzle\n' +
+            'New category...',
+            () => this.createNewCategory()
+        );
+        if (SpriteMorph.prototype.customCategories.size) {
+            menu.addItem(
+                'Remove a category...',
+                () => this.deleteUserCategory(pos)
+            );
+        }
+        if (this.currentSprite instanceof SpriteMorph &&
+            !this.currentSprite.solution) {
+            menu.addItem(
+                'Generate puzzle',
+                'generatePuzzle',
+                'generate a Parson\'s Puzzle\n' +
                 'from the current sprite'
-        );
+            );
+        }
+        menu.addLine();
+        if (this.scenes.length() > 1) {
+            menu.addItem('Scenes...', 'scenesMenu');
+        }
+        menu.addPair('New scene', 'createNewScene');
+        menu.addPair('Add scene...', 'addScene');
+        menu.addLine();
     }
-    menu.addLine();
-    if (this.scenes.length() > 1) {
-        menu.addItem('Scenes...', 'scenesMenu');
-    }
-    menu.addPair('New scene', 'createNewScene');
-    menu.addPair('Add scene...', 'addScene');
-    menu.addLine();
     menu.addItem(
         'Libraries...',
         () => {
@@ -4829,7 +5138,7 @@ IDE_Morph.prototype.projectMenu = function () {
                 return;
             }
             this.getURL(
-                this.resourceURL('libraries', 'LIBRARIES'),
+                this.resourceURL('libraries', 'LIBRARIES.json'),
                 txt => {
                     var libraries = this.parseResourceFile(txt);
                     new LibraryImportDialogMorph(this, libraries).popUp();
@@ -4892,7 +5201,7 @@ IDE_Morph.prototype.getMediaList = function (dirname, callback) {
     // based on the contents file.
     // If no callback is specified, synchronously return the list of files
     // Note: Synchronous fetching has been deprecated and should be switched
-    var url = this.resourceURL(dirname, dirname.toUpperCase()),
+    var url = this.resourceURL(dirname, `${dirname.toUpperCase()}.json`),
         async = callback instanceof Function,
         data;
 
@@ -4917,28 +5226,38 @@ IDE_Morph.prototype.getMediaList = function (dirname, callback) {
 };
 
 IDE_Morph.prototype.parseResourceFile = function (text) {
-    // A Resource File lists all the files that could be loaded in a submenu
-    // Examples are libraries/LIBRARIES, Costumes/COSTUMES, etc
-    // The file format is tab-delimited, with unix newlines:
-    // file-name, Display Name, Help Text (optional)
-    var parts,
-        items = [];
+    /* A resource file is a JSON file with a list of objects:
+     1. fileName
+     2. name
+     3. description
+     4. categoires (optional, list)
+     5. searchData (optional, list of keywords)
+     6. translations (optional, map of language to name/description/searchData)
+ 
+     These files are used for loading costumes, backgrounds, and sounds, and libraries.
+     Translations are merged into the dictionary before rendering resourcres.
+     Categories are not expected to be translated with each individual resource, instead
+     translations are expected to be provided in each langauge's translation file.
+ 
+     -- May 2024: categories, and searchData are not used in Snap! yet
+     Categories: Used to group resources in the media/libraries viewers
+     SearchData: Used to augment search results in the viewer, but not be displayed
+    */
+    let items = JSON.parse(text),
+        language = SnapTranslator.language || 'en';
 
-    text.split('\n').map(line =>
-        line.trim()
-    ).filter(line =>
-        line.length > 0
-    ).forEach(line => {
-        parts = line.split('\t').map(str => str.trim());
-
-        if (parts.length < 2) {return; }
-
-        items.push({
-            fileName: parts[0],
-            name: parts[1],
-            description: parts.length > 2 ? parts[2] : ''
-        });
-    });
+    // Update name, description, and searchData from translations
+    for (let item of items) {
+        if (item.translations && item.translations[language]) {
+            let translation = item.translations[language];
+            // ensure we never concatenate undefined arrays
+            let searchData = translation.searchData || [];
+            item.name = translation.name || item.name;
+            item.description = translation.description || item.description;
+            item.searchData = searchData + (item.searchData || []);
+        }
+        delete item.translations;
+    }
 
     return items;
 };
@@ -5055,7 +5374,7 @@ IDE_Morph.prototype.popupMediaImportDialog = function (folderName, items) {
         fp = this.body.position();
         fw = this.body.width();
         frame.contents.children.forEach(function (icon) {
-              icon.setPosition(fp.add(new Point(x, y)));
+            icon.setPosition(fp.add(new Point(x, y)));
             x += icon.width();
             if (x + icon.width() > fw) {
                 x = 0;
@@ -5092,10 +5411,10 @@ IDE_Morph.prototype.popupMediaImportDialog = function (folderName, items) {
         icon.isDraggable = false;
         icon.userMenu = nop;
         icon.action = function () {
-            if (selectedIcon === icon) {return; }
+            if (selectedIcon === icon) { return; }
             var prevSelected = selectedIcon;
             selectedIcon = icon;
-            if (prevSelected) {prevSelected.refresh(); }
+            if (prevSelected) { prevSelected.refresh(); }
         };
         icon.doubleClickAction = dialog.ok;
         icon.query = function () {
@@ -5149,7 +5468,7 @@ IDE_Morph.prototype.undeleteSprites = function (pos) {
     // by clicking on them
 
     var menu = new MenuMorph(sprite => this.undelete(sprite, pos), null, this);
-        pos = pos || this.corralBar.bottomRight();
+    pos = pos || this.corralBar.bottomRight();
 
     if (!this.scene.trash.length) {
         this.showMessage('trash is empty');
@@ -5200,7 +5519,7 @@ IDE_Morph.prototype.aboutSnap = function () {
         module, btn1, btn2, btn3, btn4, licenseBtn, translatorsBtn,
         world = this.world();
 
-    aboutTxt = 'O PatruLINO v1.0 é baseado no \n'+'Snap! ' + SnapVersion + '\nBuild Your Own Blocks\n\n'
+    aboutTxt = 'O PatruLINO v1.0 é baseado no \n' + 'Snap! ' + SnapVersion + '\nBuild Your Own Blocks\n\n'
         + 'Copyright \u24B8 2022 - Ville Medeiros\n'
         + 'ville.medeiros@patrulhaeureka.org\n\n'
         + 'Para mais informações sobre o PatruLINO acesse o site do PatrulhaEUREKA.org:\n'
@@ -5232,7 +5551,7 @@ IDE_Morph.prototype.aboutSnap = function () {
     for (module in modules) {
         if (Object.prototype.hasOwnProperty.call(modules, module)) {
             versions += ('\n' + module + ' (' +
-                            modules[module] + ')');
+                modules[module] + ')');
         }
     }
     if (versions !== '') {
@@ -5246,17 +5565,17 @@ IDE_Morph.prototype.aboutSnap = function () {
 
     function txt(textString) {
         var tm = new TextMorph(
-                textString,
-                dlg.fontSize,
-                dlg.fontStyle,
-                true,
-                false,
-                'center',
-                null,
-                null,
-                MorphicPreferences.isFlat ? null : new Point(1, 1),
-                WHITE
-            ),
+            textString,
+            dlg.fontSize,
+            dlg.fontStyle,
+            true,
+            false,
+            'center',
+            null,
+            null,
+            MorphicPreferences.isFlat ? null : new Point(1, 1),
+            WHITE
+        ),
             scroller,
             maxHeight = world.height() - dlg.titleFontSize * 10;
         if (tm.height() > maxHeight) {
@@ -5453,7 +5772,7 @@ IDE_Morph.prototype.createNewCategory = function () {
     ).promptCategory(
         "New Category",
         null,
-        new Color(0,116,143),
+        new Color(0, 116, 143),
         this.world(),
         null, // pic
         'Blocks category name:' // msg
@@ -5461,7 +5780,7 @@ IDE_Morph.prototype.createNewCategory = function () {
 };
 
 IDE_Morph.prototype.addPaletteCategory = function (name, color) {
-    if (name === '') {return; }
+    if (name === '') { return; }
     SpriteMorph.prototype.customCategories.set(name, color);
     this.createCategories();
     this.categories.refreshEmpty();
@@ -5501,7 +5820,7 @@ IDE_Morph.prototype.deleteUserCategory = function (pos) {
 };
 
 IDE_Morph.prototype.deletePaletteCategory = function (name) {
-    this.stage.globalBlocks.forEach(def =>{
+    this.stage.globalBlocks.forEach(def => {
         if (def.category === name) {
             def.category = 'other';
             this.currentSprite.allBlockInstances(def).reverse().forEach(
@@ -5555,7 +5874,7 @@ IDE_Morph.prototype.save = function () {
         this.source = null;
     }
 
-    if (this.cloud.disabled) {this.source = 'disk'; }
+    if (this.cloud.disabled) { this.source = 'disk'; }
 
     if (pn) {
         if (this.source === 'disk') {
@@ -5596,18 +5915,44 @@ IDE_Morph.prototype.exportProject = function (name) {
 };
 
 IDE_Morph.prototype.exportGlobalBlocks = function () {
-    if (this.stage.globalBlocks.length > 0) {
+    var blocks = SpriteMorph.prototype.bootstrappedBlocks().concat(
+        this.stage.globalBlocks);
+    if (blocks.length > 0) {
         new BlockExportDialogMorph(
             this.serializer,
-            this.stage.globalBlocks,
+            blocks,
             this
         ).popUp(this.world());
     } else {
         this.inform(
             'Export blocks',
             'this project doesn\'t have any\n'
-                + 'custom global blocks yet'
+            + 'custom global blocks yet'
         );
+    }
+};
+
+IDE_Morph.prototype.exportCustomizedPrimitives = function () {
+    var blocks = SpriteMorph.prototype.bootstrappedBlocks();
+    if (blocks.length > 0) {
+        new BlockExportDialogMorph(
+            this.serializer,
+            blocks,
+            this
+        ).popUp(this.world());
+    } else {
+        this.inform(
+            'Export customized primitives',
+            'this session doesn\'t have any\n'
+            + 'customized primitives yet'
+        );
+    }
+};
+
+IDE_Morph.prototype.refreshCustomizedPalette = function () {
+    var blocks = SpriteMorph.prototype.bootstrappedBlocks();
+    if (blocks.length > 0) {
+        this.serializer.loadBlocks(this.blocksLibraryXML(blocks));
     }
 };
 
@@ -5620,7 +5965,7 @@ IDE_Morph.prototype.removeUnusedBlocks = function () {
 
     function scan() {
         return globalBlocks.filter(def => {
-            if (contains(unused, def)) {return false; }
+            if (contains(unused, def)) { return false; }
             return targets.every((each, trgIdx) =>
                 !each.usesBlockInstance(def, true, trgIdx, unused)
             );
@@ -5644,7 +5989,7 @@ IDE_Morph.prototype.removeUnusedBlocks = function () {
         this.inform(
             'Remove unused blocks',
             'there are currently no unused\n'
-                + 'global custom blocks in this project'
+            + 'global custom blocks in this project'
         );
     }
 };
@@ -5688,7 +6033,7 @@ IDE_Morph.prototype.generatePuzzle = function () {
                 uCust,
                 b.isGlobal ? b.definition
                     : current.getMethod(b.semanticSpec)
-                );
+            );
         } else if (b.selector === 'reportGetVar') {
             return !contains(uVars, b.blockSpec);
         } else {
@@ -5873,18 +6218,18 @@ IDE_Morph.prototype.exportProjectSummary = function (useDropShadows) {
         stage = this.stage;
 
     function addNode(tag, node, contents) {
-        if (!node) {node = body; }
+        if (!node) { node = body; }
         return new XML_Element(tag, contents, node);
     }
 
     function add(contents, tag, node) {
-        if (!tag) {tag = 'p'; }
-        if (!node) {node = body; }
+        if (!tag) { tag = 'p'; }
+        if (!node) { node = body; }
         return new XML_Element(tag, contents, node);
     }
 
     function addImage(canvas, node, inline) {
-        if (!node) {node = body; }
+        if (!node) { node = body; }
         var para = !inline ? addNode('p', node) : null,
             pic = addNode('img', para || node);
         pic.attributes.src = canvas.toDataURL();
@@ -5956,8 +6301,8 @@ IDE_Morph.prototype.exportProjectSummary = function (useDropShadows) {
                         def.sortedElements().forEach(script => {
                             var defImg = addImage(
                                 script instanceof BlockMorph ?
-                                        script.scriptPic()
-                                                : script.fullImage(),
+                                    script.scriptPic()
+                                    : script.fullImage(),
                                 li
                             );
                             defImg.attributes.class = 'script';
@@ -6112,8 +6457,8 @@ IDE_Morph.prototype.exportProjectSummary = function (useDropShadows) {
             add(localize('Scripts'), 'h3');
             scripts.forEach(script => {
                 var img = addImage(script instanceof BlockMorph ?
-                        script.scriptPic()
-                                : script.fullImage());
+                    script.scriptPic()
+                    : script.fullImage());
                 img.attributes.class = 'script';
             });
         }
@@ -6147,37 +6492,37 @@ IDE_Morph.prototype.exportProjectSummary = function (useDropShadows) {
     );
 };
 
-IDE_Morph.prototype.openProjectString = function (str, callback) {
+IDE_Morph.prototype.openProjectString = function (str, callback, noPrims) {
     var msg;
     if (this.bulkDropInProgress || this.isAddingScenes) {
-            this.rawOpenProjectString(str);
-            if (callback) {callback(); }
-            return;
+        this.rawOpenProjectString(str, noPrims);
+        if (callback) { callback(); }
+        return;
     }
     this.nextSteps([
         () => msg = this.showMessage('Opening project...'),
         () => {
-            this.rawOpenProjectString(str);
+            this.rawOpenProjectString(str, noPrims);
             msg.destroy();
-            if (callback) {callback(); }
+            if (callback) { callback(); }
         }
     ]);
 };
 
-IDE_Morph.prototype.rawOpenProjectString = function (str) {
+IDE_Morph.prototype.rawOpenProjectString = function (str, noPrims) {
     this.toggleAppMode(false);
     this.spriteBar.tabBar.tabTo('scripts');
     if (Process.prototype.isCatchingErrors) {
         try {
             this.openProject(
-                this.serializer.load(str, this)
+                this.serializer.load(str, this, noPrims)
             );
         } catch (err) {
             this.showMessage('Load failed: ' + err);
         }
     } else {
         this.openProject(
-            this.serializer.load(str, this)
+            this.serializer.load(str, this, noPrims)
         );
     }
     this.autoLoadExtensions();
@@ -6532,7 +6877,7 @@ IDE_Morph.prototype.rawOpenDataString = function (str, name, type) {
     globals.setVar(vName, data);
     this.currentSprite.toggleVariableWatcher(vName, true); // global
     this.flushBlocksCache('variables');
-    this.currentCategory = 'variables';
+    this.currentCategory = this.scene.unifiedPalette ? 'unified' : 'variables';
     this.categories.refresh();
     this.refreshPalette(true);
     if (data instanceof List) {
@@ -6554,7 +6899,8 @@ IDE_Morph.prototype.openProjectName = function (name) {
     }
 };
 
-IDE_Morph.prototype.openProject = function (project) {
+IDE_Morph.prototype.openProject = function (project, purgeCustomizedPrims) {
+    var scn = project.currentScene || project.scenes.at(1);
     if (this.isAddingScenes) {
         project.scenes.itemsArray().forEach(scene => {
             scene.name = this.newSceneName(scene.name, scene);
@@ -6563,8 +6909,12 @@ IDE_Morph.prototype.openProject = function (project) {
     } else {
         this.scenes = project.scenes;
     }
+    this.performerMode = false;
+    if (purgeCustomizedPrims) {
+        scn.blocks = SpriteMorph.prototype.primitiveBlocks();
+    }
     this.switchToScene(
-        project.currentScene || project.scenes.at(1),
+        scn,
         true,  // refresh album
         null, // msg
         null, // data
@@ -6601,13 +6951,13 @@ IDE_Morph.prototype.autoLoadExtensions = function () {
             };
             document.head.appendChild(scriptElement);
             scriptElement.src = url;
-        /*
-        } else {
-            // throw new Error(
-                'unlisted extension url:\n"' + url + '"\n' +
-                'JavaScript extensions for Snap!\nare turned off'
-            );
-        */
+            /*
+            } else {
+                // throw new Error(
+                    'unlisted extension url:\n"' + url + '"\n' +
+                    'JavaScript extensions for Snap!\nare turned off'
+                );
+            */
         }
     });
 };
@@ -6713,12 +7063,12 @@ IDE_Morph.prototype.saveFileAs = function (
                 data[i] = text.charCodeAt(i);
             }
         }
-        return new Blob([data], {type: mimeType });
+        return new Blob([data], { type: mimeType });
     }
 
     try {
         blobIsSupported = !!new Blob();
-    } catch (e) {}
+    } catch (e) { }
 
     if (blobIsSupported) {
         if (!(contents instanceof Blob)) {
@@ -6760,7 +7110,7 @@ IDE_Morph.prototype.saveAudioAs = function (audio, fileName) {
     this.saveFileAs(audio.src, 'audio/wav', fileName);
 };
 
-IDE_Morph.prototype.saveXMLAs = function(xml, fileName) {
+IDE_Morph.prototype.saveXMLAs = function (xml, fileName) {
     // wrapper to saving XML files with a proper type tag.
     this.saveFileAs(xml, 'text/xml;chartset=utf-8', fileName);
 };
@@ -6788,7 +7138,7 @@ IDE_Morph.prototype.switchToUserMode = function () {
     // onto the World in user-mode
     world.reactToDropOf = (morph) => {
         if (!(morph instanceof DialogBoxMorph ||
-        		(morph instanceof MenuMorph))) {
+            (morph instanceof MenuMorph))) {
             if (world.hand.grabOrigin) {
                 morph.slideBackTo(world.hand.grabOrigin);
             } else {
@@ -6817,9 +7167,9 @@ IDE_Morph.prototype.switchToDevMode = function () {
     delete world.reactToDropOf;
     this.showMessage(
         'entering development mode.\n\n'
-            + 'error catching is turned off,\n'
-            + 'use the browser\'s web console\n'
-            + 'to see error messages.'
+        + 'error catching is turned off,\n'
+        + 'use the browser\'s web console\n'
+        + 'to see error messages.'
     );
 };
 
@@ -6947,11 +7297,21 @@ IDE_Morph.prototype.toggleSliderExecute = function () {
         !ArgMorph.prototype.executeOnSliderEdit;
 };
 
+IDE_Morph.prototype.togglePerformerMode = function () {
+    this.performerMode = !this.performerMode;
+    if (!this.performerMode) {
+        this.setStageExtent(new Point(480, 360));
+    }
+    this.buildPanes();
+    this.fixLayout();
+    this.selectSprite(this.currentSprite);
+};
+
 IDE_Morph.prototype.setEmbedMode = function () {
     var myself = this;
 
     this.isEmbedMode = true;
-    this.appModeColor = new Color(243,238,235);
+    this.appModeColor = new Color(243, 238, 235);
     this.embedOverlay = new Morph();
     this.embedOverlay.color = new Color(128, 128, 128);
     this.embedOverlay.alpha = 0.5;
@@ -6999,10 +7359,10 @@ IDE_Morph.prototype.toggleAppMode = function (appMode) {
     this.isAppMode = isNil(appMode) ? !this.isAppMode : appMode;
 
     if (this.isAppMode) {
-		this.wasSingleStepping = Process.prototype.enableSingleStepping;
-		if (this.wasSingleStepping) {
-     		this.toggleSingleStepping();
-    	}
+        this.wasSingleStepping = Process.prototype.enableSingleStepping;
+        if (this.wasSingleStepping) {
+            this.toggleSingleStepping();
+        }
         this.setColor(this.appModeColor);
         this.controlBar.setColor(this.color);
         this.controlBar.appModeButton.refresh();
@@ -7019,7 +7379,7 @@ IDE_Morph.prototype.toggleAppMode = function (appMode) {
         }
     } else {
         if (this.wasSingleStepping && !Process.prototype.enableSingleStepping) {
-             this.toggleSingleStepping();
+            this.toggleSingleStepping();
         }
         this.setColor(this.backgroundColor);
         this.controlBar.setColor(this.frameColor);
@@ -7348,17 +7708,107 @@ IDE_Morph.prototype.reflectLanguage = function (lang, callback, noSave) {
     this.createCategories();
     this.categories.refreshEmpty();
     this.createCorralBar();
+    this.refreshCustomizedPalette();
     this.fixLayout();
     if (this.loadNewProject) {
         this.newProject();
         location.hash = urlBar;
-        if (callback) {callback.call(this); }
+        if (callback) { callback.call(this); }
     } else {
         this.openProjectString(projectData, callback);
     }
     if (!noSave) {
         this.saveSetting('language', lang);
     }
+};
+
+// IDE_Morph design settings
+
+IDE_Morph.prototype.looksMenu = function () {
+    this.looksMenuData().popup(
+        this.world(),
+        this.controlBar.settingsButton.bottomLeft()
+    );
+};
+
+IDE_Morph.prototype.looksMenuData = function () {
+    var menu = new MenuMorph(this),
+        world = this.world(),
+        shiftClicked = (world.currentKey === 16),
+        tick = new SymbolMorph(
+            'tick',
+            MorphicPreferences.menuFontSize * 0.75
+        ),
+        empty = tick.fullCopy(),
+        on = new SymbolMorph(
+            'checkedBox',
+            MorphicPreferences.menuFontSize * 0.75
+        ),
+        off = new SymbolMorph(
+            'rectangle',
+            MorphicPreferences.menuFontSize * 0.75
+        );
+
+    menu.addPreference = function (label, toggle, test, onHint, offHint, hide) {
+        if (!hide || shiftClicked) {
+            menu.addItem(
+                [
+                    (test ? on : off),
+                    localize(label)
+                ],
+                toggle,
+                test ? onHint : offHint,
+                hide ? new Color(100, 0, 0) : null
+            );
+        }
+    };
+
+    empty.render = nop;
+
+    menu.addItem(
+        [
+            MorphicPreferences.isFlat || IDE_Morph.prototype.isBright ? empty
+                : tick,
+            localize('Default')
+        ],
+        this.defaultLooks
+    );
+    menu.addItem(
+        [
+            MorphicPreferences.isFlat && IDE_Morph.prototype.isBright ? tick
+                : empty,
+            localize('Flat Bright')
+        ],
+        this.flatBrightLooks
+    );
+    menu.addLine();
+    menu.addPreference(
+        'Flat design',
+        () => {
+            if (MorphicPreferences.isFlat) {
+                return this.defaultDesign();
+            }
+            this.flatDesign();
+        },
+        MorphicPreferences.isFlat,
+        'uncheck for default\nGUI design',
+        'check for alternative\nGUI design',
+        false
+    );
+    menu.addPreference(
+        'Bright theme',
+        () => {
+            if (IDE_Morph.prototype.isBright) {
+                return this.defaultTheme();
+            }
+            this.brightTheme();
+        },
+        IDE_Morph.prototype.isBright,
+        'uncheck for default\nGUI theme',
+        'check for alternative\nGUI theme',
+        false
+    );
+    return menu;
 };
 
 // IDE_Morph blocks scaling
@@ -7390,8 +7840,9 @@ IDE_Morph.prototype.userSetBlocksScale = function () {
     sample = new FrameMorph();
     sample.acceptsDrops = false;
     sample.color = IDE_Morph.prototype.groupColor;
-    if (SyntaxElementMorph.prototype.alpha > 0.8) {
-        sample.cachedTexture = this.scriptsPaneTexture;
+    if (!MorphicPreferences.isFlat &&
+        SyntaxElementMorph.prototype.alpha > 0.8) {
+        sample.cachedTexture = this.scriptsTexture();
     }
     sample.setExtent(new Point(250, 180));
     scrpt.setPosition(sample.position().add(10));
@@ -7424,13 +7875,13 @@ IDE_Morph.prototype.userSetBlocksScale = function () {
         this.world(),
         sample, // pic
         {
-            'normal (1x)' : 1,
-            'demo (1.2x)' : 1.2,
-            'presentation (1.4x)' : 1.4,
-            'big (2x)' : 2,
-            'huge (4x)' : 4,
-            'giant (8x)' : 8,
-            'monstrous (10x)' : 10
+            'normal (1x)': 1,
+            'demo (1.2x)': 1.2,
+            'presentation (1.4x)': 1.4,
+            'big (2x)': 2,
+            'huge (4x)': 4,
+            'giant (8x)': 8,
+            'monstrous (10x)': 10
         },
         false, // read only?
         true, // numeric
@@ -7458,11 +7909,11 @@ IDE_Morph.prototype.setBlocksScale = function (num) {
     }
     SyntaxElementMorph.prototype.setScale(num);
     CommentMorph.prototype.refreshScale();
-    SpriteMorph.prototype.initBlocks();
     this.spriteBar.tabBar.tabTo('scripts');
     this.createCategories();
     this.categories.refreshEmpty();
     this.createCorralBar();
+    this.refreshCustomizedPalette();
     this.fixLayout();
     this.openProjectString(projectData);
     this.saveSetting('zoom', num);
@@ -7493,13 +7944,13 @@ IDE_Morph.prototype.userFadeBlocks = function () {
         this.world(),
         null, // pic
         {
-            'block-solid (0)' : 0,
-            'medium (50)' : 50,
-            'light (70)' : 70,
-            'shimmering (80)' : 80,
-            'elegant (90)' : 90,
-            'subtle (95)' : 95,
-            'text-only (100)' : 100
+            'block-solid (0)': 0,
+            'medium (50)': 50,
+            'light (70)': 70,
+            'shimmering (80)': 80,
+            'elegant (90)': 90,
+            'subtle (95)': 95,
+            'text-only (100)': 100
         },
         false, // read only?
         true, // numeric
@@ -7565,12 +8016,21 @@ IDE_Morph.prototype.setStageExtent = function (aPoint) {
         };
     }
 
+    if (this.performerMode) {
+        this.performerMode = false;
+        this.buildPanes();
+        this.fixLayout();
+        this.selectSprite(this.currentSprite);
+    }
+
     this.stageRatio = 1;
     this.isSmallStage = false;
     this.controlBar.stageSizeButton.refresh();
     this.stage.stopVideo();
     this.setExtent(world.extent());
     Costume.prototype.maxDimensions = aPoint;
+    this.stage.stopVideo();
+    this.stage.stopProjection();
     if (this.isAnimating) {
         zoom();
     } else {
@@ -7601,6 +8061,36 @@ IDE_Morph.prototype.userSetDragThreshold = function () {
         null, // read only
         true // numeric
     );
+};
+
+// IDE_Morph customize primitives
+
+IDE_Morph.prototype.userCustomizePalette = function (callback = nop) {
+    // highly experimental for v10 - tweak the palette blocks,
+    // e.g. replace all primitives with custom block definitions etc.
+    var projectData;
+    this.scene.captureGlobalSettings();
+    if (Process.prototype.isCatchingErrors) {
+        try {
+            projectData = this.serializer.serialize(
+                new Project(this.scenes, this.scene)
+            );
+        } catch (err) {
+            this.showMessage('Serialization failed: ' + err);
+        }
+    } else {
+        projectData = this.serializer.serialize(
+            new Project(this.scenes, this.scene)
+        );
+    }
+    SpriteMorph.prototype.initBlocks();
+    callback();
+    this.spriteBar.tabBar.tabTo('scripts');
+    this.createCategories();
+    this.categories.refreshEmpty();
+    this.createCorralBar();
+    this.fixLayout();
+    this.openProjectString(projectData, null, true); // no prims
 };
 
 // IDE_Morph cloud interface
@@ -7656,7 +8146,7 @@ IDE_Morph.prototype.initializeCloud = function () {
         null,
         null,
         null,
-        'stay signed in on this computer until logging out',
+        'stay signed in on this computer\nuntil logging out',
         world,
         this.cloudIcon(),
         this.cloudMsg
@@ -7705,9 +8195,9 @@ IDE_Morph.prototype.resetCloudPassword = function () {
             (txt, title) => new DialogBoxMorph().inform(
                 title,
                 txt +
-                    '\n\nAn e-mail with a link to\n' +
-                    'reset your password\n' +
-                    'has been sent to the address provided',
+                '\n\nAn e-mail with a link to\n' +
+                'reset your password\n' +
+                'has been sent to the address provided',
                 world,
                 this.cloudIcon(null, new Color(0, 180, 0))
             ),
@@ -7785,12 +8275,12 @@ IDE_Morph.prototype.changeCloudPassword = function () {
 IDE_Morph.prototype.logout = function () {
     this.cloud.logout(
         () => {
-            delete(sessionStorage.username);
+            delete (sessionStorage.username);
             this.controlBar.cloudButton.refresh();
             this.showMessage('disconnected.', 2);
         },
         () => {
-            delete(sessionStorage.username);
+            delete (sessionStorage.username);
             this.controlBar.cloudButton.refresh();
             this.showMessage('disconnected.', 2);
         }
@@ -7829,7 +8319,7 @@ IDE_Morph.prototype.verifyProject = function (body) {
         new DialogBoxMorph().inform(
             'Snap!Cloud - Cannot Save Project',
             'The media inside this project exceeds 10 MB.\n' +
-                'Please reduce the size of costumes or sounds.\n',
+            'Please reduce the size of costumes or sounds.\n',
             this.world(),
             this.cloudIcon(null, new Color(180, 0, 0))
         );
@@ -7868,7 +8358,7 @@ IDE_Morph.prototype.saveProjectToCloud = function (name) {
     this.showMessage('Saving project\nto the cloud...');
     projectBody = this.buildProjectRequest();
     projectSize = this.verifyProject(projectBody);
-    if (!projectSize) {return; } // Invalid Projects don't return anything.
+    if (!projectSize) { return; } // Invalid Projects don't return anything.
     this.showMessage(
         'Uploading ' + Math.round(projectSize / 1024) + ' KB...'
     );
@@ -7987,8 +8477,8 @@ IDE_Morph.prototype.cloudAcknowledge = function () {
         new DialogBoxMorph().inform(
             'Cloud Connection',
             'Successfully connected to:\n'
-                + 'http://'
-                + url,
+            + 'http://'
+            + url,
             this.world(),
             this.cloudIcon(null, new Color(0, 180, 0))
         );
@@ -8004,9 +8494,9 @@ IDE_Morph.prototype.cloudResponse = function () {
         new DialogBoxMorph().inform(
             'Snap!Cloud',
             'http://'
-                + url + ':\n\n'
-                + 'responds:\n'
-                + response,
+            + url + ':\n\n'
+            + 'responds:\n'
+            + response,
             this.world(),
             this.cloudIcon(null, new Color(0, 180, 0))
         );
@@ -8032,7 +8522,7 @@ IDE_Morph.prototype.cloudError = function () {
         new DialogBoxMorph().inform(
             'Snap!Cloud',
             (url ? url + '\n' : '')
-                + response,
+            + response,
             this.world(),
             this.cloudIcon(null, new Color(180, 0, 0))
         );
@@ -8145,8 +8635,10 @@ IDE_Morph.prototype.blocksLibraryXML = function (
     localData // optional: include sprite-local variable dependencies
 ) {
     // answer an XML string encoding of an array of CustomBlockDefinitions
-    var globals = definitions.filter(def => def.isGlobal),
+    var prims = definitions.filter(def => def.isGlobal && def.selector),
+        globals = definitions.filter(def => def.isGlobal && !def.selector),
         locals = definitions.filter(def => !def.isGlobal),
+        primStr = prims.length ? this.serializer.serialize(prims, true) : '',
         glbStr = globals.length ? this.serializer.serialize(globals, true) : '',
         locStr = locals.length ? this.serializer.serialize(locals, true) : '',
         dtaStr = dataFrame && dataFrame.names(true).length ?
@@ -8163,10 +8655,11 @@ IDE_Morph.prototype.blocksLibraryXML = function (
             '"';
 
     return '<blocks' +
-        (asFile ? appStr : '' ) +
+        (asFile ? appStr : '') +
         '>' +
         this.paletteXML(definitions.map(def => def.category).concat(cats)) +
         (globals.length ? glbStr : '') +
+        (prims.length ? ('<primitives>' + primStr + '</primitives>') : '') +
         (locals.length ? ('<local>' + locStr + '</local>') : '') +
         (dtaStr ? '<variables>' + dtaStr + '</variables>' : '') +
         (ldtStr ? '<local-variables>' + ldtStr + '</local-variables>' : '') +
@@ -8190,10 +8683,14 @@ IDE_Morph.prototype.paletteXML = function (categoryNames) {
 
 // IDE_Morph user dialog shortcuts
 
-IDE_Morph.prototype.showMessage = function (message, secs) {
+IDE_Morph.prototype.showMessage = function (message, secs, atHand = false) {
     var m = new MenuMorph(null, message),
         intervalHandle;
-    m.popUpCenteredInWorld(this.world());
+    if (atHand) {
+        m.popUpCenteredAtHand(this.world());
+    } else {
+        m.popUpCenteredInWorld(this.world());
+    }
     if (secs) {
         intervalHandle = setInterval(
             () => {
@@ -8240,8 +8737,8 @@ IDE_Morph.prototype.warnAboutIE = function () {
         dlg = new DialogBoxMorph();
         txt = new TextMorph(
             'Please do not use Internet Explorer.\n' +
-                'Snap! runs best in a web-standards\n' +
-                'compliant browser',
+            'Snap! runs best in a web-standards\n' +
+            'compliant browser',
             dlg.fontSize,
             dlg.fontStyle,
             true,
@@ -8277,12 +8774,12 @@ IDE_Morph.prototype.warnAboutDev = function () {
     this.inform(
         "CAUTION! Development Version",
         'This version of Snap! is being developed.\n' +
-            '*** It is NOT supported for end users. ***\n' +
-            'Saving a project in THIS version is likely to\n' +
-            'make it UNUSABLE or DEFECTIVE for current and\n' +
-            'even future official versions!\n\n' +
-            'visit https://snap.berkeley.edu/run\n' +
-            'for the official Snap! installation.'
+        '*** It is NOT supported for end users. ***\n' +
+        'Saving a project in THIS version is likely to\n' +
+        'make it UNUSABLE or DEFECTIVE for current and\n' +
+        'even future official versions!\n\n' +
+        'visit https://snap.berkeley.edu/run\n' +
+        'for the official Snap! installation.'
     ).nag = true;
 };
 
@@ -8333,15 +8830,15 @@ ProjectDialogMorph.prototype.init = function (ide, task) {
 
     // override inherited properites:
     switch (this.task) {
-    case 'save':
-        this.labelString = 'Save Project';
-        break;
-    case 'add':
-        this.labelString = 'Add Scene';
-        break;
-    default: // 'open'
-        this.task = 'open';
-        this.labelString = 'Open Project';
+        case 'save':
+            this.labelString = 'Save Project';
+            break;
+        case 'add':
+            this.labelString = 'Add Scene';
+            break;
+        default: // 'open'
+            this.task = 'open';
+            this.labelString = 'Open Project';
     }
 
     this.createLabel();
@@ -8591,15 +9088,15 @@ ProjectDialogMorph.prototype.addSourceButton = function (
     symbol
 ) {
     var lbl1 = new StringMorph(
-            label,
-            10,
-            null,
-            true,
-            null,
-            null,
-            new Point(1, 1),
-            WHITE
-        ),
+        label,
+        10,
+        null,
+        true,
+        null,
+        null,
+        new Point(1, 1),
+        WHITE
+    ),
         lbl2 = new StringMorph(
             label,
             10,
@@ -8727,54 +9224,54 @@ ProjectDialogMorph.prototype.setSource = function (source) {
     );
 
     switch (this.source) {
-    case 'cloud':
-        msg = this.ide.showMessage('Updating\nproject list...');
-        this.projectList = [];
-        this.ide.cloud.getProjectList(
-            response => {
-                // Don't show cloud projects if user has since switched panes.
-                if (this.source === 'cloud') {
-                    this.installCloudProjectList(response.projects);
-                }
-                msg.destroy();
-            },
-            (err, lbl) => {
-                msg.destroy();
-                this.ide.cloudError().call(null, err, lbl);
-            }
-        );
-        return;
-    case 'examples':
-        this.projectList = this.getExamplesProjectList();
-        break;
-    case 'local':
-        // deprecated, only for reading
-        this.projectList = this.getLocalProjectList();
-        break;
-    case 'disk':
-        if (this.task === 'save') {
+        case 'cloud':
+            msg = this.ide.showMessage('Updating\nproject list...');
             this.projectList = [];
-        } else {
-            this.destroy();
-            if (this.task === 'add') {
-                setting = this.ide.isAddingScenes;
-                this.ide.isAddingScenes = true;
-                this.ide.importLocalFile();
-                this.ide.isAddingScenes = setting;
-            } else {
-                this.ide.importLocalFile();
-            }
+            this.ide.cloud.getProjectList(
+                response => {
+                    // Don't show cloud projects if user has since switched panes.
+                    if (this.source === 'cloud') {
+                        this.installCloudProjectList(response.projects);
+                    }
+                    msg.destroy();
+                },
+                (err, lbl) => {
+                    msg.destroy();
+                    this.ide.cloudError().call(null, err, lbl);
+                }
+            );
             return;
-        }
-        break;
+        case 'examples':
+            this.projectList = this.getExamplesProjectList();
+            break;
+        case 'local':
+            // deprecated, only for reading
+            this.projectList = this.getLocalProjectList();
+            break;
+        case 'disk':
+            if (this.task === 'save') {
+                this.projectList = [];
+            } else {
+                this.destroy();
+                if (this.task === 'add') {
+                    setting = this.ide.isAddingScenes;
+                    this.ide.isAddingScenes = true;
+                    this.ide.importLocalFile();
+                    this.ide.isAddingScenes = setting;
+                } else {
+                    this.ide.importLocalFile();
+                }
+                return;
+            }
+            break;
     }
 
     this.listField.destroy();
     this.listField = new ListMorph(
         this.projectList,
         this.projectList.length > 0 ?
-            (element) => {return element.name || element; }
-                : null,
+            (element) => { return element.name || element; }
+            : null,
         null,
         () => this.ok()
     );
@@ -8794,7 +9291,7 @@ ProjectDialogMorph.prototype.setSource = function (source) {
     if (this.source === 'local') {
         this.listField.action = (item) => {
             var src, xml;
-            if (item === undefined) {return; }
+            if (item === undefined) { return; }
             if (this.nameField) {
                 this.nameField.setContents(item.name || '');
             }
@@ -8817,7 +9314,7 @@ ProjectDialogMorph.prototype.setSource = function (source) {
     } else { // 'examples'; 'cloud' is initialized elsewhere
         this.listField.action = (item) => {
             var src, xml;
-            if (item === undefined) {return; }
+            if (item === undefined) { return; }
             if (this.nameField) {
                 this.nameField.setContents(item.name || '');
             }
@@ -8870,7 +9367,7 @@ ProjectDialogMorph.prototype.getLocalProjectList = function () {
         projects = [];
     for (stored in localStorage) {
         if (Object.prototype.hasOwnProperty.call(localStorage, stored)
-                && stored.substr(0, 14) === '-snap-project-') {
+            && stored.substr(0, 14) === '-snap-project-') {
             name = stored.substr(14);
             dta = {
                 name: name,
@@ -8900,8 +9397,8 @@ ProjectDialogMorph.prototype.installCloudProjectList = function (pl) {
     this.listField = new ListMorph(
         this.projectList,
         this.projectList.length > 0 ?
-            (element) => {return element.projectname || element; }
-                : null,
+            (element) => { return element.projectname || element; }
+            : null,
         [ // format: display shared project names bold
             [
                 'bold',
@@ -8924,7 +9421,7 @@ ProjectDialogMorph.prototype.installCloudProjectList = function (pl) {
     this.listField.drawRectBorder = InputFieldMorph.prototype.drawRectBorder;
 
     this.listField.action = (item) => {
-        if (item === undefined) {return; }
+        if (item === undefined) { return; }
         if (this.nameField) {
             this.nameField.setContents(item.projectname || '');
         }
@@ -9000,7 +9497,7 @@ ProjectDialogMorph.prototype.clearDetails = function () {
 
 ProjectDialogMorph.prototype.recoveryDialog = function () {
     var proj = this.listField.selected;
-    if (!proj) {return; }
+    if (!proj) { return; }
     this.removeShadow();
     this.hide();
     new ProjectRecoveryDialogMorph(this.ide, proj.projectname, this).popUp();
@@ -9009,7 +9506,7 @@ ProjectDialogMorph.prototype.recoveryDialog = function () {
 ProjectDialogMorph.prototype.addScene = function () {
     var proj = this.listField.selected,
         src;
-    if (!proj) {return; }
+    if (!proj) { return; }
     this.ide.isAddingNextScene = true;
     this.ide.source = this.source;
     if (this.source === 'cloud') {
@@ -9030,7 +9527,7 @@ ProjectDialogMorph.prototype.addScene = function () {
 ProjectDialogMorph.prototype.openProject = function () {
     var proj = this.listField.selected,
         src;
-    if (!proj) {return; }
+    if (!proj) { return; }
     this.ide.source = this.source;
     if (this.source === 'cloud') {
         this.openCloudProject(proj);
@@ -9075,7 +9572,7 @@ ProjectDialogMorph.prototype.rawOpenCloudProject = function (proj, delta) {
             this.ide.nextSteps([
                 () => this.ide.openCloudDataString(clouddata)
             ]);
-			location.hash = '';
+            location.hash = '';
             if (proj.ispublic) {
                 location.hash = '#present:Username=' +
                     encodeURIComponent(this.ide.cloud.username) +
@@ -9098,9 +9595,9 @@ ProjectDialogMorph.prototype.saveProject = function () {
     if (name) {
         if (this.source === 'cloud') {
             if (detect(
-                    this.projectList,
-                    item => item.projectname === name
-                )) {
+                this.projectList,
+                item => item.projectname === name
+            )) {
                 this.ide.confirm(
                     localize(
                         'Are you sure you want to replace'
@@ -9368,18 +9865,18 @@ ProjectDialogMorph.prototype.fixLayout = function () {
         this.srcBar.setPosition(this.body.position());
 
         inputField.setWidth(
-                this.body.width() - this.srcBar.width() - this.padding * 6
-            );
+            this.body.width() - this.srcBar.width() - this.padding * 6
+        );
         inputField.setLeft(this.srcBar.right() + this.padding * 3);
         inputField.setTop(this.srcBar.top());
 
         this.listField.setLeft(this.srcBar.right() + this.padding);
         this.listField.setWidth(
             this.body.width()
-                - this.srcBar.width()
-                - this.preview.width()
-                - this.padding
-                - thin
+            - this.srcBar.width()
+            - this.preview.width()
+            - this.padding
+            - thin
         );
         this.listField.contents.children[0].adjustWidths();
 
@@ -9605,7 +10102,7 @@ ProjectRecoveryDialogMorph.prototype.recoverProject = function () {
         );
 
     this.browser.openCloudProject(
-        {projectname: this.projectName},
+        { projectname: this.projectName },
         version.delta
     );
     this.destroy();
@@ -9643,15 +10140,15 @@ ProjectRecoveryDialogMorph.prototype.fixLayout = function () {
         this.body.setExtent(new Point(
             this.width() - this.padding * 2,
             this.height()
-                - this.padding * 3 // top, bottom and button padding.
-                - titleHeight
-                - this.buttons.height()
+            - this.padding * 3 // top, bottom and button padding.
+            - titleHeight
+            - this.buttons.height()
         ));
 
         this.listField.setWidth(
             this.body.width()
-                - this.preview.width()
-                - this.padding
+            - this.preview.width()
+            - this.padding
         );
         this.listField.contents.children[0].adjustWidths();
 
@@ -9718,7 +10215,10 @@ LibraryImportDialogMorph.prototype.init = function (ide, librariesData) {
     this.ide = ide;
     this.key = 'importLibrary';
     this.action = 'importLibrary';
-    this.librariesData = librariesData; // [{name: , fileName: , description:}]
+
+    // [{name: , fileName: , description:, categories:, searchData:}]
+    this.librariesData = librariesData;
+    this.filteredLibrariesList = this.librariesData;
 
     // I contain a cached version of the libaries I have displayed,
     // because users may choose to explore a library many times before
@@ -9726,6 +10226,7 @@ LibraryImportDialogMorph.prototype.init = function (ide, librariesData) {
     this.libraryCache = new Map(); // fileName: { blocks: [], palette: {} }
 
     this.handle = null;
+    this.filterField = null;
     this.listField = null;
     this.palette = null;
     this.notesText = null;
@@ -9747,6 +10248,7 @@ LibraryImportDialogMorph.prototype.captureOriginalCategories = function () {
 LibraryImportDialogMorph.prototype.buildContents = function () {
     this.addBody(new Morph());
     this.body.color = this.color;
+    this.buildFilterField();
 
     this.initializePalette();
     this.initializeLibraryDescription();
@@ -9755,13 +10257,55 @@ LibraryImportDialogMorph.prototype.buildContents = function () {
     this.addButton('ok', 'Import');
     this.addButton('cancel', 'Cancel');
 
-    this.setExtent(new Point(460, 455));
+    this.setExtent(new Point(500, 500));
     this.fixLayout();
+};
+
+// LibraryImportDialogMorph filter field
+
+LibraryImportDialogMorph.prototype.buildFilterField = function () {
+    var myself = this;
+
+    function librarySearcText({ name, description, categies, searchData }) {
+        return [name, description, categies, searchData].join(' ').toLowerCase();
+    }
+
+    this.filterField = new InputFieldMorph('');
+    this.magnifyingGlass = new SymbolMorph(
+        'magnifyingGlass',
+        this.filterField.height(),
+        this.titleBarColor.darker(50)
+    );
+
+    this.body.add(this.magnifyingGlass);
+    this.body.add(this.filterField);
+
+    this.filterField.reactToInput = function (evt) {
+        var text = this.getValue().toLowerCase();
+
+        myself.filteredLibrariesList =
+            myself.librariesData.filter(library => librarySearcText(library).indexOf(text) > -1);
+
+        if (myself.filteredLibrariesList.length === 0) {
+            myself.filteredLibrariesList.push({
+                name: localize('(no matches)'),
+                fileName: null,
+                description: null
+            });
+        }
+
+        myself.clearDetails();
+        myself.installLibrariesList();
+        myself.fixListFieldItemColors();
+        myself.listField.adjustScrollBars();
+        myself.listField.scrollY(myself.listField.top());
+        myself.fixLayout();
+    };
 };
 
 LibraryImportDialogMorph.prototype.initializePalette = function () {
     // I will display a scrolling list of blocks.
-    if (this.palette) {this.palette.destroy(); }
+    if (this.palette) { this.palette.destroy(); }
 
     this.palette = new ScrollFrameMorph(
         null,
@@ -9778,7 +10322,7 @@ LibraryImportDialogMorph.prototype.initializePalette = function () {
 };
 
 LibraryImportDialogMorph.prototype.initializeLibraryDescription = function () {
-    if (this.notesField) {this.notesField.destroy(); }
+    if (this.notesField) { this.notesField.destroy(); }
 
     this.notesField = new ScrollFrameMorph();
     this.notesField.fixLayout = nop;
@@ -9804,10 +10348,10 @@ LibraryImportDialogMorph.prototype.initializeLibraryDescription = function () {
 };
 
 LibraryImportDialogMorph.prototype.installLibrariesList = function () {
-    if (this.listField) {this.listField.destroy(); }
+    if (this.listField) { this.listField.destroy(); }
 
     this.listField = new ListMorph(
-        this.librariesData,
+        this.filteredLibrariesList,
         element => element.name,
         null,
         () => this.importLibrary(),
@@ -9825,8 +10369,8 @@ LibraryImportDialogMorph.prototype.installLibrariesList = function () {
     this.listField.render = InputFieldMorph.prototype.render;
     this.listField.drawRectBorder = InputFieldMorph.prototype.drawRectBorder;
 
-    this.listField.action = ({name, fileName, description}) => {
-        if (isNil(name)) {return; }
+    this.listField.action = ({ name, fileName, description }) => {
+        if (isNil(name) || isNil(fileName)) { return; }
 
         this.notesText.text = localize(description) || '';
         this.notesText.rerender();
@@ -9852,7 +10396,6 @@ LibraryImportDialogMorph.prototype.installLibrariesList = function () {
         }
     };
 
-    this.listField.setWidth(200);
     this.body.add(this.listField);
 
     this.fixLayout();
@@ -9864,8 +10407,8 @@ LibraryImportDialogMorph.prototype.popUp = function () {
         LibraryImportDialogMorph.uber.popUp.call(this, world);
         this.handle = new HandleMorph(
             this,
-            300,
-            300,
+            500,
+            500,
             this.corner,
             this.corner
         );
@@ -9882,12 +10425,17 @@ LibraryImportDialogMorph.prototype.destroy = function () {
 LibraryImportDialogMorph.prototype.fixListFieldItemColors =
     ProjectDialogMorph.prototype.fixListFieldItemColors;
 
-LibraryImportDialogMorph.prototype.clearDetails =
-    ProjectDialogMorph.prototype.clearDetails;
+LibraryImportDialogMorph.prototype.clearDetails = function () {
+    this.notesText.text = '';
+    this.notesText.rerender();
+    this.notesField.contents.adjustBounds();
+    this.initializePalette();
+};
 
 LibraryImportDialogMorph.prototype.fixLayout = function () {
     var titleHeight = fontHeight(this.titleFontSize) + this.titlePadding * 2,
-        thin = this.padding / 2;
+        thin = this.padding / 2,
+        inputField = this.filterField;
 
     if (this.body) {
         this.body.setPosition(this.position().add(new Point(
@@ -9897,26 +10445,40 @@ LibraryImportDialogMorph.prototype.fixLayout = function () {
         this.body.setExtent(new Point(
             this.width() - this.padding * 2,
             this.height()
-                - this.padding * 3 // top, bottom and button padding.
-                - titleHeight
-                - this.buttons.height()
+            - this.padding * 4 // top, bottom, filterfield and button padding.
+            - titleHeight
+            - this.buttons.height()
         ));
 
-        this.listField.setExtent(new Point(
-            200,
-            this.body.height()
-        ));
+        if (this.magnifyingGlass) {
+            this.magnifyingGlass.setTop(inputField.top());
+            this.magnifyingGlass.setLeft(this.body.left());
+        }
+
+        inputField.setWidth(
+            this.body.width() - this.padding - this.magnifyingGlass.width()
+        );
+        inputField.setLeft(this.magnifyingGlass.left() + this.padding * 2);
+        inputField.setTop(this.body.top());
+
+        this.listField.setLeft(this.body.left());
+        this.listField.setWidth(240);
+
+        this.listField.setTop(inputField.bottom() + this.padding);
+        this.listField.setHeight(
+            this.body.height() - inputField.height()
+        );
+        this.listField.contents.children[0].adjustWidths();
+
         this.notesField.setExtent(new Point(
             this.body.width() - this.listField.width() - thin,
             100
         ));
         this.palette.setExtent(new Point(
-            this.notesField.width(),
-            this.body.height() - this.notesField.height() - thin
+            this.body.width() - this.listField.width() - thin,
+            this.body.height() - this.filterField.height() - this.notesField.height() - thin
         ));
-        this.listField.contents.children[0].adjustWidths();
 
-        this.listField.setPosition(this.body.position());
         this.palette.setPosition(this.listField.topRight().add(
             new Point(thin, 0)
         ));
@@ -9938,7 +10500,6 @@ LibraryImportDialogMorph.prototype.fixLayout = function () {
         this.buttons.setBottom(this.bottom() - this.padding);
     }
 
-    // refresh shadow
     this.removeShadow();
     this.addShadow();
 };
@@ -9961,7 +10522,7 @@ LibraryImportDialogMorph.prototype.cachedPalette = function (key) {
 };
 
 LibraryImportDialogMorph.prototype.importLibrary = function () {
-    if (!this.listField.selected) {return; }
+    if (!this.listField.selected) { return; }
 
     var ide = this.ide,
         selectedLibrary = this.listField.selected.fileName,
@@ -9979,9 +10540,9 @@ LibraryImportDialogMorph.prototype.importLibrary = function () {
         this.cachedPalette(selectedLibrary).forEach((value, key) =>
             SpriteMorph.prototype.customCategories.set(key, value)
         );
-        ide.showMessage(localize('Imported') + ' ' + localize(libraryName), 2);
+        ide.showMessage(`${localize('Imported')} ${libraryName}`, 2);
     } else {
-        ide.showMessage(localize('Loading') + ' ' + localize(libraryName));
+        ide.showMessage(`${localize('Loading')} ${libraryName}`);
         ide.getURL(
             ide.resourceURL('libraries', selectedLibrary),
             libraryText => {
@@ -9990,6 +10551,7 @@ LibraryImportDialogMorph.prototype.importLibrary = function () {
             }
         );
     }
+    ide.refreshIDE();
 };
 
 LibraryImportDialogMorph.prototype.displayBlocks = function (libraryKey) {
@@ -10102,7 +10664,7 @@ SpriteIconMorph.prototype.init = function (aSprite) {
     };
 
     hover = () => {
-        if (!aSprite.exemplar) {return null; }
+        if (!aSprite.exemplar) { return null; }
         return (localize('parent') + ':\n' + aSprite.exemplar.name);
     };
 
@@ -10238,21 +10800,21 @@ SpriteIconMorph.prototype.step = function () {
 // SpriteIconMorph layout
 
 SpriteIconMorph.prototype.fixLayout = function () {
-    if (!this.thumbnail || !this.label) {return null; }
+    if (!this.thumbnail || !this.label) { return null; }
 
     this.bounds.setWidth(
         this.thumbnail.width()
-            + this.outline * 2
-            + this.edge * 2
-            + this.padding * 2
+        + this.outline * 2
+        + this.edge * 2
+        + this.padding * 2
     );
 
     this.bounds.setHeight(
         this.thumbnail.height()
-            + this.outline * 2
-            + this.edge * 2
-            + this.padding * 3
-            + this.label.height()
+        + this.outline * 2
+        + this.edge * 2
+        + this.padding * 3
+        + this.label.height()
     );
 
     this.thumbnail.setCenter(this.center());
@@ -10295,15 +10857,33 @@ SpriteIconMorph.prototype.userMenu = function () {
             'save a picture\nof the stage'
         );
         if (this.object.trailsLog.length) {
+            menu.addLine();
             menu.addItem(
                 'svg...',
                 () => this.object.exportTrailsLogAsSVG(),
                 'export pen trails\nline segments as SVG'
             );
+
+            menu.addItem(
+                'poly svg...',
+                () => this.object.exportTrailsLogAsPolySVG(),
+                'export pen trails\nline segments as polyline SVG'
+            );
+            menu.addItem(
+                'dst...',
+                () => this.object.exportTrailsLogAsDST(),
+                'export pen trails\nas DST embroidery file'
+            );
+            menu.addItem(
+                'exp...',
+                () => this.object.exportTrailsLogAsEXP(),
+                'export pen trails\nas EXP embroidery file'
+            );
+
         }
         return menu;
     }
-    if (!(this.object instanceof SpriteMorph)) {return null; }
+    if (!(this.object instanceof SpriteMorph)) { return null; }
     menu.addItem("show", 'showSpriteOnStage');
     menu.addLine();
     menu.addItem("duplicate", 'duplicateSprite');
@@ -10419,8 +10999,8 @@ SpriteIconMorph.prototype.showSpriteOnStage = function () {
 // SpriteIconMorph events
 
 SpriteIconMorph.prototype.mouseDoubleClick = function () {
-	if (this.object instanceof SpriteMorph) {
-    	this.object.flash();
+    if (this.object instanceof SpriteMorph) {
+        this.object.flash();
     }
 };
 
@@ -10429,21 +11009,21 @@ SpriteIconMorph.prototype.mouseDoubleClick = function () {
 SpriteIconMorph.prototype.render = function (ctx) {
     // only draw the edges if I am selected
     switch (this.userState) {
-    case 'highlight':
-        this.drawBackground(ctx, this.highlightColor);
-        break;
-    case 'pressed':
-        this.drawOutline(ctx);
-        this.drawBackground(ctx, this.pressColor);
-        this.drawEdges(
-            ctx,
-            this.pressColor,
-            this.pressColor.lighter(40),
-            this.pressColor.darker(40)
-        );
-        break;
-    default:
-        this.drawBackground(ctx, this.getRenderColor());
+        case 'highlight':
+            this.drawBackground(ctx, this.highlightColor);
+            break;
+        case 'pressed':
+            this.drawOutline(ctx);
+            this.drawBackground(ctx, this.pressColor);
+            this.drawEdges(
+                ctx,
+                this.pressColor,
+                this.pressColor.lighter(40),
+                this.pressColor.darker(40)
+            );
+            break;
+        default:
+            this.drawBackground(ctx, this.getRenderColor());
     }
 };
 
@@ -10480,7 +11060,11 @@ SpriteIconMorph.prototype.wantsDropOf = function (morph) {
 
 SpriteIconMorph.prototype.reactToDropOf = function (morph, hand) {
     if (morph instanceof BlockMorph || morph instanceof CommentMorph) {
-        this.copyStack(morph);
+        if (!(morph instanceof HatBlockMorph &&
+            morph.isCustomBlockSpecific())
+        ) {
+            this.copyStack(morph);
+        }
     } else if (morph instanceof CostumeIconMorph) {
         this.copyCostume(morph.object);
     } else if (morph instanceof SoundIconMorph) {
@@ -10492,7 +11076,7 @@ SpriteIconMorph.prototype.reactToDropOf = function (morph, hand) {
 
 SpriteIconMorph.prototype.copyStack = function (block) {
     var sprite = this.object,
-    	dup = block.fullCopy(),
+        dup = block.fullCopy(),
         y = Math.max(
             sprite.scripts.children.map(stack =>
                 stack.fullBounds().bottom()
@@ -10509,9 +11093,9 @@ SpriteIconMorph.prototype.copyStack = function (block) {
     // delete all local custom blocks (methods) that the receiver
     // doesn't understand
     dup.allChildren().forEach(morph => {
-	    if (morph.isCustomBlock &&
+        if (morph.isCustomBlock &&
             !morph.isGlobal &&
-        		!sprite.getMethod(morph.blockSpec)
+            !sprite.getMethod(morph.blockSpec)
         ) {
             morph.deleteBlock();
         }
@@ -10535,7 +11119,7 @@ SpriteIconMorph.prototype.copySound = function (sound) {
 SpriteIconMorph.prototype.flash = function () {
     var world = this.world();
 
-    if (this.isFlashing) {return; }
+    if (this.isFlashing) { return; }
     this.flashOn();
 
     world.animations.push(new Animation(
@@ -10552,7 +11136,7 @@ SpriteIconMorph.prototype.flashOn = function () {
     var isFlat = MorphicPreferences.isFlat,
         highlight = SpriteMorph.prototype.highlightColor;
 
-    if (this.isFlashing) {return; }
+    if (this.isFlashing) { return; }
 
     this.previousColor = isFlat ? this.pressColor : this.outlineColor;
     this.previousOutline = this.outline;
@@ -10570,7 +11154,7 @@ SpriteIconMorph.prototype.flashOn = function () {
 };
 
 SpriteIconMorph.prototype.flashOff = function () {
-    if (!this.isFlashing) {return; }
+    if (!this.isFlashing) { return; }
 
     if (MorphicPreferences.isFlat) {
         this.pressColor = this.previousColor;
@@ -10676,8 +11260,8 @@ CostumeIconMorph.prototype.createThumbnail = function () {
     SpriteIconMorph.prototype.createThumbnail.call(this);
     watermark = this.object instanceof SVG_Costume ? 'svg'
         : (this.object.embeddedData ? (
-                this.typeOfStringData(this.object.embeddedData) === 'data' ?
-                    'dta' : '</>'
+            this.typeOfStringData(this.object.embeddedData) === 'data' ?
+                'dta' : '</>'
         )
             : null);
     if (watermark) {
@@ -10714,7 +11298,7 @@ CostumeIconMorph.prototype.fixLayout
 
 CostumeIconMorph.prototype.userMenu = function () {
     var menu = new MenuMorph(this);
-    if (!(this.object instanceof Costume)) {return null; }
+    if (!(this.object instanceof Costume)) { return null; }
     menu.addItem("edit", "editCostume");
     if (this.world().currentKey === 16) { // shift clicked
         menu.addItem(
@@ -10839,13 +11423,13 @@ CostumeIconMorph.prototype.typeOfStringData = function (aString) {
     // check for Snap specific files, projects, libraries, sprites, scripts
     if (aString[0] === '<') {
         if ([
-                'project',
-                'snapdata',
-                'blocks',
-                'sprites',
-                'block',
-                'script'
-            ].some(tag => aString.slice(1).startsWith(tag))
+            'project',
+            'snapdata',
+            'blocks',
+            'sprites',
+            'block',
+            'script'
+        ].some(tag => aString.slice(1).startsWith(tag))
         ) {
             return 'blocks';
         }
@@ -11184,7 +11768,7 @@ WardrobeMorph.prototype.updateList = function () {
         if (!CamSnapshotDialogMorph.prototype.enabled) {
             cambutton.disable();
             cambutton.hint =
-            	CamSnapshotDialogMorph.prototype.notSupportedMessage;
+                CamSnapshotDialogMorph.prototype.notSupportedMessage;
         }
 
         document.addEventListener(
@@ -11434,9 +12018,9 @@ SoundIconMorph.prototype.createInfo = function () {
     var dur = Math.round(this.object.audio.duration || 0),
         mod = dur % 60;
     return Math.floor(dur / 60).toString()
-            + ":"
-            + (mod < 10 ? "0" : "")
-            + mod.toString();
+        + ":"
+        + (mod < 10 ? "0" : "")
+        + mod.toString();
 };
 
 SoundIconMorph.prototype.toggleAudioPlaying = function () {
@@ -12096,8 +12680,8 @@ StageHandleMorph.prototype.init = function (target) {
     this.target = target || null;
     this.userState = 'normal'; // or 'highlight'
     HandleMorph.uber.init.call(this);
-    this.color = MorphicPreferences.isFlat ?
-            IDE_Morph.prototype.backgroundColor : new Color(190, 190, 190);
+    this.color = IDE_Morph.prototype.isBright ?
+        IDE_Morph.prototype.backgroundColor : new Color(190, 190, 190);
     this.isDraggable = false;
     this.setExtent(new Point(12, 50));
 };
@@ -12108,8 +12692,8 @@ StageHandleMorph.prototype.render = function (ctx) {
     if (this.userState === 'highlight') {
         this.renderOn(
             ctx,
-            MorphicPreferences.isFlat ?
-                    new Color(245, 245, 255) : new Color(100, 100, 255),
+            IDE_Morph.prototype.isBright ?
+                new Color(245, 245, 255) : new Color(100, 100, 255),
             this.color
         );
     } else { // assume 'normal'
@@ -12165,11 +12749,11 @@ StageHandleMorph.prototype.renderOn = function (
 // StageHandleMorph layout:
 
 StageHandleMorph.prototype.fixLayout = function () {
-    if (!this.target) {return; }
+    if (!this.target) { return; }
     var ide = this.target.parentThatIsA(IDE_Morph);
     this.setTop(this.target.top() + 10);
     this.setRight(this.target.left());
-    if (ide) {ide.add(this); } // come to front
+    if (ide) { ide.add(this); } // come to front
 };
 
 // StageHandleMorph stepping:
@@ -12240,8 +12824,8 @@ PaletteHandleMorph.prototype.init = function (target) {
     this.target = target || null;
     this.userState = 'normal';
     HandleMorph.uber.init.call(this);
-    this.color = MorphicPreferences.isFlat ?
-            IDE_Morph.prototype.backgroundColor : new Color(190, 190, 190);
+    this.color = IDE_Morph.prototype.isBright ?
+        IDE_Morph.prototype.backgroundColor : new Color(190, 190, 190);
     this.isDraggable = false;
     this.setExtent(new Point(12, 50));
 };
@@ -12257,11 +12841,11 @@ PaletteHandleMorph.prototype.renderOn =
 // PaletteHandleMorph layout:
 
 PaletteHandleMorph.prototype.fixLayout = function () {
-    if (!this.target) {return; }
+    if (!this.target) { return; }
     var ide = this.target.parentThatIsA(IDE_Morph);
     this.setTop(this.target.top() + 10);
     this.setRight(this.target.right());
-    if (ide) {ide.add(this); } // come to front
+    if (ide) { ide.add(this); } // come to front
 };
 
 // PaletteHandleMorph stepping:
@@ -12285,10 +12869,10 @@ PaletteHandleMorph.prototype.mouseDownLeft = function (pos) {
             ide.paletteWidth = Math.min(
                 Math.max(
                     200, newPos - ide.left() - border * 2),
-                    cnf.noSprites ?
-                        ide.width() - border * 2
-                        : ide.stageHandle.left() -
-                            ide.spriteBar.tabBar.width()
+                cnf.noSprites ?
+                    ide.width() - border * 2
+                    : ide.stageHandle.left() -
+                    ide.spriteBar.tabBar.width()
             );
             ide.setExtent(world.extent());
 
@@ -12329,11 +12913,11 @@ CamSnapshotDialogMorph.prototype.enableCamera = true;
 CamSnapshotDialogMorph.prototype.enabled = true;
 
 CamSnapshotDialogMorph.prototype.notSupportedMessage =
-	'Please make sure your web browser is up to date\n' +
-	'and your camera is properly configured. \n\n' +
-	'Some browsers also require you to access Snap!\n' +
-	'through HTTPS to use the camera.\n\n' +
-    'Plase replace the "http://" part of the address\n' +
+    'Please make sure your web browser is up to date\n' +
+    'and your camera is properly configured. \n\n' +
+    'Some browsers also require you to access Snap!\n' +
+    'through HTTPS to use the camera.\n\n' +
+    'Please replace the "http://" part of the address\n' +
     'in your browser by "https://" and try again.';
 
 // CamSnapshotDialogMorph instance creation
@@ -12346,7 +12930,7 @@ CamSnapshotDialogMorph.prototype.init = function (
     ide,
     sprite,
     onCancel,
-	onAccept
+    onAccept
 ) {
     this.ide = ide;
     this.sprite = sprite;
@@ -12367,17 +12951,17 @@ CamSnapshotDialogMorph.prototype.buildContents = function () {
     var myself = this,
         stage = this.sprite.parentThatIsA(StageMorph);
 
-	function noCameraSupport() {
+    function noCameraSupport() {
         myself.disable();
         myself.ide.inform(
             'Camera not supported',
             CamSnapshotDialogMorph.prototype.notSupportedMessage
         );
         if (myself.videoElement) {
-        	myself.videoElement.remove();
+            myself.videoElement.remove();
         }
         myself.cancel();
-	}
+    }
 
     this.videoElement = document.createElement('video');
     this.videoElement.hidden = true;
@@ -12437,7 +13021,7 @@ CamSnapshotDialogMorph.prototype.buildContents = function () {
             this.top(),
             w,
             h
-            );
+        );
 
         ctx.restore();
     };
