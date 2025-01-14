@@ -5,6 +5,20 @@
     "description": "As biblioteca abaixo são especificas para Patrulheiros."
   },
   {
+    "fileName": "eureka_utils.xml",
+    "name": "EUREKA Utilidades",
+    "description": "Bibliotecas de apoio a programação",
+    "searchData": [],
+    "categories": [
+      "EUREKA Utilitades"
+    ],
+    "translations": {
+      "pt-BR": {
+        "searchData": []
+      }
+    }
+  },
+  {
     "fileName": "eureka_websocket.xml",
     "name": "EUREKA WebSocket",
     "description": "Conexao WebSocket simplificado do PatrulhaEUREKA.org",
