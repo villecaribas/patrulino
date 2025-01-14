@@ -10,13 +10,35 @@
     "description": "Bibliotecas de apoio a programação",
     "searchData": [],
     "categories": [
-      "EUREKA Utilitades"
+      "EUREKA ULTILS"
     ],
     "translations": {
       "pt-BR": {
         "searchData": []
       }
     }
+  },
+  {
+    "fileName": "eureka_cores.xml",
+    "name": "EUREKA Cores",
+    "description": "Blocos de cores do PatrulhaEUREKA.org",
+    "searchData": [],
+    "categories": [
+      "EUREKA Cores"
+    ],
+    "translations": {
+      "pt-BR": {
+        "searchData": []
+      }
+    }
+  },
+  {
+    "fileName": "~",
+    "name": "~"
+  },
+  {
+    "fileName": "~",
+    "name": "~"
   },
   {
     "fileName": "eureka_websocket.xml",
@@ -39,6 +61,50 @@
     "searchData": [],
     "categories": [
       "EUREKA WebSocket"
+    ],
+    "translations": {
+      "pt-BR": {
+        "searchData": []
+      }
+    }
+  }, 
+  {
+    "fileName": "~",
+    "name": "~"
+  },
+  {
+    "fileName": "~",
+    "name": "~"
+  },
+  {
+    "fileName": "eureka_tello.xml",
+    "name": "EUREKA TELLO",
+    "description": "Blocos para conexão com o TelloEUREKAserver 1) Download do https://github.com/villecaribas/Tello-EUREKA 2) Conectar do WiFi do Tello 3) Iniciar com > $ node TelloEUREKAserver.js 4) conectar com o PatruLINO.",
+    "searchData": [],
+    "categories": [
+      "EUREKA WebSocket"
+    ],
+    "translations": {
+      "pt-BR": {
+        "searchData": []
+      }
+    }
+  },
+  {
+    "fileName": "~",
+    "name": "~"
+  },
+  {
+    "fileName": "~",
+    "name": "~"
+  },
+  {
+    "fileName": "eureka_ia.xml",
+    "name": "EUREKA IA",
+    "description": "Bibliotecas de apoio para Inteligência Artificial do PatrulhaEUREKA.org usando a biblioteca do https://teachablemachine.withgoogle.com/",
+    "searchData": [],
+    "categories": [
+      "EUREKA IA"
     ],
     "translations": {
       "pt-BR": {
