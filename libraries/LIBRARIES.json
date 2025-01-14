@@ -19,6 +19,20 @@
     }
   },
   {
+    "fileName": "eureka_perguntas.xml",
+    "name": "EUREKA Perguntas",
+    "description": "Bibliotecas de apoio a Perguntas de um jeito diferente.",
+    "searchData": [],
+    "categories": [
+      "EUREKA Perguntas"
+    ],
+    "translations": {
+      "pt-BR": {
+        "searchData": []
+      }
+    }
+  },
+  {
     "fileName": "eureka_cores.xml",
     "name": "EUREKA Cores",
     "description": "Blocos de cores do PatrulhaEUREKA.org",
