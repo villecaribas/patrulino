@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 21.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   version="1.1"
+   id="Capa_1"
+   x="0px"
+   y="0px"
+   viewBox="0 0 512 361"
+   xml:space="preserve"
+   width="512"
+   height="361"
+   sodipodi:docname="botao_vermelho.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs10" /><sodipodi:namedview
+   id="namedview10"
+   pagecolor="#ffffff"
+   bordercolor="#000000"
+   borderopacity="0.25"
+   inkscape:showpageshadow="2"
+   inkscape:pageopacity="0.0"
+   inkscape:pagecheckerboard="0"
+   inkscape:deskcolor="#d1d1d1" />
+<g
+   id="g10"
+   transform="translate(0,-75.5)"><path
+     style="fill:#efe2dd"
+     d="m 512,240.5 v 60 c 0,75.601 -112.899,136 -256,136 -143.101,0 -256,-60.399 -256,-136 v -60 c 0,-8.401 6.599,-15 15,-15 h 482 c 8.401,0 15,6.599 15,15 z"
+     id="path1" /><path
+     style="fill:#cdbfba"
+     d="m 512,240.5 v 60 c 0,75.601 -112.899,136 -256,136 v -211 h 241 c 8.401,0 15,6.599 15,15 z"
+     id="path2" /><path
+     style="fill:#fff5f5"
+     d="m 512,240.5 c 0,74.7 -115.3,135 -256,135 -140.7,0 -256,-60.3 -256,-135 0,-74.7 115.3,-135 256,-135 140.7,0 256,60.3 256,135 z"
+     id="path3" /><path
+     style="fill:#efe2dd"
+     d="m 512,240.5 c 0,74.7 -115.3,135 -256,135 v -270 c 140.7,0 256,60.3 256,135 z"
+     id="path4" /><path
+     style="fill:#3964e6;fill-opacity:1"
+     d="m 391,150.5 v 90 c 0,42.9 -57.9,75 -135,75 -77.1,0 -135,-32.1 -135,-75 v -90 c 0,-8.401 6.599,-15 15,-15 h 240 c 8.401,0 15,6.599 15,15 z"
+     id="path7" /><path
+     style="fill:#2547ae;fill-opacity:1"
+     d="m 391,150.5 v 90 c 0,42.9 -57.9,75 -135,75 v -180 h 120 c 8.401,0 15,6.599 15,15 z"
+     id="path8" /><path
+     style="fill:#638aff;fill-opacity:1"
+     d="m 256,75.5 c -77.1,0 -135,32.1 -135,75 0,42.9 57.9,75 135,75 77.1,0 135,-32.1 135,-75 0,-42.9 -57.9,-75 -135,-75 z"
+     id="path9" /><path
+     style="fill:#3964e6;fill-opacity:1"
+     d="m 391,150.5 c 0,42.9 -57.9,75 -135,75 v -150 c 77.1,0 135,32.1 135,75 z"
+     id="path10" /></g>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</svg>

@@ -1,6 +1,18 @@
 [
   {
-    "fileName": "ultrasonic-sensor.png",
+    "fileName": "botao_vermelho.svg",
+    "name": "Botao Vermelho"
+  },
+  {
+    "fileName": "botao_azul.svg",
+    "name": "Botao Azul"
+  },
+  {
+    "fileName": "Sensor-LDR.svg",
+    "name": "Sensor LDR"
+  },
+  {
+    "fileName": "ultrasonic-sensor.svg",
     "name": "Sensor Ultrasonico HC-SR04"
   },
   {
@@ -603,7 +615,6 @@
     "fileName": "reindeer.svg",
     "name": "reindeer"
   },
-  
   {
     "fileName": "echidna.svg",
     "name": "echidna"
@@ -980,7 +991,6 @@
     "fileName": "devin-d.svg",
     "name": "devin d"
   },
-  
   {
     "fileName": "drum_snare-b.svg",
     "name": "drum_snare b"
@@ -1237,7 +1247,6 @@
     "fileName": "watermelon-c.svg",
     "name": "watermelon c"
   },
-  
   {
     "fileName": "dog1-a.svg",
     "name": "dog1 a"
@@ -1590,7 +1599,6 @@
     "fileName": "tennisball.png",
     "name": "tennisball"
   },
-  
   {
     "fileName": "robot1.svg",
     "name": "robot1"
