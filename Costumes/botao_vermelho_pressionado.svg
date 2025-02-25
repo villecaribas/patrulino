@@ -37,7 +37,10 @@
 <path
    style="fill:#efe2dd"
    d="m 512,165 v 60 C 512,300.601 399.101,361 256,361 112.899,361 0,300.601 0,225 v -60 c 0,-8.401 6.599,-15 15,-15 h 482 c 8.401,0 15,6.599 15,15 z"
-   id="path1" /><path
+   id="path1"
+   inkscape:export-filename="botao_vermelho_pressionado.svg"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96" /><path
    style="fill:#cdbfba"
    d="m 512,165 v 60 c 0,75.601 -112.899,136 -256,136 V 150 h 241 c 8.401,0 15,6.599 15,15 z"
    id="path2" /><path
@@ -47,17 +50,14 @@
    style="fill:#efe2dd"
    d="m 512,165 c 0,74.7 -115.3,135 -256,135 V 30 c 140.7,0 256,60.3 256,135 z"
    id="path4" /><path
-   style="fill:#3964e6;fill-opacity:1"
-   d="m 391,75 v 90 c 0,42.9 -57.9,75 -135,75 -77.1,0 -135,-32.1 -135,-75 V 75 c 0,-8.401 6.599,-15 15,-15 h 240 c 8.401,0 15,6.599 15,15 z"
-   id="path7" /><path
-   style="fill:#2547ae;fill-opacity:1"
-   d="m 391,75 v 90 c 0,42.9 -57.9,75 -135,75 V 60 h 120 c 8.401,0 15,6.599 15,15 z"
-   id="path8" /><path
-   style="fill:#638aff;fill-opacity:1"
-   d="m 256,0 c -77.1,0 -135,32.1 -135,75 0,42.9 57.9,75 135,75 77.1,0 135,-32.1 135,-75 C 391,32.1 333.1,0 256,0 Z"
+   id="path7"
+   style="fill:#ae2538;fill-opacity:1"
+   d="m 121,150 v 15 c 0,42.89996 57.90008,75 135,75 77.09992,0 135,-32.10004 135,-75 v -15 z" /><path
+   style="fill:#ff637b;fill-opacity:1"
+   d="m 256,74 c -77.1,0 -135,32.1 -135,75 0,42.9 57.9,75 135,75 77.1,0 135,-32.1 135,-75 0,-42.9 -57.9,-75 -135,-75 z"
    id="path9" /><path
-   style="fill:#3964e6;fill-opacity:1"
-   d="m 391,75 c 0,42.9 -57.9,75 -135,75 V 0 c 77.1,0 135,32.1 135,75 z"
+   style="fill:#ae2538;fill-opacity:1"
+   d="m 391,149 c 0,42.9 -57.9,75 -135,75 V 74 c 77.1,0 135,32.1 135,75 z"
    id="path10" />
 
 

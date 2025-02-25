@@ -8,6 +8,14 @@
     "name": "Botao Azul"
   },
   {
+    "fileName": "botao_vermelho_pressionado.svg",
+    "name": "Botao Vermelho Pressionado"
+  },
+  {
+    "fileName": "botao_azul_pressionado.svg",
+    "name": "Botao Azul Pressionado"
+  },
+  {
     "fileName": "Sensor-LDR.svg",
     "name": "Sensor LDR"
   },
