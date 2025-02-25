@@ -1,5 +1,9 @@
 [
   {
+    "fileName": "potenciometro.svg",
+    "name": "Potenciometro"
+  },
+  {
     "fileName": "botao_vermelho.svg",
     "name": "Botao Vermelho"
   },
@@ -110,10 +114,6 @@
   {
     "fileName": "calvrett_thinking.png",
     "name": "calvrett_thinking"
-  },
-  {
-    "fileName": "dragon1-a.png",
-    "name": "dragon1 a"
   },
   {
     "fileName": "bass.svg",
@@ -664,10 +664,6 @@
     "name": "dinosaur2 b"
   },
   {
-    "fileName": "dog2-c.png",
-    "name": "dog2 c"
-  },
-  {
     "fileName": "MinasGerais.svg",
     "name": "UF MinasGerais"
   },
@@ -734,10 +730,6 @@
   {
     "fileName": "shoes1.svg",
     "name": "shoes1"
-  },
-  {
-    "fileName": "bat2-a.png",
-    "name": "bat2 a"
   },
   {
     "fileName": "ballerina-a.svg",
@@ -866,10 +858,6 @@
   {
     "fileName": "coracoes4.png",
     "name": "coracoes4"
-  },
-  {
-    "fileName": "dog1-a.png",
-    "name": "dog1 a"
   },
   {
     "fileName": "led_azul.svg",
@@ -1148,10 +1136,6 @@
     "name": "penguin2_talk a"
   },
   {
-    "fileName": "bat1-b.png",
-    "name": "bat1 b"
-  },
-  {
     "fileName": "ladybug2-b.svg",
     "name": "ladybug2 b"
   },
@@ -1372,10 +1356,6 @@
     "name": "tie_fighterB"
   },
   {
-    "fileName": "dog2-b.png",
-    "name": "dog2 b"
-  },
-  {
     "fileName": "led_laranja.svg",
     "name": "led_laranja"
   },
@@ -1434,10 +1414,6 @@
   {
     "fileName": "explosao1 3.png",
     "name": "explosao1 3"
-  },
-  {
-    "fileName": "dog1-b.png",
-    "name": "dog1 b"
   },
   {
     "fileName": "ukulele.svg",
@@ -1512,10 +1488,6 @@
     "name": "led_verde"
   },
   {
-    "fileName": "dragon1-b.png",
-    "name": "dragon1 b"
-  },
-  {
     "fileName": "ESPaceLINO_oti.png",
     "name": "ESPaceLINO_oti"
   },
@@ -1582,10 +1554,6 @@
   {
     "fileName": "joaquinaE4.svg",
     "name": "joaquinaE4"
-  },
-  {
-    "fileName": "bat1-a.png",
-    "name": "bat1 a"
   },
   {
     "fileName": "penguin1_talk-b.svg",
@@ -2008,10 +1976,6 @@
     "name": "i block"
   },
   {
-    "fileName": "bat2-b.png",
-    "name": "bat2 b"
-  },
-  {
     "fileName": "octopus-a.svg",
     "name": "octopus a"
   },
@@ -2106,10 +2070,6 @@
   {
     "fileName": "canos6.png",
     "name": "canos6"
-  },
-  {
-    "fileName": "dog2-a.png",
-    "name": "dog2 a"
   },
   {
     "fileName": "drum2-b.svg",
