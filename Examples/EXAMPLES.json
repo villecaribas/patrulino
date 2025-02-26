@@ -14,5 +14,9 @@
   {
     "fileName":"Carrinho_seta.xml",
     "name":"Carrinho_seta"
+  },
+  {
+    "fileName":"Ultrasonico.xml",
+    "name":"Ultrasonico"
   }
 ]
