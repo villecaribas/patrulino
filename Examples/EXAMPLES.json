@@ -10,5 +10,9 @@
   {
     "fileName":"LED_1_2_3.xml",
     "name":"LED_1_2_3"
+  },
+  {
+    "fileName":"Carrinho_seta.xml",
+    "name":"Carrinho_seta"
   }
 ]
