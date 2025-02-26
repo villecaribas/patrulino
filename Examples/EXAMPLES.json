@@ -22,5 +22,9 @@
   {
     "fileName":"Potenciometro.xml",
     "name":"Potenciometro"
+  },
+  {
+    "fileName":"LDR.xml",
+    "name":"LDR"
   }
 ]
