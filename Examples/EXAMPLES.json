@@ -18,5 +18,9 @@
   {
     "fileName":"Ultrasonico.xml",
     "name":"Ultrasonico"
+  },
+  {
+    "fileName":"Potenciometro.xml",
+    "name":"Potenciometro"
   }
 ]
