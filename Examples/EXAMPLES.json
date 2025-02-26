@@ -6,5 +6,9 @@
   {
     "fileName":"Botoes_0_1_2.xml",
     "name":"Botoes_0_1_2"
-  } 
+  },
+  {
+    "fileName":"LED_1_2_3.xml",
+    "name":"LED_1_2_3"
+  }
 ]
