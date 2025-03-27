@@ -1,5 +1,47 @@
 [
   {
+    "fileName": "Coordenadas.svg",
+    "name": "Coordenadas",
+    "translations": {
+    }
+  },
+  {
+    "fileName": "Coordenadas_sem_guias.svg",
+    "name": "Coordenadas sem Guia",
+    "translations": {
+    }
+  },  
+  {
+    "fileName": "Coord_bordas.svg",
+    "name": "Coord nas Bordas",
+    "translations": {
+    }
+  },  
+  {
+    "fileName": "Coord_bordas_sem_numeros.svg",
+    "name": "Coord sem Numeros",
+    "translations": {
+    }
+  },  
+  {
+    "fileName": "Angulos_180.png",
+    "name": "Angulos 180",
+    "translations": {
+    }
+  },  
+  {
+    "fileName": "Angulos_360.png",
+    "name": "Angulos 360",
+    "translations": {
+    }
+  },  
+  {
+    "fileName": "Angulos_360s.png",
+    "name": "Agulos 360 Completos",
+    "translations": {
+    }
+  },  
+  {
     "fileName": "atom_playground.jpg",
     "name": "Atom Playground",
     "translations": {
