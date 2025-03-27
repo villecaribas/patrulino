@@ -1252,7 +1252,7 @@ SnapTranslator.dict.pt_BR = {
     "to": "para",
     "top": "",
     "touch screen settings": "",
-    "touching _ ?": "tocando na cor _",
+    "touching _ ?": "tocando em _",
     "transient": "",
     "translations": "",
     "translations...": "",
