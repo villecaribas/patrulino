@@ -69,6 +69,20 @@
     }
   },
   {
+    "fileName": "eureka_conexoes.xml",
+    "name": "EUREKA Conexoes",
+    "description": "Conexao BluetoothBLE e WebSocket do PatrulhaEUREKA.org",
+    "searchData": [],
+    "categories": [
+      "EUREKA Conexoes"
+    ],
+    "translations": {
+      "pt-BR": {
+        "searchData": []
+      }
+    }
+  },
+  {
     "fileName": "eureka_espacelino.xml",
     "name": "EUREKA ESPaceLINO",
     "description": "Blocos para programar o ESPaceLINO usando a biblioteca WebSocket.",
