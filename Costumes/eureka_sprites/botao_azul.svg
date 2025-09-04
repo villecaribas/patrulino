@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 21.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   version="1.1"
+   id="Capa_1"
+   x="0px"
+   y="0px"
+   viewBox="0 0 512 361"
+   xml:space="preserve"
+   width="512"
+   height="361"
+   sodipodi:docname="botao_azul.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs10" /><sodipodi:namedview
+   id="namedview10"
+   pagecolor="#ffffff"
+   bordercolor="#000000"
+   borderopacity="0.25"
+   inkscape:showpageshadow="2"
+   inkscape:pageopacity="0.0"
+   inkscape:pagecheckerboard="0"
+   inkscape:deskcolor="#d1d1d1"
+   inkscape:zoom="1.8320312"
+   inkscape:cx="256"
+   inkscape:cy="180.67377"
+   inkscape:window-width="1500"
+   inkscape:window-height="930"
+   inkscape:window-x="-6"
+   inkscape:window-y="-6"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Capa_1" />
+<path
+   style="fill:#efe2dd"
+   d="m 512,165 v 60 C 512,300.601 399.101,361 256,361 112.899,361 0,300.601 0,225 v -60 c 0,-8.401 6.599,-15 15,-15 h 482 c 8.401,0 15,6.599 15,15 z"
+   id="path1" /><path
+   style="fill:#cdbfba"
+   d="m 512,165 v 60 c 0,75.601 -112.899,136 -256,136 V 150 h 241 c 8.401,0 15,6.599 15,15 z"
+   id="path2" /><path
+   style="fill:#fff5f5"
+   d="M 512,165 C 512,239.7 396.7,300 256,300 115.3,300 0,239.7 0,165 0,90.3 115.3,30 256,30 396.7,30 512,90.3 512,165 Z"
+   id="path3" /><path
+   style="fill:#efe2dd"
+   d="m 512,165 c 0,74.7 -115.3,135 -256,135 V 30 c 140.7,0 256,60.3 256,135 z"
+   id="path4" /><path
+   style="fill:#3964e6;fill-opacity:1"
+   d="m 391,75 v 90 c 0,42.9 -57.9,75 -135,75 -77.1,0 -135,-32.1 -135,-75 V 75 c 0,-8.401 6.599,-15 15,-15 h 240 c 8.401,0 15,6.599 15,15 z"
+   id="path7" /><path
+   style="fill:#2547ae;fill-opacity:1"
+   d="m 391,75 v 90 c 0,42.9 -57.9,75 -135,75 V 60 h 120 c 8.401,0 15,6.599 15,15 z"
+   id="path8" /><path
+   style="fill:#638aff;fill-opacity:1"
+   d="m 256,0 c -77.1,0 -135,32.1 -135,75 0,42.9 57.9,75 135,75 77.1,0 135,-32.1 135,-75 C 391,32.1 333.1,0 256,0 Z"
+   id="path9" /><path
+   style="fill:#3964e6;fill-opacity:1"
+   d="m 391,75 c 0,42.9 -57.9,75 -135,75 V 0 c 77.1,0 135,32.1 135,75 z"
+   id="path10" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</svg>

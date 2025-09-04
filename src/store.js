@@ -7,7 +7,7 @@
     written by Jens Mönig
     jens@moenig.org
 
-    Copyright (C) 2024 by Jens Mönig
+    Copyright (C) 2025 by Jens Mönig
 
     This file is part of Snap!.
 
@@ -57,13 +57,13 @@ BlockMorph, ArgMorph, InputSlotMorph, TemplateSlotMorph, CommandSlotMorph,
 FunctionSlotMorph, MultiArgMorph, ColorSlotMorph, nop, CommentMorph, isNil,
 localize, SVG_Costume, MorphicPreferences, Process, isSnapObject, Variable,
 SyntaxElementMorph, BooleanSlotMorph, normalizeCanvas, contains, Scene,
-Project, CustomHatBlockMorph*/
+Project, CustomHatBlockMorph, SnapVersion*/
 
 /*jshint esversion: 11*/
 
 // Global stuff ////////////////////////////////////////////////////////
 
-modules.store = '2024-November-25';
+modules.store = '2025-April-01';
 
 // XML_Serializer ///////////////////////////////////////////////////////
 /*
@@ -163,7 +163,9 @@ XML_Serializer.prototype.addMedia = function (object, mediaID) {
     }
     this.media.push(object);
     if (mediaID) {
-        object[this.mediaIdProperty] = mediaID + '_' + object.name;
+        // object[this.mediaIdProperty] = mediaID + '_' + object.name;
+        object[this.mediaIdProperty] = this.scene.name + '_' +
+            mediaID + '_' + object.name;
     } else {
         object[this.mediaIdProperty] = this.media.length;
     }
@@ -259,7 +261,9 @@ SnapSerializer.uber = XML_Serializer.prototype;
 
 // SnapSerializer constants:
 
-SnapSerializer.prototype.app = 'Snap! 10.1-dev, https://snap.berkeley.edu';
+SnapSerializer.prototype.app = 'Snap! ' +
+    SnapVersion +
+    ', https://snap.berkeley.edu';
 
 SnapSerializer.prototype.thumbnailSize = new Point(160, 120);
 
@@ -698,19 +702,31 @@ SnapSerializer.prototype.loadScene = function (xmlNode, appVersion, remixID) {
     return scene.initialize();
 };
 
-SnapSerializer.prototype.loadBlocks = function (xmlString, targetStage) {
-    // public - answer a new dictionary of custom block definitions
+SnapSerializer.prototype.loadBlocks = function (
+    xmlString,
+    targetStage,
+    forPreview
+) { // public - answer a new dictionary of custom block definitions
     // represented by the given XML String
+    // forPreview is an optional Boolean flag that prevents customized
+    // primitives from being installed when merely previewing the blocks
+    // of a library before actually importing them
     var model = this.parse(xmlString);
     if (+model.attributes.version > this.version) {
         throw 'Module uses newer version of Serializer';
     }
-    return this.loadBlocksModel(model, targetStage);
+    return this.loadBlocksModel(model, targetStage, forPreview);
 };
 
-SnapSerializer.prototype.loadBlocksModel = function (model, targetStage) {
-    // public - answer a new dictionary of custom block definitions
-    // represented by the given already parsed XML Node
+SnapSerializer.prototype.loadBlocksModel = function (
+    model,
+    targetStage,
+    forPreview
+) { // public - answer a new dictionary of custom block definitions
+    // represented by the given already parsed XML Node,
+    // forPreview is an optional Boolean flag that prevents customized
+    // primitives from being installed when merely previewing the blocks
+    // of a library before actually importing them
     var stage, varModel, varFrame, localVarFrame;
 
     this.scene = new Scene();
@@ -731,7 +747,7 @@ SnapSerializer.prototype.loadBlocksModel = function (model, targetStage) {
         this.populateCustomBlocks( stage, model.local, false); // not global
     }
     model.primitives = model.childNamed('primitives');
-    if (model.primitives) {
+    if (model.primitives && !forPreview) {
         this.loadCustomizedPrimitives(stage, model.primitives, targetStage);
     }
     varModel = model.childNamed('variables');
@@ -1938,6 +1954,8 @@ SnapSerializer.prototype.loadValue = function (model, object, silently) {
         }
         record();
         return v;
+    case 'color':
+        return this.loadColor(model.contents);
     case 'wish':
     	def = new CustomBlockDefinition(model.attributes.s);
      	def.type = model.attributes.type;
@@ -2028,7 +2046,7 @@ Project.prototype.toXML = function (serializer) {
 };
 
 Scene.prototype.toXML = function (serializer) {
-    var xml;
+    var xml, prims;
 
     function code(key) {
         var str = '';
@@ -2047,6 +2065,10 @@ Scene.prototype.toXML = function (serializer) {
     }
 
     serializer.scene = this; // keep the order of sprites in the corral
+
+    // capture primitives and apply own ones
+    prims = SpriteMorph.prototype.bootstrappedBlocks();
+    SpriteMorph.prototype.blocks = this.blocks;
 
     xml = serializer.format(
         '<scene name="@"%%%%%%>' +
@@ -2082,6 +2104,10 @@ Scene.prototype.toXML = function (serializer) {
         serializer.store(this.stage),
         serializer.store(this.globalVariables)
     );
+
+    // restore prims
+    SpriteMorph.prototype.blocks = prims;
+
     return xml;
 };
 
@@ -2795,6 +2821,16 @@ Context.prototype.toXML = function (serializer) {
         this.receiver ? serializer.store(this.receiver) : '',
         this.receiver ? serializer.store(this.origin) : '',
         this.outerContext ? serializer.store(this.outerContext) : ''
+    );
+};
+
+Color.prototype.toXML = function (serializer) {
+    return serializer.format(
+        '<color>$,$,$,$</color>',
+        this.r,
+        this.g,
+        this.b,
+        this.a
     );
 };
 

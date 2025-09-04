@@ -6,7 +6,7 @@
 
     written by Jens Mönig
 
-    Copyright (C) 2024 by Jens Mönig
+    Copyright (C) 2025 by Jens Mönig
 
     This file is part of Snap!.
 
@@ -31,11 +31,11 @@
 IDE_Morph, CamSnapshotDialogMorph, SoundRecorderDialogMorph, isSnapObject, nop,
 Color, Process, contains, localize, SnapTranslator, isString, detect, Point,
 SVG_Costume, newCanvas, WatcherMorph, BlockMorph, HatBlockMorph, invoke,
-BigUint64Array*/
+BigUint64Array, DeviceOrientationEvent, console*/
 
 /*jshint esversion: 11, bitwise: false*/
 
-modules.extensions = '2024-December-07';
+modules.extensions = '2025-June-03';
 
 // Global stuff
 
@@ -349,6 +349,20 @@ SnapExtensions.primitives.set(
     }
 );
 
+SnapExtensions.primitives.set(
+    'snap_quicksteps?',
+    function () {
+        return StageMorph.prototype.enableQuicksteps;
+    }
+);
+
+SnapExtensions.primitives.set(
+    'snap_quicksteps(on?)',
+    function (bool) {
+        StageMorph.prototype.enableQuicksteps = (bool === true);
+    }
+);
+
 // errors & exceptions (err_):
 
 SnapExtensions.primitives.set(
@@ -426,6 +440,33 @@ SnapExtensions.primitives.set(
             arr = new Uint8Array(arr);
         }
         return new TextDecoder("utf-8").decode(arr);
+    }
+);
+
+SnapExtensions.primitives.set(
+    'txt_width(txt, fontsize)',
+    function (text, size) {
+        // answer the width of the given text and size in the writing font
+        // also works for hacks that abuse the size paramter
+        // for fancy typography, as in the "writing and formatting" library
+        if (typeof text !== 'string' && typeof text !== 'number') {
+            throw new Error(
+                localize('can only write text or numbers, not a') + ' ' +
+                typeof text
+            );
+        }
+
+        var stage = this.parentThatIsA(StageMorph),
+            context = stage.penTrails().getContext('2d'),
+            len;
+
+        context.save();
+        context.font = size + 'px monospace';
+        context.textAlign = 'left';
+        context.textBaseline = 'alphabetic';
+        len = context.measureText(text).width;
+        context.restore();
+        return len;
     }
 );
 
@@ -694,7 +735,7 @@ SnapExtensions.primitives.set(
     }
 );
 
-// text-to-speech (tts_):
+// text-to-speech, voice-to-text (tts_):
 
 SnapExtensions.primitives.set(
     'tts_speak(txt, lang, pitch, rate)',
@@ -707,6 +748,50 @@ SnapExtensions.primitives.set(
         utter.onend = () => isDone = true;
         window.speechSynthesis.speak(utter);
         return () => isDone;
+    }
+);
+
+SnapExtensions.primitives.set(
+    'tts_recognize',
+    function (proc) {
+        var sprec, done,
+            acc = proc.context.accumulator;
+        if (!acc) {
+            sprec = window.SpeechRecognition ||
+                window.webkitSpeechRecognition ||
+                window.mozSpeechRecognition ||
+                window.msSpeechRecognition;
+            if (!sprec) {
+                throw new Error('Speech Recognition is unavailable');
+            }
+            acc = proc.context.accumulator = {
+                voice: new sprec(),
+                text: null
+            };
+            acc.voice.onresult = (event) => {
+                acc.text = event.results[0][0].transcript;
+            };
+            done = () => acc.text = '';
+            acc.voice.onnomatch = done;
+            acc.voice.orreror = done;
+            acc.voice.start();
+
+        } else if (acc.text !== null) {
+            return acc.text;
+        }
+        proc.pushContext('doYield');
+        proc.pushContext();
+    }
+);
+
+SnapExtensions.primitives.set(
+    'tts_stop',
+    function () {
+        this.parentThatIsA(StageMorph).threads.processes.forEach(proc => {
+            if (proc?.context?.accumulator?.voice) {
+                proc.context.accumulator.text = '';
+            }
+        });
     }
 );
 
@@ -828,6 +913,77 @@ SnapExtensions.primitives.set(
     }
 );
 
+// Device Orientation (ori_ "tilt")
+
+SnapExtensions.primitives.set(
+    'ori_tilt(xyz)',
+    function (axis) {
+        var ide = this.parentThatIsA(IDE_Morph),
+            isPortrait = window.matchMedia("(orientation: portrait)").matches,
+            myself = this,
+            x, y, z;
+
+        function updateTilt(event) {
+            var z = event.alpha || 0;
+            ide.tilt.put(event.gamma || 0, 1);
+            ide.tilt.put(-(event.beta || 0), 2);
+            ide.tilt.put(z >= 180 ? 360 - z : -z, 3);
+        }
+
+        function userTriggerTilt() {
+            DeviceOrientationEvent.requestPermission().then(response => {
+                if (response === 'granted') {
+                    // Permission granted
+                    window.addEventListener(
+                        'deviceorientation',
+                        updateTilt
+                    );
+                } else {
+                    // Permission denied
+                    myself.inform('Warning:\nDevice orientation failed.');
+                }
+            }).catch(console.error);
+        }
+
+        function activate() {
+            if (typeof(DeviceOrientationEvent) !== 'undefined' &&
+                typeof(DeviceOrientationEvent.requestPermission) === 'function'
+            ) {
+                ide.confirm(
+                    'Activate device orientation',
+                    'Tilt Sensor',
+                    userTriggerTilt
+                );
+            } else {
+                // other devices
+                window.addEventListener('deviceorientation', updateTilt);
+            }
+        }
+
+        if (!ide.tilt) {
+            ide.tilt = new List([0, 0, 0]);
+            activate();
+        }
+
+        x = isPortrait ? ide.tilt.at(1) : -ide.tilt.at(2);
+        y = ide.tilt.at(isPortrait ? 2 : 1);
+        z = ide.tilt.at(3);
+        if (!isPortrait) {
+            z = (z > 90 ? z - 180 : z + 90);
+        }
+        switch (axis) {
+            case 'x':
+                return x;
+            case 'y':
+                return y;
+            case 'z':
+                return z;
+            default:
+                return isPortrait ? ide.tilt : new List([x, y, z]);
+        }
+    }
+);
+
 // MediaComp (mda_)
 
 SnapExtensions.primitives.set(
@@ -874,6 +1030,15 @@ SnapExtensions.primitives.set(
         soundRecorder.key = 'microphone';
         soundRecorder.popUp(this.world());
         return () => result;
+    }
+);
+
+SnapExtensions.primitives.set(
+    'mda_set_mic_resolution(idx)',
+    function (idx, proc) {
+        proc.assertType(+idx, 'number');
+        var microphone = this.parentThatIsA(StageMorph).microphone;
+        microphone.setResolution(+idx);
     }
 );
 

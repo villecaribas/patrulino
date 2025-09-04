@@ -9,7 +9,7 @@
     written by Jens Mönig
     jens@moenig.org
 
-    Copyright (C) 2024 by Jens Mönig
+    Copyright (C) 2025 by Jens Mönig
 
     This file is part of Snap!.
 
@@ -162,7 +162,7 @@ CustomHatBlockMorph*/
 
 // Global stuff ////////////////////////////////////////////////////////
 
-modules.blocks = '2024-December-07';
+modules.blocks = '2025-August-29';
 
 var SyntaxElementMorph;
 var BlockMorph;
@@ -311,7 +311,8 @@ SyntaxElementMorph.prototype.labelParts = {
         Input slots
 
         type: 'input'
-        tags: 'numeric alphanum read-only unevaluated landscape static'
+        tags: 'numeric numstring alphanum read-only unevaluated landscape
+               static'
         menu: dictionary or selector
         react: selector
         value: string, number or Array for localized strings / constants
@@ -322,6 +323,10 @@ SyntaxElementMorph.prototype.labelParts = {
     '%n': {
         type: 'input',
         tags: 'numeric'
+    },
+    '%ns': {
+        type: 'input',
+        tags: 'numstring'
     },
     '%txt': {
         type: 'input',
@@ -392,7 +397,8 @@ SyntaxElementMorph.prototype.labelParts = {
             'name' : ['name'],
             'width' : ['width'],
             'height' : ['height'],
-            'pixels' : ['pixels']
+            'pixels' : ['pixels'],
+            'colors' : ['colors']
         }
     },
     '%imgsource': {
@@ -707,7 +713,9 @@ SyntaxElementMorph.prototype.labelParts = {
             'e^' : ['e^'],
             '10^' : ['10^'],
             '2^' : ['2^'],
-            id: ['id']
+            'σ' : ['sigmoid'],
+            // '∂σ' : ['sigmoid\''],
+            id: ['id'],
         }
     },
     '%layer': {
@@ -730,16 +738,31 @@ SyntaxElementMorph.prototype.labelParts = {
             'r-g-b(-a)' : ['r-g-b(-a)']
         }
     },
-    '%pen': {
+    '%color': {
         type: 'input',
         tags: 'read-only static',
         menu: {
-            size : ['size'],
             hue : ['hue'],
             saturation : ['saturation'],
             brightness : ['brightness'],
             transparency : ['transparency'],
             '~' : null,
+            'h-s-b-t' : ['h-s-b-t'],
+            'r-g-b-a' : ['r-g-b-a']
+        }
+    },
+    '%pen': {
+        type: 'input',
+        tags: 'read-only static',
+        menu: {
+            size : ['size'],
+            color : ['color'],
+            '~' : null,
+            hue : ['hue'],
+            saturation : ['saturation'],
+            brightness : ['brightness'],
+            transparency : ['transparency'],
+            '~~' : null,
             'r-g-b-a' : ['r-g-b-a']
         }
     },
@@ -747,12 +770,14 @@ SyntaxElementMorph.prototype.labelParts = {
         type: 'input',
         tags: 'read-only static',
         menu: {
+            color : ['color'],
+            '~' : null,
             hue : ['hue'],
             saturation : ['saturation'],
             brightness : ['brightness'],
             transparency : ['transparency'],
             'r-g-b-a' : ['r-g-b-a'],
-            '~' : null,
+            '~~' : null,
             sprites : ['sprites'],
         }
     },
@@ -814,6 +839,11 @@ SyntaxElementMorph.prototype.labelParts = {
     '%var': {
         type: 'input',
         tags: 'read-only static', // if "static" is removed, enable auto-ringify
+        menu: 'getVarNamesDict'
+    },
+    '%hyperVar': {
+        type: 'input',
+        tags: 'read-only',
         menu: 'getVarNamesDict'
     },
     '%shd': {
@@ -1128,8 +1158,7 @@ SyntaxElementMorph.prototype.labelParts = {
 
     // other single types
     '%clr': {
-        type: 'color',
-        tags: 'static'
+        type: 'color'
     },
     '%br': {
         type: 'break'
@@ -1171,6 +1200,21 @@ SyntaxElementMorph.prototype.labelParts = {
         label: ['to', 'with data'],
         tags: 'static widget',
         max: 2
+    },
+    '%survey': {
+        type: 'multi',
+        slots: ['%rcv', '%s'],
+        label: ['from', 'with data'],
+        tags: 'static widget',
+        max: 2
+    },
+    '%hsbt': {
+        type: 'multi',
+        slots: '%n',
+        label: ['hue', 'saturation', 'brightness', 'transparency'],
+        dflt: [0, 100, 100, '0'], // last zero needs to be a string to show up
+        defaults: 1,
+        max: 4
     },
     '%scriptVars': {
         type: 'multi',
@@ -1687,7 +1731,9 @@ SyntaxElementMorph.prototype.getVarNamesDict = function () {
                 'draggable?' : ['my draggable?'],
                 'rotation style' : ['my rotation style'],
                 'rotation x' : ['my rotation x'],
-                'rotation y' : ['my rotation y']
+                'rotation y' : ['my rotation y'],
+                'scripts' : ['my scripts']
+
             }];
             if (this.world().currentKey === 16) { // shift
                 dict.my[0]['~'] = null; // don't forget we're inside an array...
@@ -1954,7 +2000,7 @@ SyntaxElementMorph.prototype.labelPart = function (spec) {
                 info.dflt,
                 info.group
             );
-            part.maxInputs = info.max;
+            part.setMaxSlots(info.max);
             part.initialSlots = Math.max( // this needs some fixing
                 part.initialSlots,
                 isNil(info.min) ? 0 : +info.min,
@@ -1970,7 +2016,8 @@ SyntaxElementMorph.prototype.labelPart = function (spec) {
 
         // apply the tags
         // ---------------
-        // input: numeric, alphanum, read-only, unevaluated, landscape, static
+        // input: numeric, numstring, alphanum, read-only, unevaluated,
+        //        landscape, static
         // text entry: monospace
         // boolean: unevaluated, static
         // symbol: static, fading, protected
@@ -1994,6 +2041,10 @@ SyntaxElementMorph.prototype.labelPart = function (spec) {
                     case 'alphanum':
                         part.isNumeric = true;
                         part.isAlphanumeric = true;
+                        break;
+                    case 'numstring':
+                        part.isNumeric = true;
+                        part.evaluateAsString = true;
                         break;
                     case 'read-only':
                         part.isReadOnly = true;
@@ -2646,6 +2697,11 @@ SyntaxElementMorph.prototype.showBubble = function (value, exportPic, target) {
             null,
             value
         );
+    } else if (value instanceof Color) {
+        morphToShow = SpriteMorph.prototype.colorSwatch(
+            value,
+            this.fontSize * 1.4
+        );
     } else if (isString(value)) {
         // shorten the string, commented out because we now scroll it
         // txt  = value.length > 500 ? value.slice(0, 500) + '...' : value;
@@ -2732,6 +2788,7 @@ SyntaxElementMorph.prototype.showBubble = function (value, exportPic, target) {
 };
 
 SyntaxElementMorph.prototype.exportPictureWithResult = function (aBubble) {
+    if (this.removeHighlight) {this.removeHighlight(); }
     var ide = this.parentThatIsA(IDE_Morph) ||
             this.parentThatIsA(BlockEditorMorph).target.parentThatIsA(
                 IDE_Morph
@@ -3057,6 +3114,7 @@ BlockMorph.prototype.init = function () {
     this.instantiationSpec = null; // spec to set upon fullCopy() of template
     this.category = null; // for zebra coloring (non persistent)
     this.isCorpse = false; // marked for deletion fom a custom block definition
+    this.afterglow = 0; // frame count-down for displaying the "active" halo
 
     BlockMorph.uber.init.call(this);
     this.color = new Color(102, 102, 102);
@@ -3781,11 +3839,12 @@ BlockMorph.prototype.userMenu = function () {
     ) {
         return menu;
     }
-
-    if (!hasLine) {menu.addLine(); }
-    rcvr = rcvr || this.scriptTarget(true);
-    if (rcvr && !rcvr.parentThatIsA(IDE_Morph).config.noRingify) {
-        menu.addItem("ringify", 'ringify');
+    if (!(top instanceof PrototypeHatBlockMorph)) {
+        if (!hasLine) {menu.addLine(); }
+        rcvr = rcvr || this.scriptTarget(true);
+        if (rcvr && !rcvr.parentThatIsA(IDE_Morph).config.noRingify) {
+            menu.addItem("ringify", 'ringify');
+        }
     }
     if (StageMorph.prototype.enableCodeMapping) {
         menu.addLine();
@@ -5469,6 +5528,7 @@ BlockMorph.prototype.removeHighlight = function () {
     if (highlight !== null) {
         this.fullChanged();
         this.removeChild(highlight);
+        this.afterglow = 0;
     }
     return highlight;
 };
@@ -8211,6 +8271,12 @@ RingMorph.prototype.render = function (ctx) {
 // RingMorph dragging and dropping
 
 RingMorph.prototype.rootForGrab = function () {
+    if (this.parent?.isTemplate) {
+        return this.parent;
+    } else if (this.parent instanceof MultiArgMorph &&
+            this.parent.parent?.isTemplate) {
+        return this.parent.parent;
+    }
     if (this.isDraggable) {
         return this;
     }
@@ -10960,6 +11026,7 @@ InputSlotMorph.prototype.init = function (
     this.choices = choiceDict || null; // object, function or selector
     this.oldContentsExtent = contents.extent();
     this.isNumeric = isNumeric || false;
+    this.evaluateAsString = false; // special case for RANDOM NUMBER reporter
     this.isAlphanumeric = false; // temporary override for allowing text
     this.isReadOnly = isReadOnly || false;
     this.minWidth = 0; // can be chaged for text-type inputs ("landscape")
@@ -11650,8 +11717,8 @@ InputSlotMorph.prototype.clonablesMenuWithTurtle = function (searching) {
 
     if (rcvr instanceof SpriteMorph) {
         dict.myself = ['myself'];
-        dict['Turtle sprite'] = ['Turtle sprite'];
     }
+    dict['Turtle sprite'] = ['Turtle sprite'];
     stage.children.forEach(morph => {
         if (morph instanceof SpriteMorph && !morph.isTemporary) {
             if (!allNames.some(n => snapEquals(n, morph.name))) {
@@ -11754,6 +11821,7 @@ InputSlotMorph.prototype.typesMenu = function () {
     }
     dict.costume = ['costume'];
     dict.sound = ['sound'];
+    dict.color = ['color'];
     dict.command = ['command'];
     dict.reporter = ['reporter'];
     dict.predicate = ['predicate'];
@@ -12321,15 +12389,12 @@ InputSlotMorph.prototype.mappedCode = function () {
 // InputSlotMorph evaluating:
 
 InputSlotMorph.prototype.evaluate = function () {
-/*
-    answer my contents, which can be a "wish", i.e. a block that refers to
-    another sprite's local method, or a text string. If I am numerical convert
-    that string to a number. If the conversion fails answer the string
-    (e.g. for special choices like 'random', 'all' or 'last') otherwise
-    the numerical value.
-*/
-    var num, contents;
-
+    // answer my contents, which can be a "wish", i.e. a block that refers to
+    // another sprite's local method, or a text string. If I am numerical
+    // convert that string to a number. If the conversion fails answer the
+    // string (e.g. for special choices like 'random', 'all' or 'last')
+    // otherwise the numerical value.
+    var val, num;
  	if (this.selectedBlock) {
   		return this.selectedBlock;
   	}
@@ -12342,14 +12407,17 @@ InputSlotMorph.prototype.evaluate = function () {
     if (this.constant) {
         return this.constant;
     }
-    contents = this.contents();
-    if (this.isNumeric) {
-        num = parseFloat(contents.text || '0');
+    val = this.contents().text;
+    if (this.isNumeric &&
+        !this.isAlphanumeric &&
+        (!this.evaluateAsString || val === '')
+    ) {
+        num = +val;
         if (!isNaN(num)) {
             return num;
         }
     }
-    return contents.text;
+    return val;
 };
 
 InputSlotMorph.prototype.evaluateOption = function () {
@@ -13731,11 +13799,24 @@ function ColorSlotMorph(clr) {
 ColorSlotMorph.prototype.init = function (clr) {
     ColorSlotMorph.uber.init.call(this);
     this.alpha = 1;
-    this.setColor(clr || new Color(145, 26, 68));
+    this.setColor(clr);
+    this.fixLayout();
 };
 
 ColorSlotMorph.prototype.getSpec = function () {
     return '%clr';
+};
+
+ColorSlotMorph.prototype.setContents = function (clr) {
+    this.setColor(clr);
+};
+
+ColorSlotMorph.prototype.setColor = function (clr) {
+    ColorSlotMorph.uber.setColor.call(
+        this,
+        isString(clr) && clr.length > 10 ? Color.fromString(clr)
+            : (clr instanceof Color ? clr : new Color(145, 26, 68))
+    );
 };
 
 // ColorSlotMorph  color sensing:
@@ -14108,6 +14189,16 @@ MultiArgMorph.prototype.initGroup = function (aBlockSpec) {
         }
         this.labelText = labels.map(arr => arr.join(' '));
     }
+    // special case: if maxSlots equals the input group size
+    // expand and collapse the group inputs one by one
+    // otherwise group-wise
+    if (this.slotSpec instanceof Array) { // input group
+        if (this.groupInputs === this.maxInputs) {
+            this.groupInputs = 1;
+        } else {
+            this.groupInputs = this.slotSpec.length;
+        }
+    }
 };
 
 MultiArgMorph.prototype.collapseLabel = function () {
@@ -14245,6 +14336,17 @@ MultiArgMorph.prototype.setMinSlots = function (minSlots) {
 
 MultiArgMorph.prototype.setMaxSlots = function (maxSlots) {
     this.maxInputs = +maxSlots;
+
+    // special case: if maxSlots equals the input group size
+    // expand and collapse the group inputs one by one
+    // otherwise group-wise
+    if (this.slotSpec instanceof Array) { // input group
+        if (this.slotSpec.length === this.maxInputs) {
+            this.groupInputs = 1;
+        } else {
+            this.groupInputs = this.slotSpec.length;
+        }
+    }
 };
 
 // MultiArgMorph defaults:
@@ -16288,6 +16390,9 @@ CommentMorph.prototype.snap = function (hand) {
     scripts.clearDropInfo();
     target = scripts.closestBlock(this, hand);
     if (target !== null) {
+        if (this.block) {
+            this.block.comment = null;
+        }
         target.comment = this;
         this.block = target;
         if (this.snapSound) {
@@ -16306,7 +16411,6 @@ CommentMorph.prototype.snap = function (hand) {
     if (hand) {
         scripts.recordDrop(hand.grabOrigin);
     }
-
 };
 
 // CommentMorph sticking to blocks
