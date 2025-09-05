@@ -1,42 +1,30 @@
 [
   {
-    "fileName": "animal-game.xml",
-    "name": "Animal Game"
+    "fileName":"ESPaceLINO.xml",
+    "name":"ESPaceLINO"
   },
   {
-    "fileName": "Codification.xml",
-    "name": "Codification"
+    "fileName":"Botoes_0_1_2.xml",
+    "name":"Botoes_0_1_2"
   },
   {
-    "fileName": "copter.xml",
-    "name": "Copter"
+    "fileName":"LED_1_2_3.xml",
+    "name":"LED_1_2_3"
   },
   {
-    "fileName": "count-change.xml",
-    "name": "Count Change"
+    "fileName":"Carrinho_seta.xml",
+    "name":"Carrinho_seta"
   },
   {
-    "fileName": "icecream-visual.xml",
-    "name": "Icecream Visual"
+    "fileName":"Ultrasonico.xml",
+    "name":"Ultrasonico"
   },
   {
-    "fileName": "JSfunctions.xml",
-    "name": "JSfunctions"
+    "fileName":"Potenciometro.xml",
+    "name":"Potenciometro"
   },
   {
-    "fileName": "live-tree.xml",
-    "name": "Live Tree"
-  },
-  {
-    "fileName": "swimmer.xml",
-    "name": "Swimmer"
-  },
-  {
-    "fileName": "tree.xml",
-    "name": "Tree"
-  },
-  {
-    "fileName": "vee.xml",
-    "name": "Vee"
+    "fileName":"LDR.xml",
+    "name":"LDR"
   }
 ]
