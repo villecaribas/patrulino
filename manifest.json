@@ -1,6 +1,6 @@
 {
-  "name": "Snap!",
-  "short_name": "Snap!",
+  "name": "PatruLINO!!",
+  "short_name": "PatruLINO!!",
   "icons": [{
       "src": "img/snap-icon-72.png",
       "sizes": "72x72",
@@ -43,7 +43,7 @@
       "sizes": "512x512",
       "type": "image/png"
     }],
-  "lang": "en-US",
+  "lang": "pt-BR",
   "start_url": "./snap.html",
   "display": "standalone",
   "background_color": "white",
