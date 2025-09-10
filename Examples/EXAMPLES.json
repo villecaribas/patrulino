@@ -4,6 +4,10 @@
     "name":"ESPaceLINO"
   },
   {
+    "fileName":"VespaBLE.xml",
+    "name":"VespaBLE"
+  },
+  {
     "fileName":"Botoes_0_1_2.xml",
     "name":"Botoes_0_1_2"
   },
