@@ -1,5 +1,35 @@
 [
   {
+    "fileName": "explosao01.wav",
+    "name": "explosao 01",
+    "translations": {}
+  },
+  {
+    "fileName": "explosao02.wav",
+    "name": "explosao 02",
+    "translations": {}
+  },
+  {
+    "fileName": "explosao03.wav",
+    "name": "explosao 03",
+    "translations": {}
+  },
+  {
+    "fileName": "explosao04.wav",
+    "name": "explosao 04",
+    "translations": {}
+  },
+  {
+    "fileName": "explosao05.wav",
+    "name": "explosao 05",
+    "translations": {}
+  },
+  {
+    "fileName": "explosao06.wav",
+    "name": "explosao 06",
+    "translations": {}
+  },
+  {
     "fileName": "laser3.wav",
     "name": "Laser3",
     "translations": {}
