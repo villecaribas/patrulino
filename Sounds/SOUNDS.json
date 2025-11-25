@@ -1,4 +1,14 @@
-[
+[ 
+  {
+    "fileName": "Boo.wav",
+    "name": "Booo",
+    "translations": {}
+  }, 
+  {
+    "fileName": "Aplausos.wav",
+    "name": "Aplausos",
+    "translations": {}
+  },
   {
     "fileName": "explosao01.wav",
     "name": "explosao 01",
